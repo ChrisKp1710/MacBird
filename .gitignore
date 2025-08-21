@@ -1,0 +1,19 @@
+# Build files
+Build/
+build/
+*.o
+*.dylib
+*.app
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+DerivedData/
+
+# macOS
+.DS_Store
+*.dSYM
+
+# IDE
+.vscode/
+.idea/
