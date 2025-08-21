@@ -73,9 +73,9 @@
     [consoleScrollView setBorderType:NSNoBorder];
     
     self.consoleOutput = [[NSTextView alloc] initWithFrame:[[consoleScrollView contentView] bounds]];
-    [self.consoleOutput setBackgroundColor:[NSColor blackColor]];
-    [self.consoleOutput setTextColor:[NSColor greenColor]];
-    [self.consoleOutput setFont:[NSFont fontWithName:@"Monaco" size:11]];
+    [self.consoleOutput setBackgroundColor:[NSColor colorWithRed:0.05 green:0.05 blue:0.05 alpha:1.0]]; // Grigio molto scuro invece di nero
+    [self.consoleOutput setTextColor:[NSColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]]; // Bianco-grigio chiaro invece di verde
+    [self.consoleOutput setFont:[NSFont fontWithName:@"Monaco" size:12]]; // Font leggermente più grande
     [self.consoleOutput setEditable:NO];
     [self.consoleOutput setString:@"🛠️ MacBird Developer Console\n================================\n"];
     
@@ -204,35 +204,53 @@
         return;
     }
     
-    [self logToConsole:@"\n=== 🔍 BROWSER ANALYSIS RESULTS ==="];
-    [self logToConsole:[NSString stringWithFormat:@"User Agent: %@", analysis[@"userAgent"]]];
-    [self logToConsole:[NSString stringWithFormat:@"Platform: %@", analysis[@"platform"]]];
-    [self logToConsole:[NSString stringWithFormat:@"WebKit Version: %@", analysis[@"webkitVersion"]]];
-    [self logToConsole:[NSString stringWithFormat:@"Safari Version: %@", analysis[@"safariVersion"]]];
+    [self logToConsole:@""];
+    [self logToConsole:@"=== 🔍 BROWSER ANALYSIS RESULTS ==="];
+    [self logToConsole:[NSString stringWithFormat:@"📱 User Agent: %@", analysis[@"userAgent"]]];
+    [self logToConsole:[NSString stringWithFormat:@"🖥️  Platform: %@", analysis[@"platform"]]];
+    [self logToConsole:[NSString stringWithFormat:@"🔧 WebKit Version: %@", analysis[@"webkitVersion"]]];
+    [self logToConsole:[NSString stringWithFormat:@"🌐 Safari Version: %@", analysis[@"safariVersion"]]];
     
-    [self logToConsole:@"\n=== ✅ FEATURE SUPPORT ==="];
+    [self logToConsole:@""];
+    [self logToConsole:@"=== ✅ FEATURE SUPPORT ANALYSIS ==="];
     NSDictionary* features = analysis[@"features"];
     for (NSString* feature in features) {
         BOOL supported = [features[feature] boolValue];
         NSString* status = supported ? @"✅ SUPPORTED" : @"❌ NOT SUPPORTED";
-        [self logToConsole:[NSString stringWithFormat:@"%@: %@", feature, status]];
+        NSString* paddedFeature = [feature stringByPaddingToLength:20 withString:@" " startingAtIndex:0];
+        [self logToConsole:[NSString stringWithFormat:@"  %@ → %@", paddedFeature, status]];
     }
     
     if (analysis[@"googleAnalysis"]) {
-        [self logToConsole:@"\n=== 🔍 GOOGLE PAGE ANALYSIS ==="];
+        [self logToConsole:@""];
+        [self logToConsole:@"=== 🔍 GOOGLE PAGE DETECTION ==="];
         NSDictionary* google = analysis[@"googleAnalysis"];
-        [self logToConsole:[NSString stringWithFormat:@"Search box found: %@", [google[@"searchBoxFound"] boolValue] ? @"✅ YES" : @"❌ NO"]];
-        [self logToConsole:[NSString stringWithFormat:@"Modern layout: %@", [google[@"modernLayout"] boolValue] ? @"✅ YES" : @"❌ NO"]];
-        [self logToConsole:[NSString stringWithFormat:@"Border radius: %@", google[@"searchBoxBorderRadius"]]];
+        NSString* searchBoxStatus = [google[@"searchBoxFound"] boolValue] ? @"✅ FOUND" : @"❌ NOT FOUND";
+        NSString* modernStatus = [google[@"modernLayout"] boolValue] ? @"✅ MODERN LAYOUT" : @"❌ OLD LAYOUT";
+        
+        [self logToConsole:[NSString stringWithFormat:@"  🔍 Search box detected → %@", searchBoxStatus]];
+        [self logToConsole:[NSString stringWithFormat:@"  🎨 Layout type detected → %@", modernStatus]];
+        [self logToConsole:[NSString stringWithFormat:@"  📐 Border radius value → %@", google[@"searchBoxBorderRadius"]]];
+        
+        if ([google[@"modernLayout"] boolValue]) {
+            [self logToConsole:@"  🎉 Google recognizes us as MODERN browser!"];
+        } else {
+            [self logToConsole:@"  ⚠️  Google serves us OLD layout - needs investigation"];
+        }
     }
     
     NSDictionary* screen = analysis[@"screenInfo"];
-    [self logToConsole:@"\n=== 📱 DEVICE INFO ==="];
-    [self logToConsole:[NSString stringWithFormat:@"Screen: %@x%@", screen[@"width"], screen[@"height"]]];
-    [self logToConsole:[NSString stringWithFormat:@"Pixel Ratio: %@", screen[@"pixelRatio"]]];
-    [self logToConsole:[NSString stringWithFormat:@"Color Depth: %@", screen[@"colorDepth"]]];
+    [self logToConsole:@""];
+    [self logToConsole:@"=== 📱 DEVICE & DISPLAY INFO ==="];
+    [self logToConsole:[NSString stringWithFormat:@"  📺 Screen Resolution → %@x%@", screen[@"width"], screen[@"height"]]];
+    [self logToConsole:[NSString stringWithFormat:@"  🔍 Pixel Ratio → %@x", screen[@"pixelRatio"]]];
+    [self logToConsole:[NSString stringWithFormat:@"  🎨 Color Depth → %@ bits", screen[@"colorDepth"]]];
     
-    [self logToConsole:@"\n=== ✅ ANALYSIS COMPLETE ===\n"];
+    [self logToConsole:@""];
+    [self logToConsole:@"=== ✅ ANALYSIS COMPLETE ==="];
+    [self logToConsole:@"💡 TIP: Check HTML tab for page source"];
+    [self logToConsole:@"🔍 TIP: Go to google.com to test Google detection"];
+    [self logToConsole:@""];
     
     // Auto-refresh HTML source
     [self showHTMLSource];
