@@ -73,11 +73,18 @@
     [consoleScrollView setBorderType:NSNoBorder];
     
     self.consoleOutput = [[NSTextView alloc] initWithFrame:[[consoleScrollView contentView] bounds]];
-    [self.consoleOutput setBackgroundColor:[NSColor colorWithRed:0.05 green:0.05 blue:0.05 alpha:1.0]]; // Grigio molto scuro invece di nero
-    [self.consoleOutput setTextColor:[NSColor colorWithRed:0.9 green:0.9 blue:0.9 alpha:1.0]]; // Bianco-grigio chiaro invece di verde
-    [self.consoleOutput setFont:[NSFont fontWithName:@"Monaco" size:12]]; // Font leggermente più grande
+    // COLORI MOLTO PIÙ CONTRASTANTI per massima leggibilità
+    [self.consoleOutput setBackgroundColor:[NSColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.0]]; // Grigio più chiaro
+    [self.consoleOutput setTextColor:[NSColor whiteColor]]; // Bianco puro per massimo contrasto
+    [self.consoleOutput setFont:[NSFont fontWithName:@"Menlo" size:13]]; // Font di sistema più leggibile
     [self.consoleOutput setEditable:NO];
-    [self.consoleOutput setString:@"🛠️ MacBird Developer Console\n================================\n"];
+    [self.consoleOutput setSelectable:YES]; // Permetti selezione per debug
+    [self.consoleOutput setRichText:NO]; // Disabilita formattazione ricca
+    [self.consoleOutput setUsesFontPanel:NO];
+    [self.consoleOutput setString:@"🛠️ MacBird Developer Console\n================================\nConsole ready - colors should be visible now!\n"];
+    
+    // Forza l'aggiornamento dei colori
+    [self.consoleOutput setNeedsDisplay:YES];
     
     [consoleScrollView setDocumentView:self.consoleOutput];
     
