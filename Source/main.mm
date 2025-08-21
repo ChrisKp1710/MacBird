@@ -8,8 +8,14 @@ int main(int argc, char* argv[]) {
     @autoreleasepool {
         NSApplication* app = [NSApplication sharedApplication];
         
+        // Imposta il tipo di attivazione per far apparire l'app nel dock
+        [app setActivationPolicy:NSApplicationActivationPolicyRegular];
+        
         AppDelegate* delegate = [[AppDelegate alloc] init];
         [app setDelegate:delegate];
+        
+        // Attiva l'applicazione e porta in primo piano
+        [app activateIgnoringOtherApps:YES];
         
         [app run];
     }
