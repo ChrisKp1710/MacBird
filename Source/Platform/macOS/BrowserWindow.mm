@@ -1,5 +1,6 @@
 #import "BrowserWindow.h"
 #import "Core/Network/HTTPClient.h"
+#import "Core/HTML/HTMLParser.h"
 #include <iostream>
 
 @implementation BrowserWindow
@@ -54,8 +55,8 @@
     self.contentTextView = [[NSTextView alloc] initWithFrame:textRect];
     [self.contentTextView setEditable:NO];  // Solo lettura
     [self.contentTextView setSelectable:YES];  // Permetti selezione testo
-    [self.contentTextView setFont:[NSFont fontWithName:@"Monaco" size:11]];  // Font monospaced
-    [self.contentTextView setString:@"MacBird Browser - Pronto per navigare!\n\nInserisci un URL nella barra sopra e premi 'Vai' per iniziare."];
+    [self.contentTextView setFont:[NSFont systemFontOfSize:14]];  // Font di default
+    [self.contentTextView setString:@"MacBird Browser - Pronto per navigare!\n\nInserisci un URL nella barra sopra e premi 'Vai' per iniziare.\n\nIl parser HTML trasformerà automaticamente i tag in contenuto formattato!"];
     
     // Collega textView a scrollView
     [self.contentScrollView setDocumentView:self.contentTextView];
@@ -65,7 +66,7 @@
     [contentView addSubview:self.goButton];
     [contentView addSubview:self.contentScrollView];
     
-    std::cout << "🎨 UI setup completed with content area" << std::endl;
+    std::cout << "🎨 UI setup completed with HTML parser support" << std::endl;
 }
 
 - (void)addressBarEnterPressed:(id)sender {
@@ -81,7 +82,7 @@
 - (void)navigateToURL:(NSString*)url {
     std::cout << "🌐 Navigating to: " << [url UTF8String] << std::endl;
     
-    // Mostra messaggio di caricamento (CORRETTO)
+    // Mostra messaggio di caricamento
     NSString* loadingMessage = [NSString stringWithFormat:@"🔄 Caricamento in corso...\n\nScaricando contenuto da:\n%@", url];
     [self displayContent:loadingMessage];
     
@@ -102,23 +103,48 @@
             std::cout << "✅ Page loaded successfully!" << std::endl;
             std::cout << "📄 Content length: " << [content length] << " characters" << std::endl;
             
-            // Mostra contenuto HTML nell'UI
-            NSString* displayText = [NSString stringWithFormat:@"✅ Pagina caricata con successo!\n\nURL: %@\nDimensione: %lu caratteri\n\n--- CONTENUTO HTML ---\n\n%@", 
-                                   url, (unsigned long)[content length], content ?: @"(contenuto vuoto)"];
-            [self displayContent:displayText];
+            // USA IL PARSER HTML invece di mostrare HTML raw!
+            [self displayParsedContent:content fromURL:url];
         }
     }];
 }
 
 - (void)displayContent:(NSString*)content {
-    // Aggiorna l'UI nel main thread
+    // Mostra contenuto come testo semplice
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.contentTextView setString:content];
+        [self.contentTextView scrollRangeToVisible:NSMakeRange(0, 0)];
+        std::cout << "🖥️ Content displayed in UI" << std::endl;
+    });
+}
+
+- (void)displayParsedContent:(NSString*)htmlContent fromURL:(NSString*)url {
+    // USA IL PARSER HTML per mostrare contenuto formattato!
+    dispatch_async(dispatch_get_main_queue(), ^{
+        std::cout << "🎨 Starting HTML parsing..." << std::endl;
         
-        // Scrolla in cima
+        // Parsa l'HTML e ottieni contenuto formattato
+        NSAttributedString* parsedContent = [HTMLParser parseHTML:htmlContent];
+        
+        // Crea header con info sulla pagina
+        NSFont* headerFont = [NSFont boldSystemFontOfSize:16];
+        NSColor* headerColor = [NSColor systemGreenColor];
+        NSDictionary* headerAttrs = @{NSFontAttributeName: headerFont, NSForegroundColorAttributeName: headerColor};
+        
+        NSString* headerText = [NSString stringWithFormat:@"✅ Pagina caricata e processata!\n\nURL: %@\nDimensione: %lu caratteri\nParser HTML: ATTIVO\n\n--- CONTENUTO FORMATTATO ---\n\n", 
+                               url, (unsigned long)[htmlContent length]];
+        NSAttributedString* header = [[NSAttributedString alloc] initWithString:headerText attributes:headerAttrs];
+        
+        // Combina header + contenuto parsato
+        NSMutableAttributedString* finalContent = [[NSMutableAttributedString alloc] init];
+        [finalContent appendAttributedString:header];
+        [finalContent appendAttributedString:parsedContent];
+        
+        // Mostra il contenuto formattato
+        [[self.contentTextView textStorage] setAttributedString:finalContent];
         [self.contentTextView scrollRangeToVisible:NSMakeRange(0, 0)];
         
-        std::cout << "🖥️ Content displayed in UI" << std::endl;
+        std::cout << "🎨 HTML parsed content displayed!" << std::endl;
     });
 }
 
