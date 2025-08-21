@@ -343,14 +343,12 @@
         }
     }
     
-    // ✨ NUOVO: Gestisce URL vuoti o about:blank
-    if ([url.absoluteString isEqualToString:@"about:blank"] || 
+    // ✨ CORRETTO: Gestisce URL vuoti SOLO se siamo già sulla welcome page
+    if (self.isOnWelcomePage && 
+        ([url.absoluteString isEqualToString:@"about:blank"] || 
         [url.absoluteString isEqualToString:@""] ||
-        url == nil) {
-        std::cout << "🏠 Empty URL detected, loading welcome page..." << std::endl;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self loadWelcomePage];
-        });
+        url == nil)) {
+        std::cout << "🏠 Empty URL detected while on welcome page, staying..." << std::endl;
         decisionHandler(WKNavigationActionPolicyCancel);
         return;
     }
