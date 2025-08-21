@@ -51,7 +51,7 @@
     // === TOOLBAR DI NAVIGAZIONE (CENTRATA E UNIFORME) ===
     NSView* navigationToolbar = [[NSView alloc] initWithFrame:NSMakeRect(70, [contentView frame].size.height - 55, 220, 55)];
     [navigationToolbar setWantsLayer:YES];
-    [navigationToolbar.layer setBackgroundColor:[NSColor colorWithRed:0.13 green:0.13 blue:0.13 alpha:1.0].CGColor];
+    [navigationToolbar.layer setBackgroundColor:[NSColor colorWithRed:0.11 green:0.11 blue:0.11 alpha:1.0].CGColor];
     [navigationToolbar setAutoresizingMask:NSViewMinYMargin];
     
     // Menu hamburger (perfettamente centrato)
@@ -116,7 +116,7 @@
     // === SISTEMA TAB (STESSO GRIGIO, CENTRATO) ===
     NSView* tabBar = [[NSView alloc] initWithFrame:NSMakeRect(290, [contentView frame].size.height - 55, [contentView frame].size.width - 290, 55)];
     [tabBar setWantsLayer:YES];
-    [tabBar.layer setBackgroundColor:[NSColor colorWithRed:0.13 green:0.13 blue:0.13 alpha:1.0].CGColor]; // STESSO GRIGIO
+    [tabBar.layer setBackgroundColor:[NSColor colorWithRed:0.11 green:0.11 blue:0.11 alpha:1.0].CGColor]; // STESSO GRIGIO
     [tabBar setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     
     // Tab attivo (perfettamente centrato)
