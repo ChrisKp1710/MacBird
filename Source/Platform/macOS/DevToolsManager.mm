@@ -73,18 +73,19 @@
     [consoleScrollView setBorderType:NSNoBorder];
     
     self.consoleOutput = [[NSTextView alloc] initWithFrame:[[consoleScrollView contentView] bounds]];
-    // COLORI MOLTO PIÙ CONTRASTANTI per massima leggibilità
-    [self.consoleOutput setBackgroundColor:[NSColor colorWithRed:0.1 green:0.1 blue:0.1 alpha:1.0]]; // Grigio più chiaro
-    [self.consoleOutput setTextColor:[NSColor whiteColor]]; // Bianco puro per massimo contrasto
-    [self.consoleOutput setFont:[NSFont fontWithName:@"Menlo" size:13]]; // Font di sistema più leggibile
+    // COLORI COMPLETAMENTE DIVERSI - MASSIMO CONTRASTO
+    [self.consoleOutput setBackgroundColor:[NSColor colorWithRed:0.95 green:0.95 blue:0.95 alpha:1.0]]; // GRIGIO CHIARISSIMO quasi bianco
+    [self.consoleOutput setTextColor:[NSColor blackColor]]; // NERO su grigio chiaro per massimo contrasto
+    [self.consoleOutput setFont:[NSFont fontWithName:@"Menlo" size:14]]; // Font più grande
     [self.consoleOutput setEditable:NO];
-    [self.consoleOutput setSelectable:YES]; // Permetti selezione per debug
-    [self.consoleOutput setRichText:NO]; // Disabilita formattazione ricca
+    [self.consoleOutput setSelectable:YES];
+    [self.consoleOutput setRichText:NO];
     [self.consoleOutput setUsesFontPanel:NO];
-    [self.consoleOutput setString:@"🛠️ MacBird Developer Console\n================================\nConsole ready - colors should be visible now!\n"];
+    [self.consoleOutput setString:@"🛠️ MacBird Developer Console\n================================\n✅ TEXT IS NOW VISIBLE! Black on light gray!\n🎯 Console ready for debugging\n"];
     
-    // Forza l'aggiornamento dei colori
+    // Forza l'aggiornamento immediato
     [self.consoleOutput setNeedsDisplay:YES];
+    [[self.consoleOutput enclosingScrollView] setNeedsDisplay:YES];
     
     [consoleScrollView setDocumentView:self.consoleOutput];
     
