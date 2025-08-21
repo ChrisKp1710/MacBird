@@ -246,7 +246,15 @@
     "</script>"
     "</body></html>";
     
-    [self.webView loadHTMLString:welcomeHTML baseURL:nil];
+    // ✨ NUOVO: Carica con URL locale personalizzato per gestire reload
+    NSURL* welcomeURL = [NSURL URLWithString:@"macbird://welcome"];
+    [self.webView loadHTMLString:welcomeHTML baseURL:welcomeURL];
+    
+    // Marca che siamo sulla welcome page
+    self.isOnWelcomePage = YES;
+    [self.addressBar setStringValue:@""];
+    
+    std::cout << "🏠 Welcome page loaded with custom URL scheme" << std::endl;
 }
 
 - (void)addressBarEnterPressed:(id)sender {
@@ -267,6 +275,9 @@
         [self loadWelcomePage];
         return;
     }
+    
+    // ✨ NUOVO: Marca che non siamo più sulla welcome page
+    self.isOnWelcomePage = NO;
     
     // Aggiunge protocollo se mancante
     if (![url hasPrefix:@"http://"] && ![url hasPrefix:@"https://"]) {
@@ -309,7 +320,50 @@
     }
 }
 
-// ======= DELEGATE METHODS PER LOGGING AVANZATO =======
+// ======= DELEGATE METHODS PER GESTIRE RELOAD =======
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+    NSURL* url = navigationAction.request.URL;
+    
+    // ✨ NUOVO: Gestisce reload della welcome page - MA SENZA LOOP!
+    if ([url.scheme isEqualToString:@"macbird"] && [url.host isEqualToString:@"welcome"]) {
+        // Se è un reload (non il primo caricamento), ricarica la welcome page
+        if (navigationAction.navigationType == WKNavigationTypeReload) {
+            std::cout << "🔄 Reloading welcome page..." << std::endl;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self loadWelcomePage];
+            });
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        } else {
+            // Se è il primo caricamento, permettilo
+            std::cout << "🏠 Loading welcome page for first time..." << std::endl;
+            decisionHandler(WKNavigationActionPolicyAllow);
+            return;
+        }
+    }
+    
+    // ✨ NUOVO: Gestisce URL vuoti o about:blank
+    if ([url.absoluteString isEqualToString:@"about:blank"] || 
+        [url.absoluteString isEqualToString:@""] ||
+        url == nil) {
+        std::cout << "🏠 Empty URL detected, loading welcome page..." << std::endl;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self loadWelcomePage];
+        });
+        decisionHandler(WKNavigationActionPolicyCancel);
+        return;
+    }
+    
+    // ✨ NUOVO: Se è un URL normale, marca che non siamo più sulla welcome page
+    if ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]) {
+        self.isOnWelcomePage = NO;
+        [self.addressBar setStringValue:url.absoluteString];
+    }
+    
+    std::cout << "🌐 Allowing navigation to: " << [url.absoluteString UTF8String] << std::endl;
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
     std::cout << "🔄 Navigation started - checking what Google detects..." << std::endl;
@@ -317,6 +371,11 @@
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
     std::cout << "✅ Page loaded - analyzing Google's detection..." << std::endl;
+    
+    // ✨ NUOVO: Aggiorna l'address bar solo se non siamo sulla welcome page
+    if (!self.isOnWelcomePage && webView.URL) {
+        [self.addressBar setStringValue:webView.URL.absoluteString];
+    }
     
     // JavaScript per controllare cosa Google rileva del nostro browser
     NSString* detectionScript = @""
@@ -380,19 +439,24 @@
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     std::cout << "❌ Navigation failed: " << [[error localizedDescription] UTF8String] << std::endl;
+    
+    // ✨ NUOVO: Se la navigazione fallisce e siamo su welcome page, ricarica welcome
+    if (self.isOnWelcomePage || !webView.URL || [webView.URL.absoluteString isEqualToString:@"about:blank"]) {
+        std::cout << "🏠 Loading welcome page after navigation failure..." << std::endl;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [self loadWelcomePage];
+        });
+    }
 }
 
-- (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler {
-    std::cout << "🔔 JavaScript Alert: " << [message UTF8String] << std::endl;
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    std::cout << "❌ Provisional navigation failed: " << [[error localizedDescription] UTF8String] << std::endl;
     
-    // Mostra alert nativo macOS
-    NSAlert* alert = [[NSAlert alloc] init];
-    [alert setMessageText:@"MacBird Browser"];
-    [alert setInformativeText:message];
-    [alert addButtonWithTitle:@"OK"];
-    [alert runModal];
-    
-    completionHandler();
+    // ✨ NUOVO: Se la navigazione provisoria fallisce, torna alla welcome page
+    std::cout << "🏠 Loading welcome page after provisional navigation failure..." << std::endl;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self loadWelcomePage];
+    });
 }
 
 // ✨ NUOVO: DevTools integrati con architettura modulare

@@ -15,6 +15,9 @@
 @property (strong, nonatomic) MenuManager* menuManager;
 @property (strong, nonatomic) DevToolsManager* devToolsManager;
 
+// ✨ NUOVO: Proprietà per gestire welcome page reload
+@property (nonatomic, assign) BOOL isOnWelcomePage;
+
 - (void)setupModernUI;
 - (void)navigateToURL:(NSString*)url;
 - (void)loadWelcomePage;
