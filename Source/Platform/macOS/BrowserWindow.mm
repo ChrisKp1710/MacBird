@@ -153,45 +153,45 @@
     [tabBar addSubview:newTabButton];
     
     // === BARRA INDIRIZZI PULITA (SENZA MACBIRD, PIÙ ALTA) ===
-    NSView* addressBarContainer = [[NSView alloc] initWithFrame:NSMakeRect(0, [contentView frame].size.height - 85, [contentView frame].size.width, 45)];
-    [addressBarContainer setWantsLayer:YES];
-    [addressBarContainer.layer setBackgroundColor:[NSColor colorWithRed:0.15 green:0.15 blue:0.15 alpha:1.0].CGColor];
-    [addressBarContainer setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
+    //NSView* addressBarContainer = [[NSView alloc] initWithFrame:NSMakeRect(0, [contentView frame].size.height - 85, [contentView frame].size.width, 45)];
+    //[addressBarContainer setWantsLayer:YES];
+    //[addressBarContainer.layer setBackgroundColor:[NSColor colorWithRed:0.15 green:0.15 blue:0.15 alpha:1.0].CGColor];
+    //[addressBarContainer setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     
     // Barra indirizzi SENZA logo (inizia da sinistra, più spazio)
-    CGFloat addressBarWidth = [contentView frame].size.width - 120;
-    self.addressBar = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 8, addressBarWidth, 32)];
-    [self.addressBar setStringValue:@""];
-    [self.addressBar setPlaceholderString:@"Cerca con Google o inserisci un indirizzo"];
-    [self.addressBar setTarget:self];
-    [self.addressBar setAction:@selector(addressBarEnterPressed:)];
-    [self.addressBar setAutoresizingMask:NSViewWidthSizable];
+    //CGFloat addressBarWidth = [contentView frame].size.width - 120;
+    //self.addressBar = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 8, addressBarWidth, 32)];
+    //[self.addressBar setStringValue:@""];
+    //[self.addressBar setPlaceholderString:@"Cerca con Google o inserisci un indirizzo"];
+    //[self.addressBar setTarget:self];
+    //[self.addressBar setAction:@selector(addressBarEnterPressed:)];
+    //[self.addressBar setAutoresizingMask:NSViewWidthSizable];
     
     // Stile moderno barra indirizzi (più alta e proporzionata)
-    [self.addressBar setWantsLayer:YES];
-    [self.addressBar.layer setCornerRadius:16.0];
-    [self.addressBar.layer setBackgroundColor:[NSColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:1.0].CGColor];
-    [self.addressBar.layer setBorderWidth:1.0];
-    [self.addressBar.layer setBorderColor:[NSColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1.0].CGColor];
-    [self.addressBar setTextColor:[NSColor whiteColor]];
-    [self.addressBar setFont:[NSFont systemFontOfSize:14]];
+    //[self.addressBar setWantsLayer:YES];
+    //[self.addressBar.layer setCornerRadius:16.0];
+    //[self.addressBar.layer setBackgroundColor:[NSColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:1.0].CGColor];
+    //[self.addressBar.layer setBorderWidth:1.0];
+    //[self.addressBar.layer setBorderColor:[NSColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1.0].CGColor];
+    //[self.addressBar setTextColor:[NSColor whiteColor]];
+    //[self.addressBar setFont:[NSFont systemFontOfSize:14]];
     
     // Pulsante Vai più grande e proporzionato
-    self.goButton = [[NSButton alloc] initWithFrame:NSMakeRect([contentView frame].size.width - 85, 8, 65, 32)];
-    [self.goButton setTitle:@"Vai"];
-    [self.goButton setTarget:self];
-    [self.goButton setAction:@selector(goButtonPressed:)];
-    [self.goButton setAutoresizingMask:NSViewMinXMargin];
+    //self.goButton = [[NSButton alloc] initWithFrame:NSMakeRect([contentView frame].size.width - 85, 8, 65, 32)];
+    //[self.goButton setTitle:@"Vai"];
+    //[self.goButton setTarget:self];
+    //[self.goButton setAction:@selector(goButtonPressed:)];
+    //[self.goButton setAutoresizingMask:NSViewMinXMargin];
     
     // Stile moderno pulsante (più grande)
-    [self.goButton setWantsLayer:YES];
-    [self.goButton.layer setCornerRadius:16.0];
-    [self.goButton.layer setBackgroundColor:[NSColor colorWithRed:0.0 green:0.48 blue:1.0 alpha:1.0].CGColor];
-    [self.goButton setBordered:NO];
-    [self.goButton setFont:[NSFont systemFontOfSize:14 weight:NSFontWeightMedium]];
+    //[self.goButton setWantsLayer:YES];
+    //[self.goButton.layer setCornerRadius:16.0];
+    //[self.goButton.layer setBackgroundColor:[NSColor colorWithRed:0.0 green:0.48 blue:1.0 alpha:1.0].CGColor];
+    //[self.goButton setBordered:NO];
+    //[self.goButton setFont:[NSFont systemFontOfSize:14 weight:NSFontWeightMedium]];
     
-    [addressBarContainer addSubview:self.addressBar];
-    [addressBarContainer addSubview:self.goButton];
+    //[addressBarContainer addSubview:self.addressBar];
+    //[addressBarContainer addSubview:self.goButton];
     
     // === WEBVIEW CON CONFIGURAZIONE WEBKIT MODERNA + DEBUG ===
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
@@ -258,7 +258,7 @@
     config.websiteDataStore = [WKWebsiteDataStore defaultDataStore];
     
     // WebView finale (POSIZIONE AGGIORNATA per nuovo layout)
-    self.webView = [[WKWebView alloc] initWithFrame:NSMakeRect(15, 15, [contentView frame].size.width - 30, [contentView frame].size.height - 115) configuration:config];
+    self.webView = [[WKWebView alloc] initWithFrame:NSMakeRect(15, 15, [contentView frame].size.width - 30, [contentView frame].size.height - 55) configuration:config];
     [self.webView setWantsLayer:YES];
     [self.webView.layer setCornerRadius:12.0];
     [self.webView.layer setMasksToBounds:YES];
@@ -270,7 +270,7 @@
     // === AGGIUNGI TUTTO ALLA FINESTRA ===
     [contentView addSubview:navigationToolbar];
     [contentView addSubview:tabBar];
-    [contentView addSubview:addressBarContainer];
+    //[contentView addSubview:addressBarContainer];
     [contentView addSubview:self.webView];
     
     [self loadWelcomePage];
@@ -344,7 +344,7 @@
     
     // Marca che siamo sulla welcome page
     self.isOnWelcomePage = YES;
-    [self.addressBar setStringValue:@""];
+    //[self.addressBar setStringValue:@""];
     
     std::cout << "🏠 Welcome page loaded with custom URL scheme" << std::endl;
 }
@@ -405,7 +405,7 @@
         std::cout << "   Safari Version: 17.6 (Latest)" << std::endl;
         
         [self.webView loadRequest:request];
-        [self.addressBar setStringValue:url];
+        //[self.addressBar setStringValue:url];
         std::cout << "✅ Loading with MODERN Safari-compatible engine..." << std::endl;
     } else {
         std::cout << "❌ Invalid URL format" << std::endl;
@@ -448,7 +448,7 @@
     // ✨ NUOVO: Se è un URL normale, marca che non siamo più sulla welcome page
     if ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]) {
         self.isOnWelcomePage = NO;
-        [self.addressBar setStringValue:url.absoluteString];
+        //[self.addressBar setStringValue:url.absoluteString];
     }
     
     std::cout << "🌐 Allowing navigation to: " << [url.absoluteString UTF8String] << std::endl;
@@ -464,7 +464,7 @@
     
     // ✨ NUOVO: Aggiorna l'address bar solo se non siamo sulla welcome page
     if (!self.isOnWelcomePage && webView.URL) {
-        [self.addressBar setStringValue:webView.URL.absoluteString];
+        //[self.addressBar setStringValue:webView.URL.absoluteString];
     }
     
     // JavaScript per controllare cosa Google rileva del nostro browser
