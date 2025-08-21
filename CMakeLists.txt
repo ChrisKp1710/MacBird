@@ -8,9 +8,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_library(COCOA_LIBRARY Cocoa)
 find_library(WEBKIT_LIBRARY WebKit)
 
-# File sorgenti (per ora solo main)
+# File sorgenti (ora main.mm invece di main.cpp)
 set(SOURCES
-    Source/main.cpp
+    Source/main.mm
     Source/Platform/macOS/AppDelegate.mm
     Source/Platform/macOS/BrowserWindow.mm
 )
