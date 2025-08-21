@@ -8,11 +8,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_library(COCOA_LIBRARY Cocoa)
 find_library(WEBKIT_LIBRARY WebKit)
 
-# File sorgenti (ora main.mm invece di main.cpp)
+# File sorgenti (ora con HTTPClient!)
 set(SOURCES
     Source/main.mm
     Source/Platform/macOS/AppDelegate.mm
     Source/Platform/macOS/BrowserWindow.mm
+    Source/Core/Network/HTTPClient.mm
 )
 
 # Crea l'eseguibile

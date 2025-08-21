@@ -1,4 +1,5 @@
 #import "BrowserWindow.h"
+#import "Core/Network/HTTPClient.h"
 #include <iostream>
 
 @implementation BrowserWindow
@@ -67,8 +68,21 @@
 - (void)navigateToURL:(NSString*)url {
     std::cout << "🌐 Navigating to: " << [url UTF8String] << std::endl;
     
-    // Per ora mostra solo un messaggio (futuro: caricherà HTML)
-    // TODO: Qui andrà il parser HTML e il rendering
+    // Usa HTTPClient per scaricare la pagina
+    HTTPClient* httpClient = [[HTTPClient alloc] init];
+    [httpClient fetchURL:url completion:^(NSString* content, NSError* error) {
+        
+        if (error) {
+            std::cout << "❌ Navigation failed: " << [[error localizedDescription] UTF8String] << std::endl;
+            // TODO: Mostra messaggio di errore nell'UI
+        } else {
+            std::cout << "✅ Page loaded successfully!" << std::endl;
+            std::cout << "📄 Content preview (first 200 chars): " << [[content substringToIndex:MIN(200, [content length])] UTF8String] << "..." << std::endl;
+            
+            // TODO: Qui andrà il parser HTML e il rendering
+            // Per ora mostriamo solo che funziona nella console
+        }
+    }];
 }
 
 @end
