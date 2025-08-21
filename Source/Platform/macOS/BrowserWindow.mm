@@ -92,14 +92,17 @@
     [self.goButton setBordered:NO];
     [self.goButton setFont:[NSFont systemFontOfSize:14 weight:NSFontWeightMedium]];
     
-    // === WEBVIEW CON CONFIGURAZIONE WEBKIT MODERNA ===
+    // === WEBVIEW CON CONFIGURAZIONE WEBKIT MODERNA + DEBUG ===
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
     
     config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
     
+    // ABILITA configurazioni moderne per WKWebView!
     if (@available(macOS 10.15, *)) {
         config.preferences.fraudulentWebsiteWarningEnabled = YES;
         config.preferences.tabFocusesLinks = YES;
+        // developerExtrasEnabled non esiste nell'API pubblica
+        // WKWebView supporta comunque right-click → Inspect se abilitato nel sistema
     }
     
     if (@available(macOS 10.12, *)) {
@@ -388,12 +391,32 @@
     completionHandler();
 }
 
-// DevTools method (semplificato)
+// DevTools method con opzioni multiple
 - (void)toggleDevTools:(id)sender {
     std::cout << "🛠️ Developer Tools - Running detection..." << std::endl;
     
-    // Script JavaScript semplificato per evitare errori
+    // Mostra opzioni per debugging
+    NSAlert* alert = [[NSAlert alloc] init];
+    [alert setMessageText:@"MacBird Developer Tools"];
+    [alert setInformativeText:@"Scegli come vuoi analizzare la pagina:"];
+    [alert addButtonWithTitle:@"Analisi Console"];
+    [alert addButtonWithTitle:@"Apri in Safari"];
+    [alert addButtonWithTitle:@"Annulla"];
+    
+    NSModalResponse response = [alert runModal];
+    
+    if (response == NSAlertFirstButtonReturn) {
+        // Analisi nella console MacBird
+        [self runConsoleAnalysis];
+    } else if (response == NSAlertSecondButtonReturn) {
+        // Apri in Safari per debugging completo
+        [self openInSafariForDebugging];
+    }
+}
+
+- (void)runConsoleAnalysis {
     NSString* simpleDetectionScript = @""
+        "console.clear();"
         "console.log('=== 🛠️ MACBIRD BROWSER ANALYSIS ===');"
         "console.log('User Agent:', navigator.userAgent);"
         "console.log('Platform:', navigator.platform);"
@@ -426,16 +449,27 @@
         "    console.log('Border radius:', styles.borderRadius || 'none');"
         "  }"
         "}"
+        "console.log('=== END ANALYSIS ===');"
         "'Analysis complete'";
     
     [self.webView evaluateJavaScript:simpleDetectionScript completionHandler:^(id result, NSError *error) {
         if (error) {
-            std::cout << "❌ DevTools error: " << [[error localizedDescription] UTF8String] << std::endl;
+            std::cout << "❌ Console analysis error: " << [[error localizedDescription] UTF8String] << std::endl;
         } else {
-            std::cout << "✅ DevTools analysis complete" << std::endl;
-            std::cout << "💡 TIP: Right-click on page → Inspect Element for full console" << std::endl;
+            std::cout << "✅ Console analysis complete - check right-click → Inspect Element" << std::endl;
         }
     }];
+}
+
+- (void)openInSafariForDebugging {
+    NSURL* currentURL = [self.webView URL];
+    if (currentURL) {
+        [[NSWorkspace sharedWorkspace] openURL:currentURL];
+        std::cout << "🔍 Opened current page in Safari for advanced debugging" << std::endl;
+        std::cout << "💡 In Safari: Right-click → Inspect Element for full DevTools" << std::endl;
+    } else {
+        std::cout << "❌ No URL to open in Safari" << std::endl;
+    }
 }
 
 @end
