@@ -2,17 +2,23 @@
 #define BROWSERWINDOW_H
 
 #import <Cocoa/Cocoa.h>
-#import <WebKit/WebKit.h>  // Aggiungo WebKit per WKWebView
+#import <WebKit/WebKit.h>
 
-@interface BrowserWindow : NSWindow
+@class MenuManager;
 
-@property (strong, nonatomic) NSTextField* addressBar;      // Barra URL
-@property (strong, nonatomic) WKWebView* webView;          // WebView vero (come Safari!)
-@property (strong, nonatomic) NSButton* goButton;          // Pulsante "Vai"
+@interface BrowserWindow : NSWindow <WKNavigationDelegate, WKUIDelegate>
 
-- (void)setupModernUI;              // Crea l'interfaccia moderna
-- (void)navigateToURL:(NSString*)url;  // Naviga a un URL
-- (void)loadWelcomePage;           // Carica pagina di benvenuto
+@property (strong, nonatomic) NSTextField* addressBar;
+@property (strong, nonatomic) WKWebView* webView;
+@property (strong, nonatomic) NSButton* goButton;
+@property (strong, nonatomic) MenuManager* menuManager;
+
+- (void)setupModernUI;
+- (void)navigateToURL:(NSString*)url;
+- (void)loadWelcomePage;
+
+// Metodo rimasto per compatibilità con MenuManager
+- (void)toggleDevTools:(id)sender;
 
 @end
 
