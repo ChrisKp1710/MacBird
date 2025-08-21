@@ -5,6 +5,7 @@
 #import <WebKit/WebKit.h>
 
 @class MenuManager;
+@class DevToolsManager;
 
 @interface BrowserWindow : NSWindow <WKNavigationDelegate, WKUIDelegate>
 
@@ -12,6 +13,7 @@
 @property (strong, nonatomic) WKWebView* webView;
 @property (strong, nonatomic) NSButton* goButton;
 @property (strong, nonatomic) MenuManager* menuManager;
+@property (strong, nonatomic) DevToolsManager* devToolsManager;
 
 - (void)setupModernUI;
 - (void)navigateToURL:(NSString*)url;

@@ -1,5 +1,6 @@
 #import "BrowserWindow.h"
 #import "MenuManager.h"
+#import "DevToolsManager.h"
 #import <WebKit/WebKit.h>
 #include <iostream>
 
@@ -35,7 +36,10 @@
         self.menuManager = [[MenuManager alloc] initWithBrowserWindow:self];
         [self.menuManager setupMenuBar];
         
-        std::cout << "🪟 Modern MacBird Browser window created" << std::endl;
+        // ✨ NUOVO: Crea il DevToolsManager integrato
+        self.devToolsManager = [[DevToolsManager alloc] initWithBrowserWindow:self];
+        
+        std::cout << "🪟 Modern MacBird Browser window created with integrated DevTools" << std::endl;
     }
     
     return self;
@@ -391,85 +395,10 @@
     completionHandler();
 }
 
-// DevTools method con opzioni multiple
+// ✨ NUOVO: DevTools integrati con finestra dedicata
 - (void)toggleDevTools:(id)sender {
-    std::cout << "🛠️ Developer Tools - Running detection..." << std::endl;
-    
-    // Mostra opzioni per debugging
-    NSAlert* alert = [[NSAlert alloc] init];
-    [alert setMessageText:@"MacBird Developer Tools"];
-    [alert setInformativeText:@"Scegli come vuoi analizzare la pagina:"];
-    [alert addButtonWithTitle:@"Analisi Console"];
-    [alert addButtonWithTitle:@"Apri in Safari"];
-    [alert addButtonWithTitle:@"Annulla"];
-    
-    NSModalResponse response = [alert runModal];
-    
-    if (response == NSAlertFirstButtonReturn) {
-        // Analisi nella console MacBird
-        [self runConsoleAnalysis];
-    } else if (response == NSAlertSecondButtonReturn) {
-        // Apri in Safari per debugging completo
-        [self openInSafariForDebugging];
-    }
-}
-
-- (void)runConsoleAnalysis {
-    NSString* simpleDetectionScript = @""
-        "console.clear();"
-        "console.log('=== 🛠️ MACBIRD BROWSER ANALYSIS ===');"
-        "console.log('User Agent:', navigator.userAgent);"
-        "console.log('Platform:', navigator.platform);"
-        "console.log('Vendor:', navigator.vendor || 'unknown');"
-        ""
-        "const features = ["
-        "  { name: 'CSS Grid', test: () => CSS.supports('display', 'grid') },"
-        "  { name: 'CSS Flexbox', test: () => CSS.supports('display', 'flex') },"
-        "  { name: 'Border Radius', test: () => CSS.supports('border-radius', '10px') },"
-        "  { name: 'Fetch API', test: () => typeof fetch !== 'undefined' },"
-        "  { name: 'WebGL', test: () => !!document.createElement('canvas').getContext('webgl') }"
-        "];"
-        ""
-        "console.log('=== FEATURE SUPPORT ===');"
-        "features.forEach(feature => {"
-        "  try {"
-        "    const supported = feature.test();"
-        "    console.log(feature.name + ':', supported ? '✅ YES' : '❌ NO');"
-        "  } catch(e) {"
-        "    console.log(feature.name + ': ❌ ERROR');"
-        "  }"
-        "});"
-        ""
-        "if (window.location.hostname.includes('google')) {"
-        "  console.log('=== GOOGLE PAGE ANALYSIS ===');"
-        "  const searchBox = document.querySelector('input[name=q], .gLFyf');"
-        "  console.log('Search box found:', searchBox ? '✅ YES' : '❌ NO');"
-        "  if (searchBox) {"
-        "    const styles = getComputedStyle(searchBox);"
-        "    console.log('Border radius:', styles.borderRadius || 'none');"
-        "  }"
-        "}"
-        "console.log('=== END ANALYSIS ===');"
-        "'Analysis complete'";
-    
-    [self.webView evaluateJavaScript:simpleDetectionScript completionHandler:^(id result, NSError *error) {
-        if (error) {
-            std::cout << "❌ Console analysis error: " << [[error localizedDescription] UTF8String] << std::endl;
-        } else {
-            std::cout << "✅ Console analysis complete - check right-click → Inspect Element" << std::endl;
-        }
-    }];
-}
-
-- (void)openInSafariForDebugging {
-    NSURL* currentURL = [self.webView URL];
-    if (currentURL) {
-        [[NSWorkspace sharedWorkspace] openURL:currentURL];
-        std::cout << "🔍 Opened current page in Safari for advanced debugging" << std::endl;
-        std::cout << "💡 In Safari: Right-click → Inspect Element for full DevTools" << std::endl;
-    } else {
-        std::cout << "❌ No URL to open in Safari" << std::endl;
-    }
+    [self.devToolsManager toggleDevTools];
+    std::cout << "🛠️ MacBird DevTools toggled" << std::endl;
 }
 
 @end

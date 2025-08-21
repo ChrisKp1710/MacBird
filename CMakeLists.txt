@@ -8,12 +8,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_library(COCOA_LIBRARY Cocoa)
 find_library(WEBKIT_LIBRARY WebKit)
 
-# File sorgenti (ora con MenuManager modulare!)
+# File sorgenti (ora con DevToolsManager incluso!)
 set(SOURCES
     Source/main.mm
     Source/Platform/macOS/AppDelegate.mm
     Source/Platform/macOS/BrowserWindow.mm
     Source/Platform/macOS/MenuManager.mm
+    Source/Platform/macOS/DevToolsManager.mm
     Source/Core/Network/HTTPClient.mm
     Source/Core/HTML/HTMLParser.mm
     Source/Core/CSS/CSSParser.mm
