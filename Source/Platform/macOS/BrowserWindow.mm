@@ -73,14 +73,27 @@
     [httpClient fetchURL:url completion:^(NSString* content, NSError* error) {
         
         if (error) {
-            std::cout << "❌ Navigation failed: " << [[error localizedDescription] UTF8String] << std::endl;
-            // TODO: Mostra messaggio di errore nell'UI
+            const char* errorMsg = error.localizedDescription ? [error.localizedDescription UTF8String] : "Unknown error";
+            std::cout << "❌ Navigation failed: " << errorMsg << std::endl;
         } else {
             std::cout << "✅ Page loaded successfully!" << std::endl;
-            std::cout << "📄 Content preview (first 200 chars): " << [[content substringToIndex:MIN(200, [content length])] UTF8String] << "..." << std::endl;
             
-            // TODO: Qui andrà il parser HTML e il rendering
-            // Per ora mostriamo solo che funziona nella console
+            // DEBUG: Stampa dettagli sul contenuto ricevuto
+            if (content == nil) {
+                std::cout << "🐛 DEBUG: content is NIL!" << std::endl;
+            } else {
+                std::cout << "🐛 DEBUG: content exists, length = " << [content length] << std::endl;
+                
+                if ([content length] > 0) {
+                    NSUInteger previewLength = MIN(100, [content length]);  // Riduciamo a 100 caratteri
+                    NSString* preview = [content substringToIndex:previewLength];
+                    std::cout << "📄 Content preview (first " << previewLength << " chars): " << std::endl;
+                    std::cout << [preview UTF8String] << std::endl;
+                    std::cout << "..." << std::endl;
+                } else {
+                    std::cout << "⚠️ Content has zero length" << std::endl;
+                }
+            }
         }
     }];
 }
