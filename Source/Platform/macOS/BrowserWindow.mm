@@ -49,13 +49,13 @@
     NSView* contentView = [self contentView];
     
     // === TOOLBAR DI NAVIGAZIONE (CENTRATA E UNIFORME) ===
-    NSView* navigationToolbar = [[NSView alloc] initWithFrame:NSMakeRect(70, [contentView frame].size.height - 55, 220, 55)];
+    NSView* navigationToolbar = [[NSView alloc] initWithFrame:NSMakeRect(0, [contentView frame].size.height - 55, 290, 55)];
     [navigationToolbar setWantsLayer:YES];
     [navigationToolbar.layer setBackgroundColor:[NSColor colorWithRed:0.11 green:0.11 blue:0.11 alpha:1.0].CGColor];
     [navigationToolbar setAutoresizingMask:NSViewMinYMargin];
     
     // Menu hamburger (perfettamente centrato)
-    NSButton* menuButton = [[NSButton alloc] initWithFrame:NSMakeRect(12, 11.5, 32, 32)];
+    NSButton* menuButton = [[NSButton alloc] initWithFrame:NSMakeRect(82, 11.5, 32, 32)];
     [menuButton setTitle:@"☰"];
     [menuButton setFont:[NSFont systemFontOfSize:16]];
     [menuButton setBordered:NO];
@@ -64,7 +64,7 @@
     [menuButton.layer setCornerRadius:6];
     
     // Pulsante Indietro (perfettamente centrato)
-    NSButton* backButton = [[NSButton alloc] initWithFrame:NSMakeRect(52, 11.5, 32, 32)];
+    NSButton* backButton = [[NSButton alloc] initWithFrame:NSMakeRect(122, 11.5, 32, 32)];
     [backButton setTitle:@"←"];
     [backButton setFont:[NSFont systemFontOfSize:18]];
     [backButton setBordered:NO];
@@ -75,7 +75,7 @@
     [backButton.layer setCornerRadius:6];
     
     // Pulsante Avanti (perfettamente centrato)
-    NSButton* forwardButton = [[NSButton alloc] initWithFrame:NSMakeRect(92, 11.5, 32, 32)];
+    NSButton* forwardButton = [[NSButton alloc] initWithFrame:NSMakeRect(162, 11.5, 32, 32)];
     [forwardButton setTitle:@"→"];
     [forwardButton setFont:[NSFont systemFontOfSize:18]];
     [forwardButton setBordered:NO];
@@ -86,7 +86,7 @@
     [forwardButton.layer setCornerRadius:6];
     
     // Pulsante Reload (perfettamente centrato)
-    NSButton* reloadButton = [[NSButton alloc] initWithFrame:NSMakeRect(132, 11.5, 32, 32)];
+    NSButton* reloadButton = [[NSButton alloc] initWithFrame:NSMakeRect(202, 11.5, 32, 32)];
     [reloadButton setTitle:@"↻"];
     [reloadButton setFont:[NSFont systemFontOfSize:18]];
     [reloadButton setBordered:NO];
@@ -97,7 +97,7 @@
     [reloadButton.layer setCornerRadius:6];
     
     // Pulsante Home (perfettamente centrato)
-    NSButton* homeButton = [[NSButton alloc] initWithFrame:NSMakeRect(172, 11.5, 32, 32)];
+     NSButton* homeButton = [[NSButton alloc] initWithFrame:NSMakeRect(242, 11.5, 32, 32)];
     [homeButton setTitle:@"🏠"];
     [homeButton setFont:[NSFont systemFontOfSize:16]];
     [homeButton setBordered:NO];
@@ -113,14 +113,20 @@
     [navigationToolbar addSubview:reloadButton];
     [navigationToolbar addSubview:homeButton];
     
-    // === SISTEMA TAB (STESSO GRIGIO, CENTRATO) ===
-    NSView* tabBar = [[NSView alloc] initWithFrame:NSMakeRect(290, [contentView frame].size.height - 55, [contentView frame].size.width - 290, 55)];
+    // ✨ NUOVO: BARRA DIVISORIA ELEGANTE (QUASI INVISIBILE)
+    NSView* separatorLine = [[NSView alloc] initWithFrame:NSMakeRect(289, [contentView frame].size.height - 50, 1, 45)];
+    [separatorLine setWantsLayer:YES];
+    [separatorLine.layer setBackgroundColor:[NSColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.6].CGColor];
+    [separatorLine setAutoresizingMask:NSViewMinYMargin];
+    
+    // === SISTEMA TAB (STESSO GRIGIO, CENTRATO, CON SPAZIO PER SEPARATORE) ===
+    NSView* tabBar = [[NSView alloc] initWithFrame:NSMakeRect(295, [contentView frame].size.height - 55, [contentView frame].size.width - 295, 55)];
     [tabBar setWantsLayer:YES];
-    [tabBar.layer setBackgroundColor:[NSColor colorWithRed:0.11 green:0.11 blue:0.11 alpha:1.0].CGColor]; // STESSO GRIGIO
+    [tabBar.layer setBackgroundColor:[NSColor colorWithRed:0.11 green:0.11 blue:0.11 alpha:1.0].CGColor];
     [tabBar setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     
-    // Tab attivo (perfettamente centrato)
-    NSButton* activeTab = [[NSButton alloc] initWithFrame:NSMakeRect(20, 11.5, 150, 32)];
+    // Tab attivo (perfettamente centrato, spostato leggermente per il separatore)
+    NSButton* activeTab = [[NSButton alloc] initWithFrame:NSMakeRect(15, 11.5, 150, 32)];
     [activeTab setTitle:@"MacBird Tab"];
     [activeTab setFont:[NSFont systemFontOfSize:13 weight:NSFontWeightMedium]];
     [activeTab setBordered:NO];
@@ -128,8 +134,8 @@
     [activeTab.layer setBackgroundColor:[NSColor colorWithRed:0.4 green:0.3 blue:0.8 alpha:1.0].CGColor];
     [activeTab.layer setCornerRadius:10];
     
-    // Tab inattivo (perfettamente centrato)
-    NSButton* inactiveTab = [[NSButton alloc] initWithFrame:NSMakeRect(180, 11.5, 150, 32)];
+    // Tab inattivo (perfettamente centrato, spostato leggermente per il separatore)
+    NSButton* inactiveTab = [[NSButton alloc] initWithFrame:NSMakeRect(175, 11.5, 150, 32)];
     [inactiveTab setTitle:@"Nuova Tab"];
     [inactiveTab setFont:[NSFont systemFontOfSize:13]];
     [inactiveTab setBordered:NO];
@@ -137,8 +143,8 @@
     [inactiveTab.layer setBackgroundColor:[NSColor colorWithRed:0.18 green:0.18 blue:0.18 alpha:1.0].CGColor];
     [inactiveTab.layer setCornerRadius:10];
     
-    // Pulsante + per nuova tab (perfettamente centrato)
-    NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(340, 11.5, 32, 32)];
+    // Pulsante + per nuova tab (perfettamente centrato, spostato leggermente per il separatore)
+    NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(335, 11.5, 32, 32)];
     [newTabButton setTitle:@"+"];
     [newTabButton setFont:[NSFont systemFontOfSize:18]];
     [newTabButton setBordered:NO];
@@ -228,12 +234,13 @@
     
     // === AGGIUNGI TUTTO ALLA FINESTRA ===
     [contentView addSubview:navigationToolbar];
+    [contentView addSubview:separatorLine];  // ✨ NUOVO: Linea separatrice elegante
     [contentView addSubview:tabBar];
     [contentView addSubview:self.webView];
     
     [self loadWelcomePage];
     
-    std::cout << "🎨 Perfectly centered and uniform UI setup completed" << std::endl;
+    std::cout << "🎨 Modern UI with elegant separator setup completed" << std::endl;
 }
 
 - (void)loadWelcomePage {
