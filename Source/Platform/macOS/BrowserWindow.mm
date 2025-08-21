@@ -48,64 +48,64 @@
 - (void)setupModernUI {
     NSView* contentView = [self contentView];
     
-    // === TOOLBAR DI NAVIGAZIONE (LASCIA SPAZIO AI TRAFFIC LIGHTS) ===
-    NSView* navigationToolbar = [[NSView alloc] initWithFrame:NSMakeRect(70, [contentView frame].size.height - 35, 180, 35)];
+    // === TOOLBAR DI NAVIGAZIONE (PIÙ GRANDE E ARIOSO) ===
+    NSView* navigationToolbar = [[NSView alloc] initWithFrame:NSMakeRect(70, [contentView frame].size.height - 40, 200, 40)];
     [navigationToolbar setWantsLayer:YES];
     [navigationToolbar.layer setBackgroundColor:[NSColor colorWithRed:0.13 green:0.13 blue:0.13 alpha:1.0].CGColor];
     [navigationToolbar setAutoresizingMask:NSViewMinYMargin];
     
-    // Menu hamburger
-    NSButton* menuButton = [[NSButton alloc] initWithFrame:NSMakeRect(8, 8, 20, 20)];
+    // Menu hamburger (più grande)
+    NSButton* menuButton = [[NSButton alloc] initWithFrame:NSMakeRect(10, 10, 28, 28)];
     [menuButton setTitle:@"☰"];
-    [menuButton setFont:[NSFont systemFontOfSize:12]];
+    [menuButton setFont:[NSFont systemFontOfSize:14]];
     [menuButton setBordered:NO];
     [menuButton setWantsLayer:YES];
     [menuButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
-    [menuButton.layer setCornerRadius:3];
+    [menuButton.layer setCornerRadius:4];
     
-    // Pulsante Indietro
-    NSButton* backButton = [[NSButton alloc] initWithFrame:NSMakeRect(35, 8, 20, 20)];
+    // Pulsante Indietro (più grande)
+    NSButton* backButton = [[NSButton alloc] initWithFrame:NSMakeRect(45, 10, 28, 28)];
     [backButton setTitle:@"←"];
-    [backButton setFont:[NSFont systemFontOfSize:14]];
+    [backButton setFont:[NSFont systemFontOfSize:16]];
     [backButton setBordered:NO];
     [backButton setTarget:self];
     [backButton setAction:@selector(goBack:)];
     [backButton setWantsLayer:YES];
     [backButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
-    [backButton.layer setCornerRadius:3];
+    [backButton.layer setCornerRadius:4];
     
-    // Pulsante Avanti
-    NSButton* forwardButton = [[NSButton alloc] initWithFrame:NSMakeRect(62, 8, 20, 20)];
+    // Pulsante Avanti (più grande)
+    NSButton* forwardButton = [[NSButton alloc] initWithFrame:NSMakeRect(80, 10, 28, 28)];
     [forwardButton setTitle:@"→"];
-    [forwardButton setFont:[NSFont systemFontOfSize:14]];
+    [forwardButton setFont:[NSFont systemFontOfSize:16]];
     [forwardButton setBordered:NO];
     [forwardButton setTarget:self];
     [forwardButton setAction:@selector(goForward:)];
     [forwardButton setWantsLayer:YES];
     [forwardButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
-    [forwardButton.layer setCornerRadius:3];
+    [forwardButton.layer setCornerRadius:4];
     
-    // Pulsante Reload
-    NSButton* reloadButton = [[NSButton alloc] initWithFrame:NSMakeRect(89, 8, 20, 20)];
+    // Pulsante Reload (più grande)
+    NSButton* reloadButton = [[NSButton alloc] initWithFrame:NSMakeRect(115, 10, 28, 28)];
     [reloadButton setTitle:@"↻"];
-    [reloadButton setFont:[NSFont systemFontOfSize:14]];
+    [reloadButton setFont:[NSFont systemFontOfSize:16]];
     [reloadButton setBordered:NO];
     [reloadButton setTarget:self];
     [reloadButton setAction:@selector(reload:)];
     [reloadButton setWantsLayer:YES];
     [reloadButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
-    [reloadButton.layer setCornerRadius:3];
+    [reloadButton.layer setCornerRadius:4];
     
-    // Pulsante Home
-    NSButton* homeButton = [[NSButton alloc] initWithFrame:NSMakeRect(116, 8, 20, 20)];
+    // Pulsante Home (più grande)
+    NSButton* homeButton = [[NSButton alloc] initWithFrame:NSMakeRect(150, 10, 28, 28)];
     [homeButton setTitle:@"🏠"];
-    [homeButton setFont:[NSFont systemFontOfSize:12]];
+    [homeButton setFont:[NSFont systemFontOfSize:14]];
     [homeButton setBordered:NO];
     [homeButton setTarget:self];
     [homeButton setAction:@selector(goHome:)];
     [homeButton setWantsLayer:YES];
     [homeButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
-    [homeButton.layer setCornerRadius:3];
+    [homeButton.layer setCornerRadius:4];
     
     [navigationToolbar addSubview:menuButton];
     [navigationToolbar addSubview:backButton];
@@ -113,94 +113,83 @@
     [navigationToolbar addSubview:reloadButton];
     [navigationToolbar addSubview:homeButton];
     
-    // === SISTEMA TAB (PROPORZIONATO) ===
-    NSView* tabBar = [[NSView alloc] initWithFrame:NSMakeRect(250, [contentView frame].size.height - 35, [contentView frame].size.width - 250, 35)];
+    // === SISTEMA TAB (PIÙ GRANDI E VISIBILI) ===
+    NSView* tabBar = [[NSView alloc] initWithFrame:NSMakeRect(270, [contentView frame].size.height - 40, [contentView frame].size.width - 270, 40)];
     [tabBar setWantsLayer:YES];
     [tabBar.layer setBackgroundColor:[NSColor colorWithRed:0.11 green:0.11 blue:0.11 alpha:1.0].CGColor];
     [tabBar setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     
-    // Tab attivo (più piccolo e proporzionato)
-    NSButton* activeTab = [[NSButton alloc] initWithFrame:NSMakeRect(10, 6, 100, 24)];
+    // Tab attivo (più grande e visibile)
+    NSButton* activeTab = [[NSButton alloc] initWithFrame:NSMakeRect(15, 8, 140, 28)];
     [activeTab setTitle:@"MacBird Tab"];
-    [activeTab setFont:[NSFont systemFontOfSize:11]];
+    [activeTab setFont:[NSFont systemFontOfSize:12 weight:NSFontWeightMedium]];
     [activeTab setBordered:NO];
     [activeTab setWantsLayer:YES];
     [activeTab.layer setBackgroundColor:[NSColor colorWithRed:0.4 green:0.3 blue:0.8 alpha:1.0].CGColor];
-    [activeTab.layer setCornerRadius:6];
+    [activeTab.layer setCornerRadius:8];
     
-    // Tab inattivo
-    NSButton* inactiveTab = [[NSButton alloc] initWithFrame:NSMakeRect(120, 6, 100, 24)];
+    // Tab inattivo (più grande)
+    NSButton* inactiveTab = [[NSButton alloc] initWithFrame:NSMakeRect(165, 8, 140, 28)];
     [inactiveTab setTitle:@"Nuova Tab"];
-    [inactiveTab setFont:[NSFont systemFontOfSize:11]];
+    [inactiveTab setFont:[NSFont systemFontOfSize:12]];
     [inactiveTab setBordered:NO];
     [inactiveTab setWantsLayer:YES];
     [inactiveTab.layer setBackgroundColor:[NSColor colorWithRed:0.18 green:0.18 blue:0.18 alpha:1.0].CGColor];
-    [inactiveTab.layer setCornerRadius:6];
+    [inactiveTab.layer setCornerRadius:8];
     
-    // Pulsante + per nuova tab (più piccolo)
-    NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(230, 8, 20, 20)];
+    // Pulsante + per nuova tab (più grande)
+    NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(315, 10, 28, 28)];
     [newTabButton setTitle:@"+"];
-    [newTabButton setFont:[NSFont systemFontOfSize:14]];
+    [newTabButton setFont:[NSFont systemFontOfSize:16]];
     [newTabButton setBordered:NO];
     [newTabButton setTarget:self];
     [newTabButton setAction:@selector(newTab:)];
     [newTabButton setWantsLayer:YES];
     [newTabButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
-    [newTabButton.layer setCornerRadius:3];
+    [newTabButton.layer setCornerRadius:4];
     
     [tabBar addSubview:activeTab];
     [tabBar addSubview:inactiveTab];
     [tabBar addSubview:newTabButton];
     
-    // === BARRA INDIRIZZI MODERNA (ALTEZZA RIDOTTA) ===
-    NSView* addressBarContainer = [[NSView alloc] initWithFrame:NSMakeRect(0, [contentView frame].size.height - 75, [contentView frame].size.width, 40)];
+    // === BARRA INDIRIZZI PULITA (SENZA MACBIRD, PIÙ ALTA) ===
+    NSView* addressBarContainer = [[NSView alloc] initWithFrame:NSMakeRect(0, [contentView frame].size.height - 85, [contentView frame].size.width, 45)];
     [addressBarContainer setWantsLayer:YES];
     [addressBarContainer.layer setBackgroundColor:[NSColor colorWithRed:0.15 green:0.15 blue:0.15 alpha:1.0].CGColor];
     [addressBarContainer setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     
-    // Logo MacBird (più piccolo)
-    NSTextField* logoLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 10, 70, 18)];
-    [logoLabel setStringValue:@"MacBird"];
-    [logoLabel setBezeled:NO];
-    [logoLabel setDrawsBackground:NO];
-    [logoLabel setEditable:NO];
-    [logoLabel setSelectable:NO];
-    [logoLabel setTextColor:[NSColor whiteColor]];
-    [logoLabel setFont:[NSFont systemFontOfSize:13 weight:NSFontWeightSemibold]];
-    
-    // Barra indirizzi proporzionata
-    CGFloat addressBarWidth = [contentView frame].size.width - 200;
-    self.addressBar = [[NSTextField alloc] initWithFrame:NSMakeRect(100, 6, addressBarWidth, 28)];
+    // Barra indirizzi SENZA logo (inizia da sinistra, più spazio)
+    CGFloat addressBarWidth = [contentView frame].size.width - 120;
+    self.addressBar = [[NSTextField alloc] initWithFrame:NSMakeRect(20, 8, addressBarWidth, 32)];
     [self.addressBar setStringValue:@""];
     [self.addressBar setPlaceholderString:@"Cerca con Google o inserisci un indirizzo"];
     [self.addressBar setTarget:self];
     [self.addressBar setAction:@selector(addressBarEnterPressed:)];
     [self.addressBar setAutoresizingMask:NSViewWidthSizable];
     
-    // Stile moderno barra indirizzi (proporzionato)
+    // Stile moderno barra indirizzi (più alta e proporzionata)
     [self.addressBar setWantsLayer:YES];
-    [self.addressBar.layer setCornerRadius:14.0];
+    [self.addressBar.layer setCornerRadius:16.0];
     [self.addressBar.layer setBackgroundColor:[NSColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:1.0].CGColor];
     [self.addressBar.layer setBorderWidth:1.0];
     [self.addressBar.layer setBorderColor:[NSColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1.0].CGColor];
     [self.addressBar setTextColor:[NSColor whiteColor]];
-    [self.addressBar setFont:[NSFont systemFontOfSize:13]];
+    [self.addressBar setFont:[NSFont systemFontOfSize:14]];
     
-    // Pulsante Vai proporzionato
-    self.goButton = [[NSButton alloc] initWithFrame:NSMakeRect([contentView frame].size.width - 80, 6, 60, 28)];
+    // Pulsante Vai più grande e proporzionato
+    self.goButton = [[NSButton alloc] initWithFrame:NSMakeRect([contentView frame].size.width - 85, 8, 65, 32)];
     [self.goButton setTitle:@"Vai"];
     [self.goButton setTarget:self];
     [self.goButton setAction:@selector(goButtonPressed:)];
     [self.goButton setAutoresizingMask:NSViewMinXMargin];
     
-    // Stile moderno pulsante (proporzionato)
+    // Stile moderno pulsante (più grande)
     [self.goButton setWantsLayer:YES];
-    [self.goButton.layer setCornerRadius:14.0];
+    [self.goButton.layer setCornerRadius:16.0];
     [self.goButton.layer setBackgroundColor:[NSColor colorWithRed:0.0 green:0.48 blue:1.0 alpha:1.0].CGColor];
     [self.goButton setBordered:NO];
-    [self.goButton setFont:[NSFont systemFontOfSize:13 weight:NSFontWeightMedium]];
+    [self.goButton setFont:[NSFont systemFontOfSize:14 weight:NSFontWeightMedium]];
     
-    [addressBarContainer addSubview:logoLabel];
     [addressBarContainer addSubview:self.addressBar];
     [addressBarContainer addSubview:self.goButton];
     
@@ -268,8 +257,8 @@
     config.processPool = [[WKProcessPool alloc] init];
     config.websiteDataStore = [WKWebsiteDataStore defaultDataStore];
     
-    // WebView finale (POSIZIONE CORRETTA per layout proporzionato)
-    self.webView = [[WKWebView alloc] initWithFrame:NSMakeRect(15, 15, [contentView frame].size.width - 30, [contentView frame].size.height - 105) configuration:config];
+    // WebView finale (POSIZIONE AGGIORNATA per nuovo layout)
+    self.webView = [[WKWebView alloc] initWithFrame:NSMakeRect(15, 15, [contentView frame].size.width - 30, [contentView frame].size.height - 115) configuration:config];
     [self.webView setWantsLayer:YES];
     [self.webView.layer setCornerRadius:12.0];
     [self.webView.layer setMasksToBounds:YES];
@@ -286,8 +275,9 @@
     
     [self loadWelcomePage];
     
-    std::cout << "🎨 Perfect proportional UI setup completed" << std::endl;
+    std::cout << "🎨 Clean and spacious UI setup completed" << std::endl;
 }
+
 - (void)loadWelcomePage {
     // Pagina di benvenuto moderna e pulita
     NSString* welcomeHTML = @"<!DOCTYPE html>"
