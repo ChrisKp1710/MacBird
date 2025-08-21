@@ -23,30 +23,38 @@
     // FASE 4: Processa i tag principali con CSS applicato
     NSArray* elements = [self parseHTMLElements:bodyContent];
     
-    // FASE 5: Crea il risultato finale con stili CSS
+    // FASE 5: Crea il risultato finale con LAYOUT CENTRATO
     NSMutableAttributedString* result = [[NSMutableAttributedString alloc] init];
+    
+    // Aggiungi spazio iniziale per centrare (simula margini Safari)
+    NSString* topSpacing = @"\n\n";
+    NSDictionary* spacingAttrs = @{NSFontAttributeName: [NSFont systemFontOfSize:16]};
+    [result appendAttributedString:[[NSAttributedString alloc] initWithString:topSpacing attributes:spacingAttrs]];
     
     for (NSDictionary* element in elements) {
         NSString* type = element[@"type"];
         NSString* content = element[@"content"];
         
+        // Salta il title (non si mostra nel body)
+        if ([type isEqualToString:@"title"]) continue;
+        
         // Ottieni stili CSS per questo elemento
         NSDictionary* styles = [CSSParser getStylesForElement:type withCSS:cssRules];
         
-        // Crea testo formattato con stili CSS
-        NSAttributedString* formatted = [self createFormattedText:content 
-                                                         withType:type 
-                                                        andStyles:styles];
+        // Crea testo formattato con stili CSS e LAYOUT CENTRATO
+        NSAttributedString* formatted = [self createCenteredFormattedText:content 
+                                                                 withType:type 
+                                                                andStyles:styles];
         [result appendAttributedString:formatted];
     }
     
     // Se non abbiamo trovato contenuto, mostra messaggio
-    if ([result length] == 0) {
+    if ([result length] <= 4) { // Solo spazi iniziali
         NSDictionary* attrs = @{
             NSFontAttributeName: [NSFont systemFontOfSize:16], 
             NSForegroundColorAttributeName: [NSColor secondaryLabelColor]
         };
-        NSAttributedString* noContent = [[NSAttributedString alloc] initWithString:@"Pagina caricata ma nessun contenuto testuale trovato.\n\nLa pagina potrebbe contenere principalmente JavaScript o elementi non testuali." attributes:attrs];
+        NSAttributedString* noContent = [[NSAttributedString alloc] initWithString:@"\n\nPagina caricata ma nessun contenuto testuale trovato.\n\nLa pagina potrebbe contenere principalmente JavaScript o elementi non testuali." attributes:attrs];
         [result appendAttributedString:noContent];
     }
     
@@ -55,29 +63,66 @@
     return result;
 }
 
-+ (NSAttributedString*)createFormattedText:(NSString*)content 
-                                  withType:(NSString*)type 
-                                 andStyles:(NSDictionary*)styles {
++ (NSAttributedString*)createCenteredFormattedText:(NSString*)content 
+                                          withType:(NSString*)type 
+                                         andStyles:(NSDictionary*)styles {
+    
+    // CREA LAYOUT CENTRATO come Safari
+    NSMutableDictionary* centeredStyles = [styles mutableCopy];
+    
+    // Crea paragraph style per centrare
+    NSMutableParagraphStyle* paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+    
+    if ([type isEqualToString:@"h1"]) {
+        // H1: Centrato e con margini grandi
+        [paragraphStyle setAlignment:NSTextAlignmentCenter];
+        [paragraphStyle setParagraphSpacing:30];
+        [paragraphStyle setParagraphSpacingBefore:20];
+        [paragraphStyle setFirstLineHeadIndent:50]; // Margine sinistro
+        [paragraphStyle setHeadIndent:50];          // Margine sinistro
+        [paragraphStyle setTailIndent:-50];         // Margine destro
+        
+    } else if ([type isEqualToString:@"p"]) {
+        // Paragrafi: Centrati con margini moderati
+        [paragraphStyle setAlignment:NSTextAlignmentLeft];
+        [paragraphStyle setParagraphSpacing:20];
+        [paragraphStyle setParagraphSpacingBefore:10];
+        [paragraphStyle setFirstLineHeadIndent:80]; // Margine sinistro
+        [paragraphStyle setHeadIndent:80];          // Margine sinistro  
+        [paragraphStyle setTailIndent:-80];         // Margine destro
+        
+    } else if ([type isEqualToString:@"a"]) {
+        // Link: Stesso layout dei paragrafi
+        [paragraphStyle setAlignment:NSTextAlignmentLeft];
+        [paragraphStyle setParagraphSpacing:10];
+        [paragraphStyle setFirstLineHeadIndent:80]; // Margine sinistro
+        [paragraphStyle setHeadIndent:80];          // Margine sinistro
+        [paragraphStyle setTailIndent:-80];         // Margine destro
+        
+    } else {
+        // Altri elementi: Layout base centrato
+        [paragraphStyle setAlignment:NSTextAlignmentLeft];
+        [paragraphStyle setParagraphSpacing:15];
+        [paragraphStyle setFirstLineHeadIndent:60];
+        [paragraphStyle setHeadIndent:60];
+        [paragraphStyle setTailIndent:-60];
+    }
+    
+    centeredStyles[NSParagraphStyleAttributeName] = paragraphStyle;
     
     // Determina spaziatura basata sul tipo di elemento
-    NSString* spacing = @"";
-    if ([type isEqualToString:@"h1"] || [type isEqualToString:@"h2"] || [type isEqualToString:@"h3"]) {
-        spacing = @"\n\n";  // Titoli con spazio sopra e sotto
-    } else if ([type isEqualToString:@"p"]) {
-        spacing = @"\n\n";  // Paragrafi con spazio
-    } else if ([type isEqualToString:@"a"]) {
-        spacing = @"";      // Link inline
-    }
-    
     NSString* formattedContent;
-    if ([type isEqualToString:@"a"]) {
-        // Link senza emoji, più naturale
-        formattedContent = [NSString stringWithFormat:@"%@%@", content, spacing];
+    if ([type isEqualToString:@"h1"]) {
+        formattedContent = [NSString stringWithFormat:@"%@\n\n", content];
+    } else if ([type isEqualToString:@"p"]) {
+        formattedContent = [NSString stringWithFormat:@"%@\n\n", content];
+    } else if ([type isEqualToString:@"a"]) {
+        formattedContent = [NSString stringWithFormat:@"%@\n", content];
     } else {
-        formattedContent = [NSString stringWithFormat:@"%@%@", content, spacing];
+        formattedContent = [NSString stringWithFormat:@"%@\n\n", content];
     }
     
-    return [[NSAttributedString alloc] initWithString:formattedContent attributes:styles];
+    return [[NSAttributedString alloc] initWithString:formattedContent attributes:centeredStyles];
 }
 
 + (NSString*)cleanHTML:(NSString*)html {

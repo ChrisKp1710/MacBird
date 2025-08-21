@@ -23,12 +23,89 @@
         }
     }
     
-    // Aggiungi stili di default del browser
-    [cssRules addEntriesFromDictionary:[self getDefaultBrowserStyles]];
+    // SEMPRE applica stili di default del browser (come Chrome/Safari)
+    NSDictionary* defaultStyles = [self getBrowserDefaultStyles];
+    for (NSString* selector in defaultStyles) {
+        if (!cssRules[selector]) {
+            cssRules[selector] = defaultStyles[selector];
+        } else {
+            // Merge degli stili (default + custom)
+            NSMutableDictionary* merged = [defaultStyles[selector] mutableCopy];
+            [merged addEntriesFromDictionary:cssRules[selector]];
+            cssRules[selector] = merged;
+        }
+    }
     
-    std::cout << "✅ CSS: Parsed " << [cssRules count] << " CSS rules" << std::endl;
+    std::cout << "✅ CSS: Parsed " << [cssRules count] << " CSS rules (including browser defaults)" << std::endl;
     
     return cssRules;
+}
+
++ (NSDictionary*)getBrowserDefaultStyles {
+    // Stili COMPLETI che Safari/Chrome applicano automaticamente
+    return @{
+        @"body": @{
+            @"background-color": @"white",
+            @"color": @"black",
+            @"font-family": @"Times",  // Safari usa Times per default
+            @"font-size": @"16px",
+            @"line-height": @"1.2",
+            @"margin": @"8px",
+            @"padding": @"0px",
+            @"text-align": @"left"
+        },
+        @"h1": @{
+            @"font-size": @"32px",
+            @"font-weight": @"bold",
+            @"margin-top": @"21px", 
+            @"margin-bottom": @"21px",
+            @"margin-left": @"0px",
+            @"margin-right": @"0px",
+            @"color": @"black",
+            @"line-height": @"1.2",
+            @"display": @"block"
+        },
+        @"h2": @{
+            @"font-size": @"24px",
+            @"font-weight": @"bold",
+            @"margin-top": @"19px",
+            @"margin-bottom": @"19px", 
+            @"margin-left": @"0px",
+            @"margin-right": @"0px",
+            @"color": @"black",
+            @"line-height": @"1.2",
+            @"display": @"block"
+        },
+        @"h3": @{
+            @"font-size": @"19px",
+            @"font-weight": @"bold",
+            @"margin-top": @"16px",
+            @"margin-bottom": @"16px",
+            @"margin-left": @"0px", 
+            @"margin-right": @"0px",
+            @"color": @"black",
+            @"line-height": @"1.2",
+            @"display": @"block"
+        },
+        @"p": @{
+            @"font-size": @"16px",
+            @"margin-top": @"16px",
+            @"margin-bottom": @"16px",
+            @"margin-left": @"0px",
+            @"margin-right": @"0px", 
+            @"color": @"black",
+            @"line-height": @"1.2",
+            @"display": @"block"
+        },
+        @"a": @{
+            @"color": @"rgb(0, 102, 204)",  // Blu Safari
+            @"text-decoration": @"underline",
+            @"font-size": @"16px"
+        },
+        @"title": @{
+            @"display": @"none"  // Il title non si mostra nel body
+        }
+    };
 }
 
 + (NSDictionary*)parseCSSRules:(NSString*)cssContent {
@@ -78,57 +155,10 @@
     return properties;
 }
 
-+ (NSDictionary*)getDefaultBrowserStyles {
-    // Stili di default che un browser applica automaticamente
-    return @{
-        @"body": @{
-            @"background-color": @"white",
-            @"color": @"black",
-            @"font-family": @"serif",
-            @"font-size": @"16px",
-            @"margin": @"8px",
-            @"padding": @"0px"
-        },
-        @"h1": @{
-            @"font-size": @"32px",
-            @"font-weight": @"bold",
-            @"margin": @"20px 0",
-            @"color": @"black"
-        },
-        @"h2": @{
-            @"font-size": @"24px",
-            @"font-weight": @"bold",
-            @"margin": @"16px 0",
-            @"color": @"black"
-        },
-        @"h3": @{
-            @"font-size": @"20px",
-            @"font-weight": @"bold",
-            @"margin": @"12px 0",
-            @"color": @"black"
-        },
-        @"p": @{
-            @"font-size": @"16px",
-            @"margin": @"16px 0",
-            @"color": @"black"
-        },
-        @"a": @{
-            @"color": @"blue",
-            @"text-decoration": @"underline"
-        }
-    };
-}
-
 + (NSDictionary*)getStylesForElement:(NSString*)tagName withCSS:(NSDictionary*)cssRules {
     NSMutableDictionary* styles = [[NSMutableDictionary alloc] init];
     
-    // Inizia con stili di default per questo tag
-    NSDictionary* defaults = [self getDefaultBrowserStyles];
-    if (defaults[tagName]) {
-        [styles addEntriesFromDictionary:defaults[tagName]];
-    }
-    
-    // Applica regole CSS specifiche
+    // Applica regole CSS per questo tag
     if (cssRules[tagName]) {
         [styles addEntriesFromDictionary:cssRules[tagName]];
     }
@@ -153,7 +183,8 @@
     if ([fontWeight isEqualToString:@"bold"]) {
         font = [NSFont boldSystemFontOfSize:fontSizeValue];
     } else {
-        font = [NSFont systemFontOfSize:fontSizeValue];
+        // Usa Times come Safari per il testo normale
+        font = [NSFont fontWithName:@"Times New Roman" size:fontSizeValue] ?: [NSFont systemFontOfSize:fontSizeValue];
     }
     attributes[NSFontAttributeName] = font;
     
@@ -170,6 +201,27 @@
         attributes[NSUnderlineStyleAttributeName] = @(NSUnderlineStyleSingle);
     }
     
+    // Paragraph style per margini
+    NSString* marginTop = cssStyles[@"margin-top"];
+    NSString* marginBottom = cssStyles[@"margin-bottom"];
+    
+    if (marginTop || marginBottom) {
+        NSMutableParagraphStyle* paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        [paragraphStyle setAlignment:NSTextAlignmentLeft];
+        
+        if (marginTop) {
+            CGFloat topMargin = [[marginTop stringByReplacingOccurrencesOfString:@"px" withString:@""] floatValue];
+            [paragraphStyle setParagraphSpacingBefore:topMargin];
+        }
+        
+        if (marginBottom) {
+            CGFloat bottomMargin = [[marginBottom stringByReplacingOccurrencesOfString:@"px" withString:@""] floatValue];
+            [paragraphStyle setParagraphSpacing:bottomMargin];
+        }
+        
+        attributes[NSParagraphStyleAttributeName] = paragraphStyle;
+    }
+    
     return attributes;
 }
 
@@ -177,6 +229,22 @@
     if (!cssColor) return [NSColor blackColor];
     
     cssColor = [cssColor lowercaseString];
+    
+    // Gestisci colori RGB
+    if ([cssColor hasPrefix:@"rgb("]) {
+        // Estrai rgb(r, g, b)
+        NSString* rgbValues = [cssColor stringByReplacingOccurrencesOfString:@"rgb(" withString:@""];
+        rgbValues = [rgbValues stringByReplacingOccurrencesOfString:@")" withString:@""];
+        NSArray* components = [rgbValues componentsSeparatedByString:@","];
+        
+        if ([components count] == 3) {
+            CGFloat r = [[components[0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] floatValue] / 255.0;
+            CGFloat g = [[components[1] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] floatValue] / 255.0;
+            CGFloat b = [[components[2] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] floatValue] / 255.0;
+            
+            return [NSColor colorWithRed:r green:g blue:b alpha:1.0];
+        }
+    }
     
     // Colori CSS comuni
     NSDictionary* colorMap = @{
@@ -193,6 +261,11 @@
     };
     
     return colorMap[cssColor] ?: [NSColor blackColor];
+}
+
++ (NSDictionary*)getDefaultBrowserStyles {
+    // Questa è ridondante ora, ma manteniamo per retrocompatibilità
+    return [self getBrowserDefaultStyles];
 }
 
 @end
