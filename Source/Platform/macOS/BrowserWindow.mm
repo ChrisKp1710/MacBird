@@ -1,6 +1,6 @@
 #import "BrowserWindow.h"
 #import "MenuManager.h"
-#import "DevToolsManager.h"
+#import "DevTools/DevToolsManager.h"
 #import <WebKit/WebKit.h>
 #include <iostream>
 
@@ -36,10 +36,10 @@
         self.menuManager = [[MenuManager alloc] initWithBrowserWindow:self];
         [self.menuManager setupMenuBar];
         
-        // ✨ NUOVO: Crea il DevToolsManager integrato
+        // ✨ NUOVO: Crea il DevToolsManager modulare integrato
         self.devToolsManager = [[DevToolsManager alloc] initWithBrowserWindow:self];
         
-        std::cout << "🪟 Modern MacBird Browser window created with integrated DevTools" << std::endl;
+        std::cout << "🪟 Modern MacBird Browser window created with modular DevTools architecture" << std::endl;
     }
     
     return self;
@@ -395,10 +395,10 @@
     completionHandler();
 }
 
-// ✨ NUOVO: DevTools integrati con finestra dedicata
+// ✨ NUOVO: DevTools integrati con architettura modulare
 - (void)toggleDevTools:(id)sender {
     [self.devToolsManager toggleDevTools];
-    std::cout << "🛠️ MacBird DevTools toggled" << std::endl;
+    std::cout << "🛠️ MacBird DevTools toggled (modular)" << std::endl;
 }
 
 @end

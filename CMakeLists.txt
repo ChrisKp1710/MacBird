@@ -8,13 +8,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_library(COCOA_LIBRARY Cocoa)
 find_library(WEBKIT_LIBRARY WebKit)
 
-# File sorgenti (ora con DevToolsManager incluso!)
+# File sorgenti (ora con DevToolsManager MODULARE!)
 set(SOURCES
     Source/main.mm
     Source/Platform/macOS/AppDelegate.mm
     Source/Platform/macOS/BrowserWindow.mm
     Source/Platform/macOS/MenuManager.mm
-    Source/Platform/macOS/DevToolsManager.mm
+    # === NUOVA ARCHITETTURA MODULARE DEVTOOLS ===
+    Source/DevTools/DevToolsManager.mm
+    Source/DevTools/Common/DevToolsStyles.mm
+    Source/DevTools/Console/ConsoleTab.mm
+    Source/DevTools/Elements/ElementsTab.mm
+    Source/DevTools/Network/NetworkTab.mm
+    # === CORE COMPONENTS ===
     Source/Core/Network/HTTPClient.mm
     Source/Core/HTML/HTMLParser.mm
     Source/Core/CSS/CSSParser.mm
