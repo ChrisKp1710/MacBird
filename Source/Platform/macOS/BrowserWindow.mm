@@ -50,13 +50,18 @@
     [self.contentScrollView setAutohidesScrollers:NO];
     [self.contentScrollView setBorderType:NSBezelBorder];
     
-    // Crea area di testo per il contenuto HTML
+    // Crea area di testo per il contenuto HTML - SFONDO BIANCO COME BROWSER VERO
     NSRect textRect = NSMakeRect(0, 0, 1160, 720);
     self.contentTextView = [[NSTextView alloc] initWithFrame:textRect];
     [self.contentTextView setEditable:NO];  // Solo lettura
     [self.contentTextView setSelectable:YES];  // Permetti selezione testo
-    [self.contentTextView setFont:[NSFont systemFontOfSize:14]];  // Font di default
-    [self.contentTextView setString:@"MacBird Browser - Pronto per navigare!\n\nInserisci un URL nella barra sopra e premi 'Vai' per iniziare.\n\nIl parser HTML trasformerà automaticamente i tag in contenuto formattato!"];
+    [self.contentTextView setFont:[NSFont systemFontOfSize:16]];  // Font di default
+    
+    // IMPOSTA SFONDO BIANCO COME BROWSER VERO
+    [self.contentTextView setBackgroundColor:[NSColor whiteColor]];
+    [self.contentTextView setTextColor:[NSColor blackColor]];
+    
+    [self.contentTextView setString:@"MacBird Browser\n\nInserisci un URL nella barra sopra per iniziare la navigazione.\n\nIl browser renderizzerà HTML e CSS come Safari!"];
     
     // Collega textView a scrollView
     [self.contentScrollView setDocumentView:self.contentTextView];
@@ -66,7 +71,7 @@
     [contentView addSubview:self.goButton];
     [contentView addSubview:self.contentScrollView];
     
-    std::cout << "🎨 UI setup completed with HTML parser support" << std::endl;
+    std::cout << "🎨 UI setup completed with browser-like rendering" << std::endl;
 }
 
 - (void)addressBarEnterPressed:(id)sender {
@@ -83,7 +88,7 @@
     std::cout << "🌐 Navigating to: " << [url UTF8String] << std::endl;
     
     // Mostra messaggio di caricamento
-    NSString* loadingMessage = [NSString stringWithFormat:@"🔄 Caricamento in corso...\n\nScaricando contenuto da:\n%@", url];
+    NSString* loadingMessage = [NSString stringWithFormat:@"Caricamento in corso...\n\nURL: %@", url];
     [self displayContent:loadingMessage];
     
     // Usa HTTPClient per scaricare la pagina
@@ -95,7 +100,7 @@
             std::cout << "❌ Navigation failed: " << errorMsg << std::endl;
             
             // Mostra errore nell'UI
-            NSString* errorContent = [NSString stringWithFormat:@"❌ Errore durante il caricamento\n\nURL: %@\nErrore: %@\n\nProva con un altro URL.", 
+            NSString* errorContent = [NSString stringWithFormat:@"Impossibile caricare la pagina\n\nURL: %@\nErrore: %@\n\nProva con un altro URL.", 
                                     url, error.localizedDescription ?: @"Errore sconosciuto"];
             [self displayContent:errorContent];
             
@@ -103,8 +108,8 @@
             std::cout << "✅ Page loaded successfully!" << std::endl;
             std::cout << "📄 Content length: " << [content length] << " characters" << std::endl;
             
-            // USA IL PARSER HTML invece di mostrare HTML raw!
-            [self displayParsedContent:content fromURL:url];
+            // USA IL RENDERING BROWSER-LIKE (senza header di debug)
+            [self displayBrowserLikeContent:content fromURL:url];
         }
     }];
 }
@@ -118,33 +123,19 @@
     });
 }
 
-- (void)displayParsedContent:(NSString*)htmlContent fromURL:(NSString*)url {
-    // USA IL PARSER HTML per mostrare contenuto formattato!
+- (void)displayBrowserLikeContent:(NSString*)htmlContent fromURL:(NSString*)url {
+    // RENDERING BROWSER-LIKE SENZA DEBUG INFO!
     dispatch_async(dispatch_get_main_queue(), ^{
-        std::cout << "🎨 Starting HTML parsing..." << std::endl;
+        std::cout << "🎨 Starting browser-like rendering..." << std::endl;
         
-        // Parsa l'HTML e ottieni contenuto formattato
-        NSAttributedString* parsedContent = [HTMLParser parseHTML:htmlContent];
+        // Parsa l'HTML con CSS applicato
+        NSAttributedString* renderedContent = [HTMLParser parseHTML:htmlContent];
         
-        // Crea header con info sulla pagina
-        NSFont* headerFont = [NSFont boldSystemFontOfSize:16];
-        NSColor* headerColor = [NSColor systemGreenColor];
-        NSDictionary* headerAttrs = @{NSFontAttributeName: headerFont, NSForegroundColorAttributeName: headerColor};
-        
-        NSString* headerText = [NSString stringWithFormat:@"✅ Pagina caricata e processata!\n\nURL: %@\nDimensione: %lu caratteri\nParser HTML: ATTIVO\n\n--- CONTENUTO FORMATTATO ---\n\n", 
-                               url, (unsigned long)[htmlContent length]];
-        NSAttributedString* header = [[NSAttributedString alloc] initWithString:headerText attributes:headerAttrs];
-        
-        // Combina header + contenuto parsato
-        NSMutableAttributedString* finalContent = [[NSMutableAttributedString alloc] init];
-        [finalContent appendAttributedString:header];
-        [finalContent appendAttributedString:parsedContent];
-        
-        // Mostra il contenuto formattato
-        [[self.contentTextView textStorage] setAttributedString:finalContent];
+        // Mostra SOLO il contenuto renderizzato (come Safari)
+        [[self.contentTextView textStorage] setAttributedString:renderedContent];
         [self.contentTextView scrollRangeToVisible:NSMakeRange(0, 0)];
         
-        std::cout << "🎨 HTML parsed content displayed!" << std::endl;
+        std::cout << "🎨 Browser-like content rendered!" << std::endl;
     });
 }
 
