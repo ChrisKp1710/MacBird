@@ -42,14 +42,14 @@
     [self.goButton setAction:@selector(goButtonPressed:)];
     
     // Crea area contenuto (tutto il resto della finestra)
-    self.contentView = [[NSView alloc] initWithFrame:NSMakeRect(10, 10, 1180, 730)];
-    [self.contentView setWantsLayer:YES];
-    [self.contentView.layer setBackgroundColor:[[NSColor whiteColor] CGColor]];
+    self.webContentView = [[NSView alloc] initWithFrame:NSMakeRect(10, 10, 1180, 730)];
+    [self.webContentView setWantsLayer:YES];
+    [self.webContentView.layer setBackgroundColor:[[NSColor whiteColor] CGColor]];
     
     // Aggiungi tutto alla finestra
     [contentView addSubview:self.addressBar];
     [contentView addSubview:self.goButton];
-    [contentView addSubview:self.contentView];
+    [contentView addSubview:self.webContentView];
     
     std::cout << "🎨 UI setup completed" << std::endl;
 }
