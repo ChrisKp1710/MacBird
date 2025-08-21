@@ -10,8 +10,9 @@
 @property (strong, nonatomic) WKWebView* webView;          // WebView vero (come Safari!)
 @property (strong, nonatomic) NSButton* goButton;          // Pulsante "Vai"
 
-- (void)setupUI;                // Crea l'interfaccia
+- (void)setupModernUI;              // Crea l'interfaccia moderna
 - (void)navigateToURL:(NSString*)url;  // Naviga a un URL
+- (void)loadWelcomePage;           // Carica pagina di benvenuto
 
 @end
 
