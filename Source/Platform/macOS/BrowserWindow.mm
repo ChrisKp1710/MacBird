@@ -30,28 +30,39 @@
 - (void)setupUI {
     NSView* contentView = [self contentView];
     
-    // Crea barra degli indirizzi (50 pixel di altezza, in alto)
-    self.addressBar = [[NSTextField alloc] initWithFrame:NSMakeRect(10, 750, 1000, 30)];
+    // Crea barra degli indirizzi (40 pixel di altezza, con margini)
+    self.addressBar = [[NSTextField alloc] initWithFrame:NSMakeRect(10, [contentView frame].size.height - 50, [contentView frame].size.width - 90, 30)];
     [self.addressBar setStringValue:@"https://"];
     [self.addressBar setTarget:self];
     [self.addressBar setAction:@selector(addressBarEnterPressed:)];
     
-    // Crea pulsante "Vai"
-    self.goButton = [[NSButton alloc] initWithFrame:NSMakeRect(1020, 750, 60, 30)];
+    // Crea pulsante "Vai" (più piccolo e allineato)
+    self.goButton = [[NSButton alloc] initWithFrame:NSMakeRect([contentView frame].size.width - 70, [contentView frame].size.height - 50, 60, 30)];
     [self.goButton setTitle:@"Vai"];
     [self.goButton setTarget:self];
     [self.goButton setAction:@selector(goButtonPressed:)];
     
-    // Crea WKWebView (motore Safari!) - tutto il resto della finestra
+    // Crea WKWebView che riempie TUTTA l'area sotto la barra indirizzi
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
-    self.webView = [[WKWebView alloc] initWithFrame:NSMakeRect(10, 10, 1180, 730) configuration:config];
+    
+    // USA L'API MODERNA - elimina il warning deprecato
+    // JavaScript è abilitato per default, non serve impostarlo
+    config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
+    
+    // WebView che si adatta automaticamente alla finestra
+    self.webView = [[WKWebView alloc] initWithFrame:NSMakeRect(0, 0, [contentView frame].size.width, [contentView frame].size.height - 60) configuration:config];
+    
+    // Abilita autoresizing per adattarsi quando la finestra cambia dimensione
+    [self.webView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
+    [self.addressBar setAutoresizingMask:NSViewWidthSizable];
+    [self.goButton setAutoresizingMask:NSViewMinXMargin];
     
     // Aggiungi tutto alla finestra
-    [contentView addSubview:self.addressBar];
-    [contentView addSubview:self.goButton];
-    [contentView addSubview:self.webView];
+    [contentView addSubview:self.webView];      // WebView per primo (dietro)
+    [contentView addSubview:self.addressBar];   // Barra indirizzi sopra
+    [contentView addSubview:self.goButton];     // Pulsante sopra tutto
     
-    std::cout << "🎨 UI setup completed with WebKit rendering engine" << std::endl;
+    std::cout << "🎨 UI setup completed with responsive WebKit engine" << std::endl;
 }
 
 - (void)addressBarEnterPressed:(id)sender {
@@ -76,12 +87,17 @@
         }
     }
     
-    // Naviga usando WebKit (rendering identico a Safari!)
+    // Naviga usando WebKit con User-Agent di Safari per rendering ottimale
     NSURL* nsUrl = [NSURL URLWithString:url];
     if (nsUrl) {
-        NSURLRequest* request = [NSURLRequest requestWithURL:nsUrl];
+        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
+        
+        // Imposta User-Agent identico a Safari per migliore compatibilità
+        [request setValue:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15" 
+       forHTTPHeaderField:@"User-Agent"];
+        
         [self.webView loadRequest:request];
-        std::cout << "✅ Loading with WebKit engine..." << std::endl;
+        std::cout << "✅ Loading with Safari-compatible WebKit engine..." << std::endl;
     } else {
         std::cout << "❌ Invalid URL format" << std::endl;
     }
