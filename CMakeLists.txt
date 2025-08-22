@@ -27,6 +27,8 @@ set(SOURCES
     Source/Core/Network/HTTPClient.mm
     Source/Core/HTML/HTMLParser.mm
     Source/Core/CSS/CSSParser.mm
+    # ✨ === MACBIRD IDENTITY SYSTEM ===
+    Source/Core/Browser/BrowserInfo.mm
 )
 
 # Crea l'eseguibile
