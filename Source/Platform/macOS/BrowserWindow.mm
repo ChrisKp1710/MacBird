@@ -107,17 +107,18 @@
     [homeButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
     [homeButton.layer setCornerRadius:6];
     
+    // ✨ BARRA DIVISORIA ELEGANTE (DENTRO navigationToolbar)
+    NSView* separatorLine = [[NSView alloc] initWithFrame:NSMakeRect(289, 6, 1, 32)];
+    [separatorLine setWantsLayer:YES];
+    [separatorLine.layer setBackgroundColor:[NSColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.6].CGColor];
+    
+    // Aggiungi tutti gli elementi al navigationToolbar
     [navigationToolbar addSubview:menuButton];
     [navigationToolbar addSubview:backButton];
     [navigationToolbar addSubview:forwardButton];
     [navigationToolbar addSubview:reloadButton];
     [navigationToolbar addSubview:homeButton];
-    
-    // ✨ BARRA DIVISORIA ELEGANTE (CENTRATA con spazio sopra e sotto)
-    NSView* separatorLine = [[NSView alloc] initWithFrame:NSMakeRect(289, [contentView frame].size.height - 47, 1, 38)];
-    [separatorLine setWantsLayer:YES];
-    [separatorLine.layer setBackgroundColor:[NSColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.6].CGColor];
-    [separatorLine setAutoresizingMask:NSViewMinYMargin];
+    [navigationToolbar addSubview:separatorLine];
     
     // === SISTEMA TAB (CENTRATO con spazio sopra e sotto) ===
     NSView* tabBar = [[NSView alloc] initWithFrame:NSMakeRect(295, [contentView frame].size.height - 55, [contentView frame].size.width - 295, 55)];
@@ -234,7 +235,6 @@
     
     // === AGGIUNGI TUTTO ALLA FINESTRA ===
     [contentView addSubview:navigationToolbar];
-    [contentView addSubview:separatorLine];
     [contentView addSubview:tabBar];
     [contentView addSubview:self.webView];
     
