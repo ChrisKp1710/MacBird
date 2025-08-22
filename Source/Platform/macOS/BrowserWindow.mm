@@ -1,6 +1,7 @@
 #import "BrowserWindow.h"
 #import "MenuManager.h"
 #import "DevTools/DevToolsManager.h"
+#import "TabManager.h"  // ✨ AGGIUNGI QUESTO IMPORT
 #import <WebKit/WebKit.h>
 #include <iostream>
 
@@ -39,7 +40,7 @@
         // ✨ NUOVO: Crea il DevToolsManager modulare integrato
         self.devToolsManager = [[DevToolsManager alloc] initWithBrowserWindow:self];
         
-        std::cout << "🪟 Modern MacBird Browser window created with modular DevTools architecture" << std::endl;
+        std::cout << "🪟 Modern MacBird Browser window created with MULTI-TAB support!" << std::endl;
     }
     
     return self;
@@ -107,7 +108,7 @@
     [homeButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
     [homeButton.layer setCornerRadius:6];
     
-    // ✨ BARRA DIVISORIA ELEGANTE (DENTRO navigationToolbar)
+    // ✨ BARRA DIVISORIA ELEGANTE
     NSView* separatorLine = [[NSView alloc] initWithFrame:NSMakeRect(289, 6, 1, 32)];
     [separatorLine setWantsLayer:YES];
     [separatorLine.layer setBackgroundColor:[NSColor colorWithRed:0.25 green:0.25 blue:0.25 alpha:0.6].CGColor];
@@ -120,291 +121,67 @@
     [navigationToolbar addSubview:homeButton];
     [navigationToolbar addSubview:separatorLine];
     
-    // === SISTEMA TAB (CENTRATO con spazio sopra e sotto) ===
+    // === SISTEMA TAB (MODIFICATO PER TABMANAGER) ===
     NSView* tabBar = [[NSView alloc] initWithFrame:NSMakeRect(295, [contentView frame].size.height - 55, [contentView frame].size.width - 295, 55)];
     [tabBar setWantsLayer:YES];
     [tabBar.layer setBackgroundColor:[NSColor colorWithRed:0.11 green:0.11 blue:0.11 alpha:1.0].CGColor];
     [tabBar setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     
-    // Tab attivo (CENTRATA con spazio sopra e sotto)
-    NSButton* activeTab = [[NSButton alloc] initWithFrame:NSMakeRect(9, 6, 150, 32)];
-    [activeTab setTitle:@"MacBird Tab"];
-    [activeTab setFont:[NSFont systemFontOfSize:13 weight:NSFontWeightMedium]];
-    [activeTab setBordered:NO];
-    [activeTab setWantsLayer:YES];
-    [activeTab.layer setBackgroundColor:[NSColor colorWithRed:0.4 green:0.3 blue:0.8 alpha:1.0].CGColor];
-    [activeTab.layer setCornerRadius:10];
-    
-    // Pulsante + per nuova tab (CENTRATO con spazio sopra e sotto)
-    CGFloat tabEndPosition = 9 + 150 + 10; // X tab + width tab + gap
-    NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(tabEndPosition, 6, 32, 32)];
+    // ✨ PULSANTE + PER NUOVA TAB (COLLEGATO AL TABMANAGER!)
+    NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(180, 6, 32, 32)];
     [newTabButton setTitle:@"+"];
     [newTabButton setFont:[NSFont systemFontOfSize:18]];
     [newTabButton setBordered:NO];
     [newTabButton setTarget:self];
-    [newTabButton setAction:@selector(newTab:)];
+    [newTabButton setAction:@selector(newTab:)]; // ✨ QUESTO CHIAMERÀ IL METODO newTab!
     [newTabButton setWantsLayer:YES];
     [newTabButton.layer setBackgroundColor:[NSColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1.0].CGColor];
     [newTabButton.layer setCornerRadius:6];
     
-    [tabBar addSubview:activeTab];
     [tabBar addSubview:newTabButton];
     
-    // === WEBVIEW CON CONFIGURAZIONE WEBKIT MODERNA + DEBUG ===
-    WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
+    // === CONTAINER PER LE WEBVIEW ===
+    NSView* webViewContainer = [[NSView alloc] initWithFrame:NSMakeRect(15, 15, [contentView frame].size.width - 30, [contentView frame].size.height - 85)];
+    [webViewContainer setWantsLayer:YES];
+    [webViewContainer.layer setCornerRadius:12.0];
+    [webViewContainer.layer setMasksToBounds:YES];
+    [webViewContainer setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
-    config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
+    // ✨ CREA IL TAB MANAGER CON SUPPORTO MULTI-TAB
+    self.tabManager = [[TabManager alloc] initWithBrowserWindow:self 
+                                                 tabBarContainer:tabBar 
+                                               webViewContainer:webViewContainer];
     
-    if (@available(macOS 10.15, *)) {
-        config.preferences.fraudulentWebsiteWarningEnabled = YES;
-        config.preferences.tabFocusesLinks = YES;
-    }
-    
-    if (@available(macOS 10.12, *)) {
-        config.allowsAirPlayForMediaPlayback = YES;
-        config.suppressesIncrementalRendering = NO;
-    }
-    if (@available(macOS 10.13, *)) {
-        config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
-    }
-    
-    if (@available(macOS 10.15, *)) {
-        config.limitsNavigationsToAppBoundDomains = NO;
-        if (@available(macOS 11.0, *)) {
-            config.upgradeKnownHostsToHTTPS = YES;
-        }
-    }
-    
-    if (@available(macOS 12.0, *)) {
-        config.preferences.elementFullscreenEnabled = YES;
-        config.preferences.textInteractionEnabled = YES;
-    }
-    
-    if (@available(macOS 13.0, *)) {
-        config.preferences.siteSpecificQuirksModeEnabled = NO;
-    }
-    
-    // Script minimo per feature native
-    WKUserContentController* userContentController = [[WKUserContentController alloc] init];
-    
-    NSString* enableFeaturesScript = @""
-        "if (window.CSS && !CSS.supports) {"
-        "  Object.defineProperty(CSS, 'supports', {"
-        "    value: function(property, value) {"
-        "      try {"
-        "        const testElement = document.createElement('div');"
-        "        testElement.style.setProperty(property, value);"
-        "        return testElement.style.getPropertyValue(property) !== '';"
-        "      } catch (e) {"
-        "        return false;"
-        "      }"
-        "    },"
-        "    writable: false,"
-        "    configurable: false"
-        "  });"
-        "}"
-        "console.log('✅ MacBird: Feature native abilitate');";
-    
-    WKUserScript* enableScript = [[WKUserScript alloc] initWithSource:enableFeaturesScript 
-                                                        injectionTime:WKUserScriptInjectionTimeAtDocumentStart 
-                                                     forMainFrameOnly:NO];
-    [userContentController addUserScript:enableScript];
-    
-    config.userContentController = userContentController;
-    config.processPool = [[WKProcessPool alloc] init];
-    config.websiteDataStore = [WKWebsiteDataStore defaultDataStore];
-    
-    // WebView finale (POSIZIONE AGGIORNATA per layout più spazioso)
-    self.webView = [[WKWebView alloc] initWithFrame:NSMakeRect(15, 15, [contentView frame].size.width - 30, [contentView frame].size.height - 85) configuration:config];
-    [self.webView setWantsLayer:YES];
-    [self.webView.layer setCornerRadius:12.0];
-    [self.webView.layer setMasksToBounds:YES];
-    [self.webView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
-    
-    [self.webView setNavigationDelegate:self];
-    [self.webView setUIDelegate:self];
+    // Imposta la WebView attiva per compatibilità con i delegate methods
+    self.webView = [self.tabManager activeWebView];
     
     // === AGGIUNGI TUTTO ALLA FINESTRA ===
     [contentView addSubview:navigationToolbar];
     [contentView addSubview:tabBar];
-    [contentView addSubview:self.webView];
+    [contentView addSubview:webViewContainer];
     
-    [self loadWelcomePage];
-    
-    std::cout << "🎨 Perfectly centered UI with proper spacing completed" << std::endl;
+    std::cout << "🎨 Modern UI with MULTI-TAB support completed! Click + to create new tabs!" << std::endl;
 }
 
-- (void)loadWelcomePage {
-    // Pagina di benvenuto moderna e pulita
-    NSString* welcomeHTML = @"<!DOCTYPE html>"
-    "<html><head>"
-    "<meta charset='UTF-8'>"
-    "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
-    "<title>MacBird Browser</title>"
-    "<style>"
-    "* { margin: 0; padding: 0; box-sizing: border-box; }"
-    "body { "
-    "  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"
-    "  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"
-    "  color: white; height: 100vh; display: flex; align-items: center; justify-content: center;"
-    "  text-align: center;"
-    "}"
-    ".container { max-width: 600px; }"
-    ".logo { font-size: 4rem; font-weight: 300; margin-bottom: 1rem; }"
-    ".tagline { font-size: 1.5rem; opacity: 0.9; margin-bottom: 2rem; font-weight: 300; }"
-    ".search-container { margin: 2rem 0; }"
-    ".search-box { "
-    "  width: 100%; padding: 1rem; font-size: 1.1rem; border: none; border-radius: 50px;"
-    "  background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(10px);"
-    "  text-align: center; outline: none;"
-    "}"
-    ".search-box::placeholder { color: rgba(255,255,255,0.7); }"
-    ".quick-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }"
-    ".quick-link { "
-    "  padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border-radius: 25px;"
-    "  text-decoration: none; color: white; transition: all 0.3s ease;"
-    "}"
-    ".quick-link:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }"
-    "</style>"
-    "</head><body>"
-    "<div class='container'>"
-    "  <div class='logo'>🐦 MacBird</div>"
-    "  <div class='tagline'>Il tuo browser nativo per macOS</div>"
-    "  <div class='search-container'>"
-    "    <input type='text' class='search-box' placeholder='Cerca con Google o inserisci un indirizzo...' id='searchBox'>"
-    "  </div>"
-    "  <div class='quick-links'>"
-    "    <a href='https://google.com' class='quick-link'>Google</a>"
-    "    <a href='https://youtube.com' class='quick-link'>YouTube</a>"
-    "    <a href='https://github.com' class='quick-link'>GitHub</a>"
-    "    <a href='https://apple.com' class='quick-link'>Apple</a>"
-    "  </div>"
-    "</div>"
-    "<script>"
-    "document.getElementById('searchBox').addEventListener('keypress', function(e) {"
-    "  if (e.key === 'Enter') {"
-    "    const query = this.value;"
-    "    if (query.includes('.') && !query.includes(' ')) {"
-    "      window.location.href = query.startsWith('http') ? query : 'https://' + query;"
-    "    } else {"
-    "      window.location.href = 'https://www.google.com/search?q=' + encodeURIComponent(query);"
-    "    }"
-    "  }"
-    "});"
-    "</script>"
-    "</body></html>";
-    
-    // ✨ NUOVO: Carica con URL locale personalizzato per gestire reload
-    NSURL* welcomeURL = [NSURL URLWithString:@"macbird://welcome"];
-    [self.webView loadHTMLString:welcomeHTML baseURL:welcomeURL];
-    
-    // Marca che siamo sulla welcome page
-    self.isOnWelcomePage = YES;
-    //[self.addressBar setStringValue:@""];
-    
-    std::cout << "🏠 Welcome page loaded with custom URL scheme" << std::endl;
-}
-
-- (void)addressBarEnterPressed:(id)sender {
-    NSString* url = [self.addressBar stringValue];
-    [self navigateToURL:url];
-}
-
-- (void)goButtonPressed:(id)sender {
-    NSString* url = [self.addressBar stringValue];
-    [self navigateToURL:url];
-}
-
-- (void)navigateToURL:(NSString*)url {
-    std::cout << "🌐 Navigating to: " << [url UTF8String] << std::endl;
-    
-    // Gestione intelligente URL
-    if ([url length] == 0) {
-        [self loadWelcomePage];
-        return;
-    }
-    
-    // ✨ NUOVO: Marca che non siamo più sulla welcome page
-    self.isOnWelcomePage = NO;
-    
-    // Aggiunge protocollo se mancante
-    if (![url hasPrefix:@"http://"] && ![url hasPrefix:@"https://"]) {
-        if ([url hasPrefix:@"www."] || ([url containsString:@"."] && ![url containsString:@" "])) {
-            url = [@"https://" stringByAppendingString:url];
-        } else {
-            url = [NSString stringWithFormat:@"https://www.google.com/search?q=%@", [url stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]]];
-        }
-    }
-    
-    // Naviga con User-Agent Safari MODERNO + logging
-    NSURL* nsUrl = [NSURL URLWithString:url];
-    if (nsUrl) {
-        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
-        
-        // User-Agent Safari 17.6 (ULTIMA versione 2024)
-        NSString* modernUserAgent = @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15";
-        [request setValue:modernUserAgent forHTTPHeaderField:@"User-Agent"];
-        
-        // Headers aggiuntivi per sembrare Safari moderno
-        [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
-        [request setValue:@"en-US,en;q=0.9" forHTTPHeaderField:@"Accept-Language"];
-        [request setValue:@"gzip, deflate, br" forHTTPHeaderField:@"Accept-Encoding"];
-        [request setValue:@"1" forHTTPHeaderField:@"DNT"];
-        [request setValue:@"same-origin" forHTTPHeaderField:@"Sec-Fetch-Site"];
-        [request setValue:@"navigate" forHTTPHeaderField:@"Sec-Fetch-Mode"];
-        [request setValue:@"document" forHTTPHeaderField:@"Sec-Fetch-Dest"];
-        
-        // LOGGING DETTAGLIATO
-        std::cout << "📡 Request Headers sent to server:" << std::endl;
-        std::cout << "   User-Agent: " << [modernUserAgent UTF8String] << std::endl;
-        std::cout << "   WebKit Version: 605.1.15 (Latest)" << std::endl;
-        std::cout << "   Safari Version: 17.6 (Latest)" << std::endl;
-        
-        [self.webView loadRequest:request];
-        //[self.addressBar setStringValue:url];
-        std::cout << "✅ Loading with MODERN Safari-compatible engine..." << std::endl;
-    } else {
-        std::cout << "❌ Invalid URL format" << std::endl;
-    }
-}
-
-// ======= DELEGATE METHODS PER GESTIRE RELOAD =======
+// ========== DELEGATE METHODS AGGIORNATI PER MULTI-TAB ==========
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
     NSURL* url = navigationAction.request.URL;
     
-    // ✨ NUOVO: Gestisce reload della welcome page - MA SENZA LOOP!
+    // ✨ GESTIONE WELCOME PAGE per tab multiple
     if ([url.scheme isEqualToString:@"macbird"] && [url.host isEqualToString:@"welcome"]) {
-        // Se è un reload (non il primo caricamento), ricarica la welcome page
         if (navigationAction.navigationType == WKNavigationTypeReload) {
-            std::cout << "🔄 Reloading welcome page..." << std::endl;
+            std::cout << "🔄 Reloading welcome page in current tab..." << std::endl;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self loadWelcomePage];
+                [self.tabManager loadWelcomePage];
             });
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         } else {
-            // Se è il primo caricamento, permettilo
             std::cout << "🏠 Loading welcome page for first time..." << std::endl;
             decisionHandler(WKNavigationActionPolicyAllow);
             return;
         }
-    }
-    
-    // ✨ CORRETTO: Gestisce URL vuoti SOLO se siamo già sulla welcome page
-    if (self.isOnWelcomePage && 
-        ([url.absoluteString isEqualToString:@"about:blank"] || 
-        [url.absoluteString isEqualToString:@""] ||
-        url == nil)) {
-        std::cout << "🏠 Empty URL detected while on welcome page, staying..." << std::endl;
-        decisionHandler(WKNavigationActionPolicyCancel);
-        return;
-    }
-    
-    // ✨ NUOVO: Se è un URL normale, marca che non siamo più sulla welcome page
-    if ([url.scheme isEqualToString:@"http"] || [url.scheme isEqualToString:@"https"]) {
-        self.isOnWelcomePage = NO;
-        //[self.addressBar setStringValue:url.absoluteString];
     }
     
     std::cout << "🌐 Allowing navigation to: " << [url.absoluteString UTF8String] << std::endl;
@@ -412,131 +189,106 @@
 }
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
-    std::cout << "🔄 Navigation started - checking what Google detects..." << std::endl;
+    std::cout << "🔄 Navigation started in active tab..." << std::endl;
 }
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-    std::cout << "✅ Page loaded - analyzing Google's detection..." << std::endl;
+    std::cout << "✅ Page loaded in active tab - analyzing..." << std::endl;
     
-    // ✨ NUOVO: Aggiorna l'address bar solo se non siamo sulla welcome page
-    if (!self.isOnWelcomePage && webView.URL) {
-        //[self.addressBar setStringValue:webView.URL.absoluteString];
-    }
+    // ✨ AGGIORNA IL TITOLO DELLA TAB ATTIVA
+    [webView evaluateJavaScript:@"document.title" completionHandler:^(id result, NSError *error) {
+        if (!error && result) {
+            NSString* pageTitle = (NSString*)result;
+            if ([pageTitle length] > 0) {
+                // Limita il titolo a 20 caratteri per il pulsante tab
+                if ([pageTitle length] > 20) {
+                    pageTitle = [[pageTitle substringToIndex:17] stringByAppendingString:@"..."];
+                }
+                
+                // Aggiorna il titolo della tab attiva
+                if (self.tabManager.activeTab) {
+                    self.tabManager.activeTab.title = pageTitle;
+                    [self.tabManager.activeTab.tabButton setTitle:pageTitle];
+                }
+            }
+        }
+    }];
     
-    // JavaScript per controllare cosa Google rileva del nostro browser
+    // JavaScript per analisi browser detection
     NSString* detectionScript = @""
         "console.log('=== MACBIRD BROWSER DETECTION LOG ===');"
         "console.log('User Agent detected:', navigator.userAgent);"
         "console.log('Platform:', navigator.platform);"
         "console.log('Vendor:', navigator.vendor);"
-        "console.log('App Version:', navigator.appVersion);"
         "console.log('WebKit Version:', navigator.userAgent.match(/WebKit\\/(\\S+)/)?.[1] || 'unknown');"
         "console.log('Safari Version:', navigator.userAgent.match(/Version\\/(\\S+)/)?.[1] || 'unknown');"
-        ""
-        "// Controlla feature moderne supportate"
-        "const modernFeatures = {"
-        "  'CSS Grid': CSS.supports('display', 'grid'),"
-        "  'CSS Flexbox': CSS.supports('display', 'flex'),"
-        "  'Backdrop Filter': CSS.supports('backdrop-filter', 'blur(10px)'),"
-        "  'Border Radius': CSS.supports('border-radius', '10px'),"
-        "  'IntersectionObserver': typeof IntersectionObserver !== 'undefined',"
-        "  'ResizeObserver': typeof ResizeObserver !== 'undefined',"
-        "  'Fetch API': typeof fetch !== 'undefined',"
-        "  'WebGL': !!document.createElement('canvas').getContext('webgl'),"
-        "  'WebGL2': !!document.createElement('canvas').getContext('webgl2'),"
-        "  'ServiceWorker': 'serviceWorker' in navigator,"
-        "  'Push API': 'PushManager' in window,"
-        "  'Notifications': 'Notification' in window"
-        "};"
-        ""
-        "console.log('=== MODERN FEATURES SUPPORT ===');"
-        "Object.entries(modernFeatures).forEach(([feature, supported]) => {"
-        "  console.log(`${feature}: ${supported ? '✅ SUPPORTED' : '❌ NOT SUPPORTED'}`);"
-        "});"
-        ""
-        "// Controlla cosa Google pensa di noi"
-        "if (window.location.hostname.includes('google')) {"
-        "  console.log('=== GOOGLE DETECTION ANALYSIS ===');"
-        "  const searchBox = document.querySelector('input[name=q], .gLFyf');"
-        "  if (searchBox) {"
-        "    const styles = window.getComputedStyle(searchBox);"
-        "    console.log('Google search box border-radius:', styles.borderRadius);"
-        "    console.log('Google detected modern layout:', styles.borderRadius !== '0px' ? '✅ YES' : '❌ NO');"
-        "  }"
-        "  "
-        "  const body = document.body;"
-        "  if (body) {"
-        "    const bodyStyles = window.getComputedStyle(body);"
-        "    console.log('Google page background:', bodyStyles.backgroundColor);"
-        "    console.log('Google using dark theme:', bodyStyles.backgroundColor.includes('32, 33, 36') ? '✅ YES' : '❌ NO');"
-        "  }"
-        "}"
-        ""
-        "'MacBird Detection Complete - Check Console'";
+        "'MacBird Multi-Tab Detection Complete'";
     
     [webView evaluateJavaScript:detectionScript completionHandler:^(id result, NSError *error) {
         if (error) {
             std::cout << "❌ JavaScript detection error: " << [[error localizedDescription] UTF8String] << std::endl;
         } else {
-            std::cout << "🔍 Browser detection completed - check DevTools Console for details" << std::endl;
+            std::cout << "🔍 Browser detection completed in active tab" << std::endl;
         }
     }];
 }
 
 - (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    std::cout << "❌ Navigation failed: " << [[error localizedDescription] UTF8String] << std::endl;
+    std::cout << "❌ Navigation failed in active tab: " << [[error localizedDescription] UTF8String] << std::endl;
     
-    // ✨ NUOVO: Se la navigazione fallisce e siamo su welcome page, ricarica welcome
-    if (self.isOnWelcomePage || !webView.URL || [webView.URL.absoluteString isEqualToString:@"about:blank"]) {
-        std::cout << "🏠 Loading welcome page after navigation failure..." << std::endl;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self loadWelcomePage];
-        });
-    }
-}
-
-- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-    std::cout << "❌ Provisional navigation failed: " << [[error localizedDescription] UTF8String] << std::endl;
-    
-    // ✨ NUOVO: Se la navigazione provisoria fallisce, torna alla welcome page
-    std::cout << "🏠 Loading welcome page after provisional navigation failure..." << std::endl;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self loadWelcomePage];
+        [self.tabManager loadWelcomePage];
     });
 }
 
-// ✨ NUOVO: DevTools integrati con architettura modulare
-- (void)toggleDevTools:(id)sender {
-    [self.devToolsManager toggleDevTools];
-    std::cout << "🛠️ MacBird DevTools toggled (modular)" << std::endl;
+- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
+    std::cout << "❌ Provisional navigation failed in active tab: " << [[error localizedDescription] UTF8String] << std::endl;
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.tabManager loadWelcomePage];
+    });
 }
 
+// ========== METODI DI NAVIGAZIONE AGGIORNATI PER MULTI-TAB ==========
 
-// === AZIONI PER I PULSANTI DI NAVIGAZIONE ===
+- (void)navigateToURL:(NSString*)url {
+    [self.tabManager navigateToURL:url];
+}
+
+- (void)loadWelcomePage {
+    [self.tabManager loadWelcomePage];
+}
+
 - (void)goBack:(id)sender {
-    [self.webView goBack];
-    std::cout << "← Back button pressed" << std::endl;
+    [self.tabManager goBack];
+    std::cout << "← Back button pressed (active tab)" << std::endl;
 }
 
 - (void)goForward:(id)sender {
-    [self.webView goForward];
-    std::cout << "→ Forward button pressed" << std::endl;
+    [self.tabManager goForward];
+    std::cout << "→ Forward button pressed (active tab)" << std::endl;
 }
 
 - (void)reload:(id)sender {
-    [self.webView reload];
-    std::cout << "↻ Reload button pressed" << std::endl;
+    [self.tabManager reload];
+    std::cout << "↻ Reload button pressed (active tab)" << std::endl;
 }
 
 - (void)goHome:(id)sender {
-    [self loadWelcomePage];
-    std::cout << "🏠 Home button pressed" << std::endl;
+    [self.tabManager loadWelcomePage];
+    std::cout << "🏠 Home button pressed (active tab)" << std::endl;
 }
 
+// ✨ QUESTO È IL METODO CHIAVE CHE CREA NUOVE TAB!
 - (void)newTab:(id)sender {
-    // Per ora, ricarica la welcome page
-    [self loadWelcomePage];
-    std::cout << "+ New tab button pressed" << std::endl;
+    [self.tabManager createNewTab];
+    std::cout << "📑 ✨ NEW TAB CREATED! ✨ Total tabs: " << [self.tabManager.tabs count] << std::endl;
+}
+
+// ✨ DevTools integrati con architettura modulare
+- (void)toggleDevTools:(id)sender {
+    [self.devToolsManager toggleDevTools];
+    std::cout << "🛠️ MacBird DevTools toggled (modular)" << std::endl;
 }
 
 @end

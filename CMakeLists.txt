@@ -8,13 +8,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_library(COCOA_LIBRARY Cocoa)
 find_library(WEBKIT_LIBRARY WebKit)
 
-# File sorgenti (ora con DevToolsManager MODULARE!)
+# File sorgenti (con TabManager incluso!)
 set(SOURCES
     Source/main.mm
     Source/Platform/macOS/AppDelegate.mm
     Source/Platform/macOS/BrowserWindow.mm
     Source/Platform/macOS/MenuManager.mm
-    # === NUOVA ARCHITETTURA MODULARE DEVTOOLS ===
+    # === TAB MANAGER MULTI-TAB SUPPORT ===
+    Source/Platform/macOS/TabManager.mm
+    # === DEVTOOLS MODULARE ===
     Source/DevTools/DevToolsManager.mm
     Source/DevTools/Common/DevToolsStyles.mm
     Source/DevTools/Console/ConsoleTab.mm

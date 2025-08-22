@@ -6,6 +6,7 @@
 
 @class MenuManager;
 @class DevToolsManager;
+@class TabManager;
 
 @interface BrowserWindow : NSWindow <WKNavigationDelegate, WKUIDelegate>
 
@@ -14,6 +15,9 @@
 @property (strong, nonatomic) NSButton* goButton;
 @property (strong, nonatomic) MenuManager* menuManager;
 @property (strong, nonatomic) DevToolsManager* devToolsManager;
+
+// ✨ NUOVO: TabManager per gestire tab multiple
+@property (strong, nonatomic) TabManager* tabManager;
 
 // ✨ NUOVO: Proprietà per gestire welcome page reload
 @property (nonatomic, assign) BOOL isOnWelcomePage;
