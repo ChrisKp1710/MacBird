@@ -23,10 +23,6 @@ set(SOURCES
     Source/DevTools/Console/ConsoleTab.mm
     Source/DevTools/Elements/ElementsTab.mm
     Source/DevTools/Network/NetworkTab.mm
-    # === CORE COMPONENTS ===
-    Source/Core/Network/HTTPClient.mm
-    Source/Core/HTML/HTMLParser.mm
-    Source/Core/CSS/CSSParser.mm
     # ✨ === MACBIRD IDENTITY SYSTEM ===
     Source/Core/Browser/BrowserInfo.mm
 )
