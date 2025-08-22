@@ -136,7 +136,8 @@
     [activeTab.layer setCornerRadius:10];
     
     // Pulsante + per nuova tab (CENTRATO con spazio sopra e sotto)
-    NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(335, 6, 32, 32)];
+    CGFloat tabEndPosition = 9 + 150 + 10; // X tab + width tab + gap
+    NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(tabEndPosition, 6, 32, 32)];
     [newTabButton setTitle:@"+"];
     [newTabButton setFont:[NSFont systemFontOfSize:18]];
     [newTabButton setBordered:NO];
