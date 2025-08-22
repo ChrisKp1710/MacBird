@@ -89,8 +89,7 @@
         "    writable: false,"
         "    configurable: false"
         "  });"
-        "}"
-        "console.log('✅ MacBird: Isolated Tab WebView features enabled');";
+        "}";  // ← AGGIUNGI QUESTO PUNTO E VIRGOLA!
     
     WKUserScript* enableScript = [[WKUserScript alloc] initWithSource:enableFeaturesScript 
                                                         injectionTime:WKUserScriptInjectionTimeAtDocumentStart 
@@ -119,7 +118,6 @@
     
     return webView;
 }
-
 - (void)createTabButtonForTab:(Tab*)tab {
     // Calcola la posizione del nuovo pulsante tab (con spazio per il pulsante X)
     CGFloat xPosition = 9 + ([self.tabs count] * 170); // 160 width + 10 gap
@@ -411,18 +409,24 @@
         }
     }
     
-    NSURL* nsUrl = [NSURL URLWithString:url];
+NSURL* nsUrl = [NSURL URLWithString:url];
     if (nsUrl) {
         NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
         
-        // User-Agent Safari moderno
-        NSString* modernUserAgent = @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15";
+        // User-Agent Safari moderno con macOS aggiornato
+        NSString* modernUserAgent = @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Safari/605.1.15";
         [request setValue:modernUserAgent forHTTPHeaderField:@"User-Agent"];
         
-        // Headers aggiuntivi
+        // Headers moderni per browser recognition
         [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
         [request setValue:@"en-US,en;q=0.9" forHTTPHeaderField:@"Accept-Language"];
         [request setValue:@"gzip, deflate, br" forHTTPHeaderField:@"Accept-Encoding"];
+        [request setValue:@"1" forHTTPHeaderField:@"Sec-Fetch-User"];
+        [request setValue:@"navigate" forHTTPHeaderField:@"Sec-Fetch-Mode"];
+        [request setValue:@"document" forHTTPHeaderField:@"Sec-Fetch-Dest"];
+        [request setValue:@"none" forHTTPHeaderField:@"Sec-Fetch-Site"];
+        [request setValue:@"?1" forHTTPHeaderField:@"Sec-CH-UA-Mobile"];
+        [request setValue:@"\"Not)A;Brand\";v=\"99\", \"Safari\";v=\"18\", \"Chromium\";v=\"127\"" forHTTPHeaderField:@"Sec-CH-UA"];
         
         [self.activeTab.webView loadRequest:request];
         
@@ -430,8 +434,8 @@
         self.activeTab.title = @"Caricamento...";
         [self.activeTab.tabButton setTitle:self.activeTab.title];
         
-        std::cout << "✅ Loading in Tab " << self.activeTab.tabId << " with modern Safari headers..." << std::endl;
-    }
+        std::cout << "✅ Loading in Tab " << self.activeTab.tabId << " with ULTRA-MODERN browser headers..." << std::endl;
+    }  // ← AGGIUNGI QUESTA PARENTESI!
 }
 
 - (void)loadWelcomePage {
