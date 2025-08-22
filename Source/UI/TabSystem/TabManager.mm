@@ -1,5 +1,6 @@
 #import "TabManager.h"
 #import "Platform/macOS/BrowserWindow.h"
+#import "Core/Browser/BrowserInfo.h" 
 #include <iostream>
 
 @implementation TabManager
@@ -61,7 +62,7 @@
 }
 
 - (WKWebView*)createWebView {
-    // ✨ CONFIGURAZIONE SUPER MODERNA PER OGNI TAB
+    // ✨ CONFIGURAZIONE MACBIRD IDENTITY
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
     
     // ✅ CONFIGURAZIONE BASE
@@ -80,10 +81,44 @@
         config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
     }
     
-    // ✨ SCRIPT POTENZIATO PER FEATURE DETECTION ULTRA-MODERNA
+    // ✨ SCRIPT MACBIRD IDENTITY INJECTION
     WKUserContentController* userContentController = [[WKUserContentController alloc] init];
     
-    NSString* ultraModernFeaturesScript = @""
+    NSString* macBirdIdentityScript = [NSString stringWithFormat:@""
+        "// ✨ MACBIRD BROWSER IDENTITY INJECTION"
+        "// Questo script definisce MacBird come browser unico"
+        ""
+        "// ✨ OVERRIDE USER AGENT CON MACBIRD IDENTITY"
+        "Object.defineProperty(navigator, 'userAgent', {"
+        "  get: () => '%@'"
+        "});"
+        ""
+        "// ✨ MACBIRD BROWSER IDENTIFICATION"
+        "Object.defineProperty(navigator, 'vendor', {"
+        "  get: () => 'Apple Computer, Inc.'"
+        "});"
+        ""
+        "Object.defineProperty(navigator, 'platform', {"
+        "  get: () => '%@'"
+        "});"
+        ""
+        "// ✨ MACBIRD UNIQUE FEATURES API"
+        "window.macBird = {"
+        "  name: '%@',"
+        "  version: '%@',"
+        "  build: '%@',"
+        "  codename: '%@',"
+        "  features: %@,"
+        "  isMacBird: true,"
+        "  isWebKit: true,"
+        "  supportedFeatures: function() {"
+        "    return Object.keys(this.features).filter(key => this.features[key]);"
+        "  },"
+        "  hasFeature: function(feature) {"
+        "    return this.features[feature] === true;"
+        "  }"
+        "};"
+        ""
         "// ✨ POLYFILL CSS.supports SE MANCANTE"
         "if (window.CSS && !CSS.supports) {"
         "  Object.defineProperty(CSS, 'supports', {"
@@ -101,40 +136,29 @@
         "  });"
         "}"
         ""
-        "// ✨ FORZA FEATURE DETECTION MODERNE"
-        "Object.defineProperty(navigator, 'webdriver', { get: () => false });"
-        "Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });"
-        "Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });"
-        ""
-        "// ✨ SIMULA CHROME FEATURES PER COMPATIBILITY"
-        "window.chrome = window.chrome || {"
-        "  runtime: { onConnect: null, onMessage: null },"
-        "  app: { isInstalled: false }"
-        "};"
-        ""
-        "// ✨ OVERRIDE USER AGENT IN JAVASCRIPT"
-        "Object.defineProperty(navigator, 'userAgent', {"
-        "  get: () => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/618.3.7 (KHTML, like Gecko) Version/18.2 Safari/618.3.7'"
-        "});"
-        ""
-        "Object.defineProperty(navigator, 'vendor', {"
-        "  get: () => 'Apple Computer, Inc.'"
-        "});"
-        ""
-        "Object.defineProperty(navigator, 'platform', {"
-        "  get: () => 'MacIntel'"
-        "});"
-        ""
-        "console.log('✅ MacBird: Ultra-modern features injected - Safari 18.2 mode active');";
+        "console.log('🐦 MacBird Browser Identity loaded - Version %@ (%@)');"
+        "console.log('✅ MacBird API available at window.macBird');"
+        "console.log('🔧 Supported features:', window.macBird.supportedFeatures());",
+        
+        [BrowserInfo compatibilityUserAgent],
+        [BrowserInfo platformInfo],
+        [BrowserInfo browserName],
+        [BrowserInfo browserVersion], 
+        [BrowserInfo browserBuild],
+        [BrowserInfo browserCodename],
+        [self featuresJSONString],
+        [BrowserInfo browserVersion],
+        [BrowserInfo browserCodename]
+    ];
     
-    WKUserScript* ultraModernScript = [[WKUserScript alloc] initWithSource:ultraModernFeaturesScript 
-                                                             injectionTime:WKUserScriptInjectionTimeAtDocumentStart 
-                                                          forMainFrameOnly:NO];
-    [userContentController addUserScript:ultraModernScript];
+    WKUserScript* macBirdScript = [[WKUserScript alloc] initWithSource:macBirdIdentityScript 
+                                                         injectionTime:WKUserScriptInjectionTimeAtDocumentStart 
+                                                      forMainFrameOnly:NO];
+    [userContentController addUserScript:macBirdScript];
     
     config.userContentController = userContentController;
     
-    // ✨ CONFIGURAZIONE DATASTORE ULTRA-MODERNA
+    // ✨ CONFIGURAZIONE DATASTORE 
     config.processPool = self.sharedProcessPool;
     config.websiteDataStore = [WKWebsiteDataStore nonPersistentDataStore];
     
@@ -146,14 +170,14 @@
     [webView.layer setMasksToBounds:YES];
     [webView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
-    // ✨ FORZA MODERN USER AGENT ANCHE SULLA WEBVIEW
-    [webView setCustomUserAgent:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/618.3.7 (KHTML, like Gecko) Version/18.2 Safari/618.3.7"];
+    // ✨ IMPOSTA MACBIRD USER AGENT SULLA WEBVIEW
+    [webView setCustomUserAgent:[BrowserInfo compatibilityUserAgent]];
     
     // Imposta il BrowserWindow come delegate per tutte le WebView
     [webView setNavigationDelegate:self.browserWindow];
     [webView setUIDelegate:self.browserWindow];
     
-    std::cout << "🔒 Created ULTRA-MODERN WebView with Safari 18.2 detection (no warnings!)" << std::endl;
+    std::cout << "🐦 Created MacBird WebView with authentic identity!" << std::endl;
     
     return webView;
 }
@@ -453,37 +477,32 @@
     if (nsUrl) {
         NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
         
-        // ✨ USER-AGENT SAFARI 18.2 COMPLETO E AGGIORNATO (2025)
-        NSString* ultraModernUserAgent = @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/618.3.7 (KHTML, like Gecko) Version/18.2 Safari/618.3.7";
-        [request setValue:ultraModernUserAgent forHTTPHeaderField:@"User-Agent"];
+        // ✨ USA MACBIRD IDENTITY SYSTEM
         
-        // ✨ HEADERS CRITICAL PER GOOGLE MODERN DETECTION
-        [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
-        [request setValue:@"en-US,en;q=0.9" forHTTPHeaderField:@"Accept-Language"];
-        [request setValue:@"gzip, deflate, br, zstd" forHTTPHeaderField:@"Accept-Encoding"];
+        // FASE TRANSITORIA: Compatibility User-Agent
+        // (Mantiene Safari ma aggiunge MacBird per identificazione)
+        NSString* userAgent = [BrowserInfo compatibilityUserAgent];
+        [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
         
-        // ✨ SEC-CH-UA HEADERS MODERNI (CRITICO PER GOOGLE!)
-        [request setValue:@"\"Safari\";v=\"18\", \"Chromium\";v=\"128\", \"Not)A;Brand\";v=\"99\"" forHTTPHeaderField:@"Sec-CH-UA"];
-        [request setValue:@"?0" forHTTPHeaderField:@"Sec-CH-UA-Mobile"];
-        [request setValue:@"\"macOS\"" forHTTPHeaderField:@"Sec-CH-UA-Platform"];
-        [request setValue:@"\"18.2\"" forHTTPHeaderField:@"Sec-CH-UA-Platform-Version"];
+        // ✨ HEADERS STANDARD DA BROWSERINFO
+        NSDictionary* browserHeaders = [BrowserInfo browserHeaders];
+        for (NSString* header in browserHeaders) {
+            if (![header isEqualToString:@"User-Agent"]) { // Già impostato sopra
+                [request setValue:browserHeaders[header] forHTTPHeaderField:header];
+            }
+        }
         
-        // ✨ FETCH METADATA HEADERS (ESSENZIALI!)
-        [request setValue:@"1" forHTTPHeaderField:@"Sec-Fetch-User"];
-        [request setValue:@"navigate" forHTTPHeaderField:@"Sec-Fetch-Mode"];
-        [request setValue:@"document" forHTTPHeaderField:@"Sec-Fetch-Dest"];
-        [request setValue:@"none" forHTTPHeaderField:@"Sec-Fetch-Site"];
+        // ✨ SECURITY HEADERS DA BROWSERINFO  
+        NSDictionary* securityHeaders = [BrowserInfo securityHeaders];
+        for (NSString* header in securityHeaders) {
+            [request setValue:securityHeaders[header] forHTTPHeaderField:header];
+        }
         
-        // ✨ CACHE E UPGRADE HEADERS MODERNI
-        [request setValue:@"no-cache" forHTTPHeaderField:@"Cache-Control"];
-        [request setValue:@"1" forHTTPHeaderField:@"Upgrade-Insecure-Requests"];
-        
-        // ✨ DNT E PRIORITY HEADERS
-        [request setValue:@"1" forHTTPHeaderField:@"DNT"];
-        [request setValue:@"u=0, i" forHTTPHeaderField:@"Priority"];
-        
-        // ✨ CONNECTION HEADERS
-        [request setValue:@"keep-alive" forHTTPHeaderField:@"Connection"];
+        // ✨ PERFORMANCE HEADERS DA BROWSERINFO
+        NSDictionary* performanceHeaders = [BrowserInfo performanceHeaders];
+        for (NSString* header in performanceHeaders) {
+            [request setValue:performanceHeaders[header] forHTTPHeaderField:header];
+        }
         
         [self.activeTab.webView loadRequest:request];
         
@@ -491,8 +510,23 @@
         self.activeTab.title = @"Caricamento...";
         [self.activeTab.tabButton setTitle:self.activeTab.title];
         
-        std::cout << "✅ Loading in Tab " << self.activeTab.tabId << " with ULTRA-MODERN Safari 18.2 headers..." << std::endl;
+        std::cout << "✅ Loading in Tab " << self.activeTab.tabId << " with MacBird Identity System..." << std::endl;
+        std::cout << "🐦 User-Agent: " << [userAgent UTF8String] << std::endl;
     }
+}
+
+
+// ✨ AGGIUNGI QUESTO NUOVO METODO HELPER ALLA FINE DEL FILE:
+- (NSString*)featuresJSONString {
+    NSDictionary* features = [BrowserInfo supportedFeatures];
+    NSError* error;
+    NSData* jsonData = [NSJSONSerialization dataWithJSONObject:features 
+                                                       options:0 
+                                                         error:&error];
+    if (error) {
+        return @"{}";
+    }
+    return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 }
 
 - (void)loadWelcomePage {

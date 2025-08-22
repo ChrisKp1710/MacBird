@@ -123,56 +123,266 @@
 }
 
 - (void)runDetectionAnalysis {
-    [self logToConsole:@"🔍 Running browser detection analysis..."];
+    [self logToConsole:@"🔍 Running simplified browser detection..."];
     
-    NSString* detectionScript = @""
-        "const analysis = {"
-        "  userAgent: navigator.userAgent,"
-        "  platform: navigator.platform,"
-        "  vendor: navigator.vendor || 'unknown',"
-        "  webkitVersion: navigator.userAgent.match(/WebKit\\/(\\S+)/)?.[1] || 'unknown',"
-        "  safariVersion: navigator.userAgent.match(/Version\\/(\\S+)/)?.[1] || 'unknown',"
-        "  features: {"
-        "    cssGrid: CSS.supports('display', 'grid'),"
-        "    cssFlexbox: CSS.supports('display', 'flex'),"
-        "    borderRadius: CSS.supports('border-radius', '10px'),"
-        "    backdropFilter: CSS.supports('backdrop-filter', 'blur(10px)'),"
-        "    fetchAPI: typeof fetch !== 'undefined',"
-        "    webGL: !!document.createElement('canvas').getContext('webgl'),"
-        "    webGL2: !!document.createElement('canvas').getContext('webgl2'),"
-        "    intersectionObserver: typeof IntersectionObserver !== 'undefined',"
-        "    resizeObserver: typeof ResizeObserver !== 'undefined',"
-        "    serviceWorker: 'serviceWorker' in navigator,"
-        "    pushAPI: 'PushManager' in window,"
-        "    notifications: 'Notification' in window"
-        "  },"
-        "  screenInfo: {"
-        "    width: screen.width,"
-        "    height: screen.height,"
-        "    pixelRatio: window.devicePixelRatio,"
-        "    colorDepth: screen.colorDepth"
-        "  }"
-        "};"
-        ""
-        "if (window.location.hostname.includes('google')) {"
-        "  const searchBox = document.querySelector('input[name=q], .gLFyf');"
-        "  analysis.googleAnalysis = {"
-        "    searchBoxFound: !!searchBox,"
-        "    modernLayout: searchBox ? getComputedStyle(searchBox).borderRadius !== '0px' : false,"
-        "    searchBoxBorderRadius: searchBox ? getComputedStyle(searchBox).borderRadius : 'none'"
-        "  };"
-        "}"
-        ""
-        "JSON.stringify(analysis, null, 2);";
+    // ✨ SCRIPT ULTRA-SEMPLIFICATO - TESTATO E FUNZIONANTE
+    NSString* detectionScript = @"navigator.userAgent";
     
     [self.browserWindow.webView evaluateJavaScript:detectionScript completionHandler:^(id result, NSError *error) {
         if (error) {
-            [self logToConsole:[NSString stringWithFormat:@"❌ Analysis error: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
+            [self logToConsole:[NSString stringWithFormat:@"❌ Basic test failed: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
         } else if (result) {
-            NSString* analysisJSON = (NSString*)result;
-            [self displayAnalysisResults:analysisJSON];
+            [self logToConsole:@"✅ JavaScript is working!" withColor:[DevToolsStyles successTextColor]];
+            [self logToConsole:[NSString stringWithFormat:@"📱 User Agent: %@", (NSString*)result]];
+            
+            // Ora che sappiamo che funziona, proviamo uno script più complesso
+            [self runCompleteAnalysis];
+        } else {
+            [self logToConsole:@"⚠️ No result returned" withColor:[DevToolsStyles warningTextColor]];
         }
     }];
+}
+
+- (void)runCompleteAnalysis {
+    [self logToConsole:@"🔧 Running complete analysis..."];
+    
+    // ✨ SCRIPT STEP BY STEP - UNA COSA ALLA VOLTA
+    NSString* stepByStepScript = @""
+        "var result = {}; "
+        "result.userAgent = navigator.userAgent; "
+        "result.platform = navigator.platform; "
+        "result.webkitVersion = navigator.userAgent.match(/WebKit\\/([0-9.]+)/) ? navigator.userAgent.match(/WebKit\\/([0-9.]+)/)[1] : 'unknown'; "
+        "result.macBirdVersion = navigator.userAgent.match(/MacBird\\/([0-9.]+)/) ? navigator.userAgent.match(/MacBird\\/([0-9.]+)/)[1] : 'unknown'; "
+        "result.currentURL = window.location.href; "
+        "result.pageTitle = document.title; "
+        "JSON.stringify(result);";
+    
+    [self.browserWindow.webView evaluateJavaScript:stepByStepScript completionHandler:^(id result, NSError *error) {
+        if (error) {
+            [self logToConsole:[NSString stringWithFormat:@"❌ Step analysis failed: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
+        } else if (result) {
+            [self displayBasicResults:(NSString*)result];
+            
+            // Se questo funziona, proviamo Google detection
+            [self runGoogleDetection];
+        }
+    }];
+}
+
+- (void)runGoogleDetection {
+    [self logToConsole:@"🔍 Testing Google detection..."];
+    
+    NSString* googleScript = @""
+        "if (window.location.hostname.includes('google')) { "
+        "  var searchBox = document.querySelector('input[name=q]') || document.querySelector('.gLFyf'); "
+        "  var result = {}; "
+        "  result.onGoogle = true; "
+        "  result.searchBoxFound = !!searchBox; "
+        "  if (searchBox) { "
+        "    var styles = getComputedStyle(searchBox); "
+        "    result.borderRadius = styles.borderRadius; "
+        "    result.padding = styles.padding; "
+        "    result.isModern = styles.borderRadius !== '0px'; "
+        "  } "
+        "  JSON.stringify(result); "
+        "} else { "
+        "  JSON.stringify({onGoogle: false}); "
+        "}";
+    
+    [self.browserWindow.webView evaluateJavaScript:googleScript completionHandler:^(id result, NSError *error) {
+        if (error) {
+            [self logToConsole:[NSString stringWithFormat:@"❌ Google detection failed: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
+        } else if (result) {
+            [self displayGoogleResults:(NSString*)result];
+        }
+    }];
+}
+
+- (void)displayBasicResults:(NSString*)jsonResult {
+    NSData* jsonData = [jsonResult dataUsingEncoding:NSUTF8StringEncoding];
+    NSError* error;
+    NSDictionary* analysis = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    
+    if (error) {
+        [self logToConsole:@"❌ JSON parsing error" withColor:[DevToolsStyles errorTextColor]];
+        return;
+    }
+    
+    [self logToConsole:@""];
+    [self logToConsole:@"=== 🔍 BASIC BROWSER INFO ===" withColor:[DevToolsStyles accentTextColor]];
+    [self logToConsole:[NSString stringWithFormat:@"🔧 WebKit: %@", analysis[@"webkitVersion"]]];
+    
+    NSString* macBirdVersion = analysis[@"macBirdVersion"];
+    if (macBirdVersion && ![macBirdVersion isEqualToString:@"unknown"]) {
+        [self logToConsole:[NSString stringWithFormat:@"🐦 MacBird: %@", macBirdVersion] withColor:[DevToolsStyles successTextColor]];
+        [self logToConsole:@"✅ MacBird identity: WORKING" withColor:[DevToolsStyles successTextColor]];
+    } else {
+        [self logToConsole:@"⚠️ MacBird identity: NOT DETECTED" withColor:[DevToolsStyles warningTextColor]];
+    }
+    
+    [self logToConsole:[NSString stringWithFormat:@"🌍 URL: %@", analysis[@"currentURL"]]];
+    [self logToConsole:[NSString stringWithFormat:@"📄 Title: %@", analysis[@"pageTitle"]]];
+}
+
+- (void)displayGoogleResults:(NSString*)jsonResult {
+    NSData* jsonData = [jsonResult dataUsingEncoding:NSUTF8StringEncoding];
+    NSError* error;
+    NSDictionary* google = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    
+    if (error) {
+        [self logToConsole:@"❌ Google JSON parsing error" withColor:[DevToolsStyles errorTextColor]];
+        return;
+    }
+    
+    [self logToConsole:@""];
+    if ([google[@"onGoogle"] boolValue]) {
+        [self logToConsole:@"=== 🔍 GOOGLE DETECTION ===" withColor:[DevToolsStyles accentTextColor]];
+        
+        BOOL searchBoxFound = [google[@"searchBoxFound"] boolValue];
+        [self logToConsole:[NSString stringWithFormat:@"🔍 Search box: %@", searchBoxFound ? @"✅ FOUND" : @"❌ NOT FOUND"]];
+        
+        if (searchBoxFound) {
+            [self logToConsole:[NSString stringWithFormat:@"📐 Border radius: %@", google[@"borderRadius"]]];
+            [self logToConsole:[NSString stringWithFormat:@"📏 Padding: %@", google[@"padding"]]];
+            
+            BOOL isModern = [google[@"isModern"] boolValue];
+            NSString* status = isModern ? @"✅ MODERN LAYOUT" : @"❌ OLD LAYOUT";
+            NSColor* color = isModern ? [DevToolsStyles successTextColor] : [DevToolsStyles errorTextColor];
+            [self logToConsole:[NSString stringWithFormat:@"🎨 Layout: %@", status] withColor:color];
+            
+            if (isModern) {
+                [self logToConsole:@"🎉 GOOGLE RECOGNIZES MACBIRD AS MODERN!" withColor:[DevToolsStyles successTextColor]];
+            }
+        }
+    } else {
+        [self logToConsole:@"ℹ️ Not on Google - no detection needed"];
+    }
+    
+    [self logToConsole:@""];
+    [self logToConsole:@"=== ✅ DETECTION COMPLETE ===" withColor:[DevToolsStyles successTextColor]];
+}
+
+- (void)displayOptimizedResults:(NSString*)analysisJSON {
+    NSData* jsonData = [analysisJSON dataUsingEncoding:NSUTF8StringEncoding];
+    NSError* error;
+    NSDictionary* analysis = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    
+    if (error) {
+        [self logToConsole:@"❌ Error parsing analysis results" withColor:[DevToolsStyles errorTextColor]];
+        return;
+    }
+    
+    [self logToConsole:@""];
+    [self logToConsole:@"=== 🔍 MACBIRD BROWSER STATUS ===" withColor:[DevToolsStyles accentTextColor]];
+    
+    // ✨ MACBIRD IDENTITY CHECK
+    NSString* macBirdVersion = analysis[@"macBirdVersion"];
+    if (macBirdVersion && ![macBirdVersion isEqualToString:@"unknown"]) {
+        [self logToConsole:[NSString stringWithFormat:@"🐦 MacBird Version: %@", macBirdVersion] withColor:[DevToolsStyles successTextColor]];
+        [self logToConsole:@"✅ MacBird identity system: WORKING" withColor:[DevToolsStyles successTextColor]];
+    } else {
+        [self logToConsole:@"⚠️ MacBird version: NOT DETECTED" withColor:[DevToolsStyles warningTextColor]];
+    }
+    
+    [self logToConsole:[NSString stringWithFormat:@"🔧 WebKit: %@", analysis[@"webkitVersion"]]];
+    [self logToConsole:[NSString stringWithFormat:@"🌐 Safari: %@", analysis[@"safariVersion"]]];
+    [self logToConsole:[NSString stringWithFormat:@"🌍 Current URL: %@", analysis[@"currentURL"]]];
+    [self logToConsole:[NSString stringWithFormat:@"📄 Page Title: %@", analysis[@"pageTitle"]]];
+    
+    // ✨ FEATURE SUMMARY (SIMPLIFIED)
+    [self logToConsole:@""];
+    [self logToConsole:@"=== ✅ BROWSER CAPABILITIES ===" withColor:[DevToolsStyles accentTextColor]];
+    NSDictionary* features = analysis[@"features"];
+    NSInteger supportedCount = 0;
+    NSInteger totalCount = [features count];
+    
+    for (NSString* feature in features) {
+        if ([features[feature] boolValue]) {
+            supportedCount++;
+        }
+    }
+    
+    CGFloat percentage = (CGFloat)supportedCount / totalCount * 100;
+    NSColor* capabilityColor = percentage >= 80 ? [DevToolsStyles successTextColor] : 
+                              percentage >= 60 ? [DevToolsStyles warningTextColor] : 
+                                               [DevToolsStyles errorTextColor];
+    
+    [self logToConsole:[NSString stringWithFormat:@"📊 Modern features supported: %ld/%ld (%.0f%%)", (long)supportedCount, (long)totalCount, percentage] withColor:capabilityColor];
+    
+    // Show key features
+    NSArray* keyFeatures = @[@"cssGrid", @"cssFlexbox", @"webGL", @"fetchAPI", @"serviceWorker"];
+    for (NSString* feature in keyFeatures) {
+        BOOL supported = [features[feature] boolValue];
+        NSString* status = supported ? @"✅" : @"❌";
+        [self logToConsole:[NSString stringWithFormat:@"  %@ %@", status, feature]];
+    }
+    
+    // ✨ GOOGLE DETECTION RESULTS
+    if (analysis[@"googleAnalysis"]) {
+        [self logToConsole:@""];
+        [self logToConsole:@"=== 🔍 GOOGLE RECOGNITION TEST ===" withColor:[DevToolsStyles accentTextColor]];
+        NSDictionary* google = analysis[@"googleAnalysis"];
+        
+        BOOL isModern = [google[@"modernLayout"] boolValue];
+        NSString* modernStatus = isModern ? @"✅ MODERN LAYOUT" : @"❌ OLD LAYOUT";
+        NSColor* modernColor = isModern ? [DevToolsStyles successTextColor] : [DevToolsStyles errorTextColor];
+        
+        [self logToConsole:[NSString stringWithFormat:@"🎨 Layout detected: %@", modernStatus] withColor:modernColor];
+        [self logToConsole:[NSString stringWithFormat:@"🎯 Detection confidence: %@", google[@"confidence"]]];
+        [self logToConsole:[NSString stringWithFormat:@"📊 Modern score: %@/%@", google[@"modernScore"], google[@"maxScore"]]];
+        [self logToConsole:[NSString stringWithFormat:@"📄 Page type: %@", google[@"pageType"]]];
+        
+        // Technical details
+        if (google[@"details"]) {
+            NSDictionary* details = google[@"details"];
+            [self logToConsole:[NSString stringWithFormat:@"📐 Search box border-radius: %@", details[@"borderRadius"]]];
+            [self logToConsole:[NSString stringWithFormat:@"📏 Search box padding: %@", details[@"padding"]]];
+        }
+        
+        // Final verdict
+        [self logToConsole:@""];
+        if (isModern) {
+            [self logToConsole:@"🎉 VERDICT: Google serves MacBird MODERN layout!" withColor:[DevToolsStyles successTextColor]];
+            [self logToConsole:@"✨ MacBird browser identity: SUCCESSFUL" withColor:[DevToolsStyles successTextColor]];
+        } else {
+            [self logToConsole:@"⚠️ VERDICT: Google serves OLD layout" withColor:[DevToolsStyles warningTextColor]];
+            [self logToConsole:@"🔍 This might need further investigation" withColor:[DevToolsStyles warningTextColor]];
+        }
+    }
+    
+    // ✨ OVERALL BROWSER HEALTH
+    [self logToConsole:@""];
+    [self logToConsole:@"=== 📊 MACBIRD HEALTH STATUS ===" withColor:[DevToolsStyles accentTextColor]];
+    
+    BOOL hasIdentity = macBirdVersion && ![macBirdVersion isEqualToString:@"unknown"];
+    BOOL hasGoodFeatures = percentage >= 80;
+    BOOL hasModernGoogle = analysis[@"googleAnalysis"] && [analysis[@"googleAnalysis"][@"modernLayout"] boolValue];
+    
+    NSInteger healthScore = (hasIdentity ? 1 : 0) + (hasGoodFeatures ? 1 : 0) + (hasModernGoogle ? 1 : 0);
+    
+    NSString* healthStatus;
+    NSColor* healthColor;
+    switch (healthScore) {
+        case 3:
+            healthStatus = @"🟢 EXCELLENT";
+            healthColor = [DevToolsStyles successTextColor];
+            break;
+        case 2:
+            healthStatus = @"🟡 GOOD";
+            healthColor = [DevToolsStyles warningTextColor];
+            break;
+        default:
+            healthStatus = @"🔴 NEEDS WORK";
+            healthColor = [DevToolsStyles errorTextColor];
+            break;
+    }
+    
+    [self logToConsole:[NSString stringWithFormat:@"🏥 Browser health: %@", healthStatus] withColor:healthColor];
+    [self logToConsole:[NSString stringWithFormat:@"📈 Health score: %ld/3", (long)healthScore]];
+    
+    [self logToConsole:@""];
+    [self logToConsole:@"=== ✅ ANALYSIS COMPLETE ===" withColor:[DevToolsStyles successTextColor]];
+    [self logToConsole:@""];
 }
 
 - (void)displayAnalysisResults:(NSString*)analysisJSON {
