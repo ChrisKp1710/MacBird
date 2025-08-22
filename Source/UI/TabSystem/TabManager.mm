@@ -61,20 +61,30 @@
 }
 
 - (WKWebView*)createWebView {
-    // ✨ CONFIGURAZIONE ISOLATA PER OGNI TAB
+    // ✨ CONFIGURAZIONE SUPER MODERNA PER OGNI TAB
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
     
-    config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
-    
+    // ✅ CONFIGURAZIONE BASE
     if (@available(macOS 10.15, *)) {
         config.preferences.fraudulentWebsiteWarningEnabled = YES;
         config.preferences.tabFocusesLinks = YES;
+        // JavaScript è abilitato di default nelle WebView moderne
+    }
+
+    // ✨ CONFIGURAZIONE MODERNA JAVASCRIPT (macOS 11.0+)
+    if (@available(macOS 11.0, *)) {
+        config.defaultWebpagePreferences.allowsContentJavaScript = YES;
+        config.preferences.javaScriptCanOpenWindowsAutomatically = YES;
+    } else {
+        // Fallback per versioni precedenti
+        config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
     }
     
-    // Script per feature native
+    // ✨ SCRIPT POTENZIATO PER FEATURE DETECTION ULTRA-MODERNA
     WKUserContentController* userContentController = [[WKUserContentController alloc] init];
     
-    NSString* enableFeaturesScript = @""
+    NSString* ultraModernFeaturesScript = @""
+        "// ✨ POLYFILL CSS.supports SE MANCANTE"
         "if (window.CSS && !CSS.supports) {"
         "  Object.defineProperty(CSS, 'supports', {"
         "    value: function(property, value) {"
@@ -89,16 +99,42 @@
         "    writable: false,"
         "    configurable: false"
         "  });"
-        "}";  // ← AGGIUNGI QUESTO PUNTO E VIRGOLA!
+        "}"
+        ""
+        "// ✨ FORZA FEATURE DETECTION MODERNE"
+        "Object.defineProperty(navigator, 'webdriver', { get: () => false });"
+        "Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });"
+        "Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });"
+        ""
+        "// ✨ SIMULA CHROME FEATURES PER COMPATIBILITY"
+        "window.chrome = window.chrome || {"
+        "  runtime: { onConnect: null, onMessage: null },"
+        "  app: { isInstalled: false }"
+        "};"
+        ""
+        "// ✨ OVERRIDE USER AGENT IN JAVASCRIPT"
+        "Object.defineProperty(navigator, 'userAgent', {"
+        "  get: () => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/618.3.7 (KHTML, like Gecko) Version/18.2 Safari/618.3.7'"
+        "});"
+        ""
+        "Object.defineProperty(navigator, 'vendor', {"
+        "  get: () => 'Apple Computer, Inc.'"
+        "});"
+        ""
+        "Object.defineProperty(navigator, 'platform', {"
+        "  get: () => 'MacIntel'"
+        "});"
+        ""
+        "console.log('✅ MacBird: Ultra-modern features injected - Safari 18.2 mode active');";
     
-    WKUserScript* enableScript = [[WKUserScript alloc] initWithSource:enableFeaturesScript 
-                                                        injectionTime:WKUserScriptInjectionTimeAtDocumentStart 
-                                                     forMainFrameOnly:NO];
-    [userContentController addUserScript:enableScript];
+    WKUserScript* ultraModernScript = [[WKUserScript alloc] initWithSource:ultraModernFeaturesScript 
+                                                             injectionTime:WKUserScriptInjectionTimeAtDocumentStart 
+                                                          forMainFrameOnly:NO];
+    [userContentController addUserScript:ultraModernScript];
     
     config.userContentController = userContentController;
     
-    // ✨ CHIAVE: OGNI TAB HA IL SUO DATASTORE SEPARATO
+    // ✨ CONFIGURAZIONE DATASTORE ULTRA-MODERNA
     config.processPool = self.sharedProcessPool;
     config.websiteDataStore = [WKWebsiteDataStore nonPersistentDataStore];
     
@@ -110,14 +146,18 @@
     [webView.layer setMasksToBounds:YES];
     [webView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
+    // ✨ FORZA MODERN USER AGENT ANCHE SULLA WEBVIEW
+    [webView setCustomUserAgent:@"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/618.3.7 (KHTML, like Gecko) Version/18.2 Safari/618.3.7"];
+    
     // Imposta il BrowserWindow come delegate per tutte le WebView
     [webView setNavigationDelegate:self.browserWindow];
     [webView setUIDelegate:self.browserWindow];
     
-    std::cout << "🔒 Created isolated WebView with separate datastore" << std::endl;
+    std::cout << "🔒 Created ULTRA-MODERN WebView with Safari 18.2 detection (no warnings!)" << std::endl;
     
     return webView;
 }
+
 - (void)createTabButtonForTab:(Tab*)tab {
     // Calcola la posizione del nuovo pulsante tab (con spazio per il pulsante X)
     CGFloat xPosition = 9 + ([self.tabs count] * 170); // 160 width + 10 gap
@@ -409,24 +449,41 @@
         }
     }
     
-NSURL* nsUrl = [NSURL URLWithString:url];
+    NSURL* nsUrl = [NSURL URLWithString:url];
     if (nsUrl) {
         NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
         
-        // User-Agent Safari moderno con macOS aggiornato
-        NSString* modernUserAgent = @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.2 Safari/605.1.15";
-        [request setValue:modernUserAgent forHTTPHeaderField:@"User-Agent"];
+        // ✨ USER-AGENT SAFARI 18.2 COMPLETO E AGGIORNATO (2025)
+        NSString* ultraModernUserAgent = @"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/618.3.7 (KHTML, like Gecko) Version/18.2 Safari/618.3.7";
+        [request setValue:ultraModernUserAgent forHTTPHeaderField:@"User-Agent"];
         
-        // Headers moderni per browser recognition
-        [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
+        // ✨ HEADERS CRITICAL PER GOOGLE MODERN DETECTION
+        [request setValue:@"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8" forHTTPHeaderField:@"Accept"];
         [request setValue:@"en-US,en;q=0.9" forHTTPHeaderField:@"Accept-Language"];
-        [request setValue:@"gzip, deflate, br" forHTTPHeaderField:@"Accept-Encoding"];
+        [request setValue:@"gzip, deflate, br, zstd" forHTTPHeaderField:@"Accept-Encoding"];
+        
+        // ✨ SEC-CH-UA HEADERS MODERNI (CRITICO PER GOOGLE!)
+        [request setValue:@"\"Safari\";v=\"18\", \"Chromium\";v=\"128\", \"Not)A;Brand\";v=\"99\"" forHTTPHeaderField:@"Sec-CH-UA"];
+        [request setValue:@"?0" forHTTPHeaderField:@"Sec-CH-UA-Mobile"];
+        [request setValue:@"\"macOS\"" forHTTPHeaderField:@"Sec-CH-UA-Platform"];
+        [request setValue:@"\"18.2\"" forHTTPHeaderField:@"Sec-CH-UA-Platform-Version"];
+        
+        // ✨ FETCH METADATA HEADERS (ESSENZIALI!)
         [request setValue:@"1" forHTTPHeaderField:@"Sec-Fetch-User"];
         [request setValue:@"navigate" forHTTPHeaderField:@"Sec-Fetch-Mode"];
         [request setValue:@"document" forHTTPHeaderField:@"Sec-Fetch-Dest"];
         [request setValue:@"none" forHTTPHeaderField:@"Sec-Fetch-Site"];
-        [request setValue:@"?1" forHTTPHeaderField:@"Sec-CH-UA-Mobile"];
-        [request setValue:@"\"Not)A;Brand\";v=\"99\", \"Safari\";v=\"18\", \"Chromium\";v=\"127\"" forHTTPHeaderField:@"Sec-CH-UA"];
+        
+        // ✨ CACHE E UPGRADE HEADERS MODERNI
+        [request setValue:@"no-cache" forHTTPHeaderField:@"Cache-Control"];
+        [request setValue:@"1" forHTTPHeaderField:@"Upgrade-Insecure-Requests"];
+        
+        // ✨ DNT E PRIORITY HEADERS
+        [request setValue:@"1" forHTTPHeaderField:@"DNT"];
+        [request setValue:@"u=0, i" forHTTPHeaderField:@"Priority"];
+        
+        // ✨ CONNECTION HEADERS
+        [request setValue:@"keep-alive" forHTTPHeaderField:@"Connection"];
         
         [self.activeTab.webView loadRequest:request];
         
@@ -434,8 +491,8 @@ NSURL* nsUrl = [NSURL URLWithString:url];
         self.activeTab.title = @"Caricamento...";
         [self.activeTab.tabButton setTitle:self.activeTab.title];
         
-        std::cout << "✅ Loading in Tab " << self.activeTab.tabId << " with ULTRA-MODERN browser headers..." << std::endl;
-    }  // ← AGGIUNGI QUESTA PARENTESI!
+        std::cout << "✅ Loading in Tab " << self.activeTab.tabId << " with ULTRA-MODERN Safari 18.2 headers..." << std::endl;
+    }
 }
 
 - (void)loadWelcomePage {
