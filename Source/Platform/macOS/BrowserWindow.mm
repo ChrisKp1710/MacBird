@@ -127,7 +127,7 @@
     [tabBar setAutoresizingMask:NSViewWidthSizable | NSViewMinYMargin];
     
     // Tab attivo (CENTRATA con spazio sopra e sotto)
-    NSButton* activeTab = [[NSButton alloc] initWithFrame:NSMakeRect(15, 6, 150, 32)];
+    NSButton* activeTab = [[NSButton alloc] initWithFrame:NSMakeRect(9, 6, 150, 32)];
     [activeTab setTitle:@"MacBird Tab"];
     [activeTab setFont:[NSFont systemFontOfSize:13 weight:NSFontWeightMedium]];
     [activeTab setBordered:NO];
