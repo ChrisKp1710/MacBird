@@ -1,7 +1,7 @@
 #import "BrowserWindow.h"
 #import "MenuManager.h"
 #import "DevTools/DevToolsManager.h"
-#import "TabManager.h"  // ✨ AGGIUNGI QUESTO IMPORT
+#import "UI/TabSystem/TabManager.h"
 #import <WebKit/WebKit.h>
 #include <iostream>
 

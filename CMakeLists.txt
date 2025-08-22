@@ -15,7 +15,8 @@ set(SOURCES
     Source/Platform/macOS/BrowserWindow.mm
     Source/Platform/macOS/MenuManager.mm
     # === TAB MANAGER MULTI-TAB SUPPORT ===
-    Source/Platform/macOS/TabManager.mm
+    Source/UI/TabSystem/TabManager.mm
+    Source/UI/TabSystem/Tab.mm
     # === DEVTOOLS MODULARE ===
     Source/DevTools/DevToolsManager.mm
     Source/DevTools/Common/DevToolsStyles.mm

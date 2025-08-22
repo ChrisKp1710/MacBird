@@ -1,9 +1,6 @@
 #import "TabManager.h"
-#import "BrowserWindow.h"
+#import "Platform/macOS/BrowserWindow.h"
 #include <iostream>
-
-@implementation Tab
-@end
 
 @implementation TabManager
 
@@ -18,16 +15,20 @@
         self.tabs = [[NSMutableArray alloc] init];
         self.nextTabId = 1;
         
+        // ✨ NUOVO: Crea pool condivisi MA SEPARATI per ogni sessione
+        self.sharedProcessPool = [[WKProcessPool alloc] init];
+        self.sharedDataStore = [WKWebsiteDataStore nonPersistentDataStore];
+        
         // Crea la prima tab automaticamente
         [self createNewTab];
         
-        std::cout << "📑 TabManager initialized - Ready for multiple tabs!" << std::endl;
+        std::cout << "📑 TabManager initialized with isolated tabs - Ready for multiple tabs!" << std::endl;
     }
     return self;
 }
 
 - (void)createNewTab {
-    std::cout << "📑 Creating new tab..." << std::endl;
+    std::cout << "📑 Creating new isolated tab..." << std::endl;
     
     // Crea la nuova tab
     Tab* newTab = [[Tab alloc] init];
@@ -56,11 +57,11 @@
     // Aggiorna il layout delle tab
     [self updateTabLayout];
     
-    std::cout << "✅ New tab created! Total tabs: " << [self.tabs count] << " (Active: Tab " << newTab.tabId << ")" << std::endl;
+    std::cout << "✅ New isolated tab created! Total tabs: " << [self.tabs count] << " (Active: Tab " << newTab.tabId << ")" << std::endl;
 }
 
 - (WKWebView*)createWebView {
-    // Usa la stessa configurazione del BrowserWindow originale
+    // ✨ CONFIGURAZIONE ISOLATA PER OGNI TAB
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
     
     config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
@@ -89,7 +90,7 @@
         "    configurable: false"
         "  });"
         "}"
-        "console.log('✅ MacBird: Tab WebView features enabled');";
+        "console.log('✅ MacBird: Isolated Tab WebView features enabled');";
     
     WKUserScript* enableScript = [[WKUserScript alloc] initWithSource:enableFeaturesScript 
                                                         injectionTime:WKUserScriptInjectionTimeAtDocumentStart 
@@ -97,8 +98,10 @@
     [userContentController addUserScript:enableScript];
     
     config.userContentController = userContentController;
-    config.processPool = [[WKProcessPool alloc] init];
-    config.websiteDataStore = [WKWebsiteDataStore defaultDataStore];
+    
+    // ✨ CHIAVE: OGNI TAB HA IL SUO DATASTORE SEPARATO
+    config.processPool = self.sharedProcessPool;
+    config.websiteDataStore = [WKWebsiteDataStore nonPersistentDataStore];
     
     // Crea la WebView con la configurazione
     NSRect webViewFrame = [self.webViewContainer bounds];
@@ -111,6 +114,8 @@
     // Imposta il BrowserWindow come delegate per tutte le WebView
     [webView setNavigationDelegate:self.browserWindow];
     [webView setUIDelegate:self.browserWindow];
+    
+    std::cout << "🔒 Created isolated WebView with separate datastore" << std::endl;
     
     return webView;
 }
@@ -208,7 +213,6 @@
     
     // Mostra la WebView della nuova tab
     [tab.webView setHidden:NO];
-    //[tab.webView.superview bringSubviewToFront:tab.webView];
     
     // Aggiorna il colore del pulsante tab attivo (viola)
     [tab.tabButton.layer setBackgroundColor:[NSColor colorWithRed:0.4 green:0.3 blue:0.8 alpha:1.0].CGColor];

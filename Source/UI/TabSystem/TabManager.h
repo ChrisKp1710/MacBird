@@ -3,20 +3,9 @@
 
 #import <Cocoa/Cocoa.h>
 #import <WebKit/WebKit.h>
+#import "Tab.h"
 
 @class BrowserWindow;
-
-// Struttura dati per una singola tab
-@interface Tab : NSObject
-@property (strong, nonatomic) WKWebView* webView;
-@property (strong, nonatomic) NSButton* tabButton;
-@property (strong, nonatomic) NSButton* closeButton;  // ✨ NUOVO: Pulsante X per chiudere
-@property (strong, nonatomic) NSString* title;
-@property (strong, nonatomic) NSURL* url;
-@property (nonatomic, assign) BOOL isActive;
-@property (nonatomic, assign) BOOL isOnWelcomePage;
-@property (nonatomic, assign) NSInteger tabId;  // ✨ NUOVO: ID univoco per la tab
-@end
 
 @interface TabManager : NSObject
 
@@ -25,7 +14,9 @@
 @property (assign, nonatomic) BrowserWindow* browserWindow;
 @property (strong, nonatomic) NSView* tabBarContainer;
 @property (strong, nonatomic) NSView* webViewContainer;
-@property (nonatomic, assign) NSInteger nextTabId;  // ✨ NUOVO: Contatore per ID tab
+@property (nonatomic, assign) NSInteger nextTabId;
+@property (strong, nonatomic) WKProcessPool* sharedProcessPool;
+@property (strong, nonatomic) WKWebsiteDataStore* sharedDataStore;
 
 - (instancetype)initWithBrowserWindow:(BrowserWindow*)window 
                        tabBarContainer:(NSView*)tabBar 
