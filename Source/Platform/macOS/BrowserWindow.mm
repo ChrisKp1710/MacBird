@@ -135,15 +135,6 @@
     [activeTab.layer setBackgroundColor:[NSColor colorWithRed:0.4 green:0.3 blue:0.8 alpha:1.0].CGColor];
     [activeTab.layer setCornerRadius:10];
     
-    // Tab inattiva (CENTRATA con spazio sopra e sotto)
-    NSButton* inactiveTab = [[NSButton alloc] initWithFrame:NSMakeRect(175, 6, 150, 32)];
-    [inactiveTab setTitle:@"Nuova Tab"];
-    [inactiveTab setFont:[NSFont systemFontOfSize:13]];
-    [inactiveTab setBordered:NO];
-    [inactiveTab setWantsLayer:YES];
-    [inactiveTab.layer setBackgroundColor:[NSColor colorWithRed:0.18 green:0.18 blue:0.18 alpha:1.0].CGColor];
-    [inactiveTab.layer setCornerRadius:10];
-    
     // Pulsante + per nuova tab (CENTRATO con spazio sopra e sotto)
     NSButton* newTabButton = [[NSButton alloc] initWithFrame:NSMakeRect(335, 6, 32, 32)];
     [newTabButton setTitle:@"+"];
@@ -156,7 +147,6 @@
     [newTabButton.layer setCornerRadius:6];
     
     [tabBar addSubview:activeTab];
-    [tabBar addSubview:inactiveTab];
     [tabBar addSubview:newTabButton];
     
     // === WEBVIEW CON CONFIGURAZIONE WEBKIT MODERNA + DEBUG ===
