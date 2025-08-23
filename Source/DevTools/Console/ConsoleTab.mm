@@ -1,5 +1,6 @@
 #import "ConsoleTab.h"
 #import "Platform/macOS/BrowserWindow.h"
+#import "UI/TabSystem/TabManager.h"  // ✨ Import completo invece di forward declaration
 #import "../Common/DevToolsStyles.h"
 #include <iostream>
 
@@ -43,10 +44,10 @@
     [clearButton.layer setBackgroundColor:[DevToolsStyles buttonBackgroundColor].CGColor];
     [clearButton.layer setCornerRadius:3];
     
-    NSButton* refreshButton = [[NSButton alloc] initWithFrame:NSMakeRect(80, 6, 60, 23)];
-    [refreshButton setTitle:@"Refresh"];
+    NSButton* refreshButton = [[NSButton alloc] initWithFrame:NSMakeRect(80, 6, 80, 23)];
+    [refreshButton setTitle:@"🕵️ Detective"];
     [refreshButton setBezelStyle:NSBezelStyleRounded];
-    [refreshButton setControlSize:NSControlSizeSmall];
+    [clearButton setControlSize:NSControlSizeSmall];
     [refreshButton setTarget:self];
     [refreshButton setAction:@selector(runDetectionAnalysis)];
     [refreshButton setWantsLayer:YES];
@@ -54,8 +55,8 @@
     [refreshButton.layer setCornerRadius:3];
     
     // Label con testo chiaro su sfondo scuro
-    NSTextField* infoLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(155, 10, 300, 16)];
-    [infoLabel setStringValue:@"MacBird Console - Dark Theme"];
+    NSTextField* infoLabel = [[NSTextField alloc] initWithFrame:NSMakeRect(175, 10, 300, 16)];
+    [infoLabel setStringValue:@"MacBird Detective Console - Professional Analysis"];
     [infoLabel setBezeled:NO];
     [infoLabel setDrawsBackground:NO];
     [infoLabel setEditable:NO];
@@ -103,14 +104,14 @@
     
     // Messaggi di benvenuto con colori console
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self logToConsole:@"🛠️ MacBird Developer Tools - Console" withColor:[DevToolsStyles accentTextColor]];
-        [self logToConsole:@"================================================" withColor:[DevToolsStyles secondaryTextColor]];
-        [self logToConsole:@"✅ Console tab loaded successfully" withColor:[DevToolsStyles successTextColor]];
+        [self logToConsole:@"🕵️ MacBird Detective Console - Professional Analysis" withColor:[DevToolsStyles accentTextColor]];
+        [self logToConsole:@"========================================================" withColor:[DevToolsStyles secondaryTextColor]];
+        [self logToConsole:@"✅ Professional detective system loaded" withColor:[DevToolsStyles successTextColor]];
         [self logToConsole:@"🎨 Chrome DevTools dark theme applied" withColor:[DevToolsStyles warningTextColor]];
-        [self logToConsole:@"📱 Ready for browser analysis" withColor:[DevToolsStyles primaryTextColor]];
+        [self logToConsole:@"🔍 Ready for comprehensive browser analysis" withColor:[DevToolsStyles primaryTextColor]];
         [self logToConsole:@"" withColor:nil];
-        [self logToConsole:@"💡 TIP: Click 'Refresh' to run detection analysis" withColor:[DevToolsStyles secondaryTextColor]];
-        [self logToConsole:@"🔍 TIP: Go to google.com and refresh to test detection" withColor:[DevToolsStyles secondaryTextColor]];
+        [self logToConsole:@"💡 TIP: Click '🕵️ Detective' for full Google recognition analysis" withColor:[DevToolsStyles secondaryTextColor]];
+        [self logToConsole:@"🎯 TIP: Go to google.com first, then run detective analysis" withColor:[DevToolsStyles secondaryTextColor]];
         [self logToConsole:@"" withColor:nil];
     });
     
@@ -123,25 +124,497 @@
 }
 
 - (void)runDetectionAnalysis {
-    [self logToConsole:@"🔍 Running simplified browser detection..."];
+    [self logToConsole:@"🕵️ Starting MacBird Detective Analysis..." withColor:[DevToolsStyles accentTextColor]];
+    [self logToConsole:@"================================================" withColor:[DevToolsStyles secondaryTextColor]];
     
-    // ✨ SCRIPT ULTRA-SEMPLIFICATO - TESTATO E FUNZIONANTE
-    NSString* detectionScript = @"navigator.userAgent";
-    
-    [self.browserWindow.webView evaluateJavaScript:detectionScript completionHandler:^(id result, NSError *error) {
+    // ✨ SCRIPT DETECTIVE SEMPLIFICATO - SENZA MESSAGE HANDLERS
+    NSString* simplifiedDetectionScript = @""
+    "try {"
+    "  console.log('🕵️ Detective: Starting analysis on ' + window.location.hostname);"
+    "  var macBirdDetective = {"
+    "    identity: {"
+    "      userAgent: navigator.userAgent,"
+    "      vendor: navigator.vendor,"
+    "      platform: navigator.platform,"
+    "      language: navigator.language,"
+    "      cookieEnabled: navigator.cookieEnabled,"
+    "      onLine: navigator.onLine"
+    "    },"
+    "    macbird: {"
+    "      detected: navigator.userAgent.includes('MacBird'),"
+    "      version: navigator.userAgent.match(/MacBird\\/(\\d+\\.\\d+\\.\\d+)/) ? navigator.userAgent.match(/MacBird\\/(\\d+\\.\\d+\\.\\d+)/)[1] : 'unknown',"
+    "      position: navigator.userAgent.indexOf('MacBird'),"
+    "      beforeSafari: navigator.userAgent.indexOf('MacBird') < navigator.userAgent.indexOf('Safari'),"
+    "      hasAPI: typeof window.macBird !== 'undefined',"
+    "      apiVersion: typeof window.macBird !== 'undefined' ? window.macBird.version : 'none'"
+    "    },"
+    "    webkit: {"
+    "      version: navigator.userAgent.match(/WebKit\\/(\\d+\\.\\d+\\.\\d+)/) ? navigator.userAgent.match(/WebKit\\/(\\d+\\.\\d+\\.\\d+)/)[1] : 'unknown',"
+    "      safari: navigator.userAgent.match(/Version\\/(\\d+\\.\\d+\\.?\\d*)/) ? navigator.userAgent.match(/Version\\/(\\d+\\.\\d+\\.?\\d*)/)[1] : 'unknown'"
+    "    },"
+    "    google: {"
+    "      onGoogle: window.location.hostname.includes('google'),"
+    "      searchBox: null,"
+    "      modernLayout: false,"
+    "      layoutScore: 0,"
+    "      features: {"
+    "        searchBox: false,"
+    "        modernRadius: false,"
+    "        flexLayout: false,"
+    "        advancedControls: false"
+    "      },"
+    "      details: {}"
+    "    },"
+    "    features: {"
+    "      webgl: !!window.WebGLRenderingContext,"
+    "      webgl2: !!window.WebGL2RenderingContext,"
+    "      serviceWorker: 'serviceWorker' in navigator,"
+    "      pushAPI: 'PushManager' in window,"
+    "      notifications: 'Notification' in window,"
+    "      geolocation: 'geolocation' in navigator,"
+    "      websockets: 'WebSocket' in window,"
+    "      localStorage: 'localStorage' in window,"
+    "      sessionStorage: 'sessionStorage' in window,"
+    "      indexedDB: 'indexedDB' in window,"
+    "      cssSupports: !!(window.CSS && window.CSS.supports),"
+    "      cssGrid: window.CSS && window.CSS.supports ? window.CSS.supports('display', 'grid') : false,"
+    "      flexbox: window.CSS && window.CSS.supports ? window.CSS.supports('display', 'flex') : false,"
+    "      backdropFilter: window.CSS && window.CSS.supports ? window.CSS.supports('backdrop-filter', 'blur(10px)') : false"
+    "    }"
+    "  };"
+    "  console.log('🕵️ Detective: Checking Google layout...');"
+    "  if (macBirdDetective.google.onGoogle) {"
+    "    var searchBox = document.querySelector('input[name=\"q\"]') || document.querySelector('.gLFyf') || document.querySelector('textarea[name=\"q\"]');"
+    "    console.log('🕵️ Detective: Search box found: ' + !!searchBox);"
+    "    macBirdDetective.google.searchBox = searchBox;"
+    "    if (searchBox) {"
+    "      console.log('🕵️ Detective: Getting styles for search box');"
+    "      var styles = getComputedStyle(searchBox);"
+    "      var borderRadius = styles.borderRadius || '0px';"
+    "      var padding = styles.padding || '0px';"
+    "      var display = styles.display || 'block';"
+    "      var boxShadow = styles.boxShadow || 'none';"
+    "      macBirdDetective.google.features.searchBox = true;"
+    "      macBirdDetective.google.features.modernRadius = borderRadius !== '0px';"
+    "      macBirdDetective.google.features.flexLayout = display.includes('flex');"
+    "      macBirdDetective.google.features.advancedControls = !!document.querySelector('.UUbT9');"
+    "      macBirdDetective.google.details = {"
+    "        borderRadius: borderRadius,"
+    "        padding: padding,"
+    "        display: display,"
+    "        boxShadow: boxShadow,"
+    "        width: styles.width,"
+    "        height: styles.height"
+    "      };"
+    "      var score = 0;"
+    "      if (borderRadius !== '0px') score += 30;"
+    "      if (boxShadow !== 'none') score += 20;"
+    "      if (display.includes('flex')) score += 15;"
+    "      if (parseInt(styles.fontSize) >= 14) score += 10;"
+    "      if (!!document.querySelector('.UUbT9')) score += 25;"
+    "      macBirdDetective.google.layoutScore = score;"
+    "      macBirdDetective.google.modernLayout = score >= 50;"
+    "    }"
+    "  }"
+    "  console.log('🕵️ Detective: Analysis complete, returning JSON');"
+    "  JSON.stringify(macBirdDetective, null, 2);"
+    "} catch (e) {"
+    "  console.error('🕵️ Detective: JS Error: ' + e.message);"
+    "  throw e;"
+    "}";
+
+    [self.browserWindow.tabManager.activeTab.webView evaluateJavaScript:simplifiedDetectionScript completionHandler:^(id result, NSError *error) {
         if (error) {
-            [self logToConsole:[NSString stringWithFormat:@"❌ Basic test failed: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
-        } else if (result) {
-            [self logToConsole:@"✅ JavaScript is working!" withColor:[DevToolsStyles successTextColor]];
-            [self logToConsole:[NSString stringWithFormat:@"📱 User Agent: %@", (NSString*)result]];
+            [self logToConsole:[NSString stringWithFormat:@"❌ Detective analysis failed: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
             
-            // Ora che sappiamo che funziona, proviamo uno script più complesso
-            [self runCompleteAnalysis];
+            // ✨ FALLBACK: Prova analisi di base se quella completa fallisce
+            [self runBasicAnalysis];
+        } else if (result) {
+            [self displayAdvancedDetectionResults:(NSString*)result];
         } else {
-            [self logToConsole:@"⚠️ No result returned" withColor:[DevToolsStyles warningTextColor]];
+            [self logToConsole:@"⚠️ No detection results returned" withColor:[DevToolsStyles warningTextColor]];
+            [self runBasicAnalysis];
         }
     }];
 }
+
+- (void)runBasicAnalysis {
+    [self logToConsole:@"🔧 Running simplified analysis..." withColor:[DevToolsStyles warningTextColor]];
+    
+    // ✨ ANALISI DI BASE SEMPLIFICATA
+    NSString* basicScript = @""
+        "var result = {}; "
+        "result.userAgent = navigator.userAgent; "
+        "result.platform = navigator.platform; "
+        "result.macBirdDetected = navigator.userAgent.includes('MacBird'); "
+        "result.macBirdVersion = navigator.userAgent.match(/MacBird\\/(\\d+\\.\\d+\\.\\d+)/) ? navigator.userAgent.match(/MacBird\\/(\\d+\\.\\d+\\.\\d+)/)[1] : 'unknown'; "
+        "result.webkitVersion = navigator.userAgent.match(/WebKit\\/(\\d+\\.\\d+\\.\\d+)/) ? navigator.userAgent.match(/WebKit\\/(\\d+\\.\\d+\\.\\d+)/)[1] : 'unknown'; "
+        "result.onGoogle = window.location.hostname.includes('google'); "
+        "result.currentURL = window.location.href; "
+        "result.pageTitle = document.title; "
+        "if (result.onGoogle) {"
+        "  var searchBox = document.querySelector('input[name=q]') || document.querySelector('.gLFyf'); "
+        "  result.googleSearchBox = !!searchBox; "
+        "  if (searchBox) {"
+        "    var styles = getComputedStyle(searchBox); "
+        "    result.googleModern = styles.borderRadius !== '0px'; "
+        "    result.googleBorderRadius = styles.borderRadius; "
+        "  }"
+        "}"
+        "JSON.stringify(result);";
+    
+    [self.browserWindow.tabManager.activeTab.webView evaluateJavaScript:basicScript completionHandler:^(id result, NSError *error) {
+        if (error) {
+            [self logToConsole:[NSString stringWithFormat:@"❌ Basic analysis also failed: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
+        } else if (result) {
+            [self displayBasicAnalysisResults:(NSString*)result];
+        }
+    }];
+}
+
+- (void)displayBasicAnalysisResults:(NSString*)jsonResult {
+    NSData* jsonData = [jsonResult dataUsingEncoding:NSUTF8StringEncoding];
+    NSError* error;
+    NSDictionary* analysis = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    
+    if (error) {
+        [self logToConsole:@"❌ JSON parsing error" withColor:[DevToolsStyles errorTextColor]];
+        return;
+    }
+    
+    [self logToConsole:@""];
+    [self logToConsole:@"🔍 ===== BASIC DETECTIVE REPORT =====" withColor:[DevToolsStyles accentTextColor]];
+    [self logToConsole:@""];
+    
+    // MacBird Detection
+    BOOL macBirdDetected = [analysis[@"macBirdDetected"] boolValue];
+    if (macBirdDetected) {
+        [self logToConsole:[NSString stringWithFormat:@"🐦 MacBird: ✅ DETECTED (v%@)", analysis[@"macBirdVersion"]] withColor:[DevToolsStyles successTextColor]];
+    } else {
+        [self logToConsole:@"🐦 MacBird: ❌ NOT DETECTED" withColor:[DevToolsStyles errorTextColor]];
+    }
+    
+    // Engine Info
+    [self logToConsole:[NSString stringWithFormat:@"🔧 WebKit: %@", analysis[@"webkitVersion"]]];
+    [self logToConsole:[NSString stringWithFormat:@"🖥️  Platform: %@", analysis[@"platform"]]];
+    
+    // Current Page
+    [self logToConsole:@""];
+    [self logToConsole:[NSString stringWithFormat:@"🌍 URL: %@", analysis[@"currentURL"]]];
+    [self logToConsole:[NSString stringWithFormat:@"📄 Title: %@", analysis[@"pageTitle"]]];
+    
+    // Google Analysis
+    BOOL onGoogle = [analysis[@"onGoogle"] boolValue];
+    if (onGoogle) {
+        [self logToConsole:@""];
+        [self logToConsole:@"🔍 GOOGLE ANALYSIS:" withColor:[DevToolsStyles accentTextColor]];
+        
+        BOOL googleSearchBox = [analysis[@"googleSearchBox"] boolValue];
+        [self logToConsole:[NSString stringWithFormat:@"   Search Box: %@", googleSearchBox ? @"✅ FOUND" : @"❌ NOT FOUND"]];
+        
+        if (googleSearchBox && analysis[@"googleModern"]) {
+            BOOL isModern = [analysis[@"googleModern"] boolValue];
+            NSString* status = isModern ? @"✅ MODERN LAYOUT" : @"❌ OLD LAYOUT";
+            NSColor* color = isModern ? [DevToolsStyles successTextColor] : [DevToolsStyles errorTextColor];
+            [self logToConsole:[NSString stringWithFormat:@"   Layout: %@", status] withColor:color];
+            [self logToConsole:[NSString stringWithFormat:@"   Border Radius: %@", analysis[@"googleBorderRadius"]]];
+            
+            if (isModern) {
+                [self logToConsole:@""];
+                [self logToConsole:@"🎉 GOOGLE RECOGNIZES MACBIRD AS MODERN!" withColor:[DevToolsStyles successTextColor]];
+            }
+        }
+    }
+    
+    [self logToConsole:@""];
+    [self logToConsole:@"🔍 ===== BASIC ANALYSIS COMPLETE =====" withColor:[DevToolsStyles successTextColor]];
+    [self logToConsole:@"💡 Simplified analysis completed successfully!" withColor:[DevToolsStyles secondaryTextColor]];
+    [self logToConsole:@""];
+}
+
+- (void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    if ([message.name isEqualToString:@"consoleLog"]) {
+        [self logToConsole:[NSString stringWithFormat:@"%@", message.body] withColor:[DevToolsStyles secondaryTextColor]];
+    }
+}
+
+- (void)displayAdvancedDetectionResults:(NSString*)jsonResult {
+    NSData* jsonData = [jsonResult dataUsingEncoding:NSUTF8StringEncoding];
+    NSError* error;
+    NSDictionary* detective = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    
+    if (error) {
+        [self logToConsole:@"❌ Detective JSON parsing error" withColor:[DevToolsStyles errorTextColor]];
+        return;
+    }
+    
+    [self logToConsole:@""];
+    [self logToConsole:@"🕵️ ===== MACBIRD DETECTIVE REPORT =====" withColor:[DevToolsStyles accentTextColor]];
+    
+    // ✨ MACBIRD IDENTITY ANALYSIS
+    NSDictionary* macbird = detective[@"macbird"];
+    [self logToConsole:@""];
+    [self logToConsole:@"🐦 MACBIRD IDENTITY STATUS:" withColor:[DevToolsStyles accentTextColor]];
+    
+    BOOL detected = [macbird[@"detected"] boolValue];
+    NSString* detectionStatus = detected ? @"✅ DETECTED" : @"❌ NOT DETECTED";
+    NSColor* detectionColor = detected ? [DevToolsStyles successTextColor] : [DevToolsStyles errorTextColor];
+    [self logToConsole:[NSString stringWithFormat:@"   Detection: %@", detectionStatus] withColor:detectionColor];
+    
+    if (detected) {
+        [self logToConsole:[NSString stringWithFormat:@"   Version: %@", macbird[@"version"]] withColor:[DevToolsStyles successTextColor]];
+        [self logToConsole:[NSString stringWithFormat:@"   Position: Character %@", macbird[@"position"]]];
+        
+        BOOL beforeSafari = [macbird[@"beforeSafari"] boolValue];
+        NSString* positionStatus = beforeSafari ? @"✅ BEFORE Safari (Prominent)" : @"⚠️ AFTER Safari";
+        NSColor* positionColor = beforeSafari ? [DevToolsStyles successTextColor] : [DevToolsStyles warningTextColor];
+        [self logToConsole:[NSString stringWithFormat:@"   Priority: %@", positionStatus] withColor:positionColor];
+        
+        BOOL hasAPI = [macbird[@"hasAPI"] boolValue];
+        NSString* apiStatus = hasAPI ? @"✅ AVAILABLE" : @"❌ MISSING";
+        [self logToConsole:[NSString stringWithFormat:@"   API: %@", apiStatus] withColor:hasAPI ? [DevToolsStyles successTextColor] : [DevToolsStyles errorTextColor]];
+    }
+    
+    // ✨ WEBKIT/SAFARI ANALYSIS
+    NSDictionary* webkit = detective[@"webkit"];
+    [self logToConsole:@""];
+    [self logToConsole:@"🔧 ENGINE COMPATIBILITY:" withColor:[DevToolsStyles accentTextColor]];
+    [self logToConsole:[NSString stringWithFormat:@"   WebKit: %@", webkit[@"version"]]];
+    [self logToConsole:[NSString stringWithFormat:@"   Safari: %@", webkit[@"safari"]]];
+    
+    // ✨ GOOGLE LAYOUT DETECTION (DETAILED)
+    NSDictionary* google = detective[@"google"];
+    BOOL onGoogle = [google[@"onGoogle"] boolValue];
+    
+    BOOL modernLayout = NO;
+    NSInteger layoutScore = 0;
+    
+    [self logToConsole:@""];
+    if (onGoogle) {
+        [self logToConsole:@"🔍 GOOGLE RECOGNITION ANALYSIS:" withColor:[DevToolsStyles accentTextColor]];
+        
+        modernLayout = [google[@"modernLayout"] boolValue];
+        layoutScore = [google[@"layoutScore"] integerValue];
+        
+        NSString* layoutStatus = modernLayout ? @"✅ MODERN LAYOUT" : @"❌ OLD LAYOUT";
+        NSColor* layoutColor = modernLayout ? [DevToolsStyles successTextColor] : [DevToolsStyles errorTextColor];
+        [self logToConsole:[NSString stringWithFormat:@"   Result: %@", layoutStatus] withColor:layoutColor];
+        [self logToConsole:[NSString stringWithFormat:@"   Score: %ld/100 points", (long)layoutScore] withColor:layoutColor];
+        
+        // Detailed features analysis
+        NSDictionary* features = google[@"features"];
+        [self logToConsole:@"   Features Detected:"];
+        [self logToConsole:[NSString stringWithFormat:@"     Search Box: %@", [features[@"searchBox"] boolValue] ? @"✅" : @"❌"]];
+        [self logToConsole:[NSString stringWithFormat:@"     Modern Radius: %@", [features[@"modernRadius"] boolValue] ? @"✅" : @"❌"]];
+        [self logToConsole:[NSString stringWithFormat:@"     Flex Layout: %@", [features[@"flexLayout"] boolValue] ? @"✅" : @"❌"]];
+        [self logToConsole:[NSString stringWithFormat:@"     Advanced UI: %@", [features[@"advancedControls"] boolValue] ? @"✅" : @"❌"]];
+        
+        // Technical details
+        NSDictionary* details = google[@"details"];
+        if (details && [details count] > 0) {
+            [self logToConsole:@"   Technical Details:"];
+            [self logToConsole:[NSString stringWithFormat:@"     Border-radius: %@", details[@"borderRadius"]]];
+            [self logToConsole:[NSString stringWithFormat:@"     Padding: %@", details[@"padding"]]];
+            [self logToConsole:[NSString stringWithFormat:@"     Box-shadow: %@", details[@"boxShadow"]]];
+        }
+        
+        // ✨ GOOGLE'S VERDICT
+        [self logToConsole:@""];
+        if (modernLayout) {
+            [self logToConsole:@"🎉 GOOGLE'S VERDICT: MacBird = MODERN BROWSER!" withColor:[DevToolsStyles successTextColor]];
+            [self logToConsole:@"✨ You get the full Google experience!" withColor:[DevToolsStyles successTextColor]];
+        } else {
+            [self logToConsole:@"⚠️ GOOGLE'S VERDICT: Needs improvement" withColor:[DevToolsStyles warningTextColor]];
+            [self logToConsole:@"🔍 Consider adjusting User-Agent strategy" withColor:[DevToolsStyles warningTextColor]];
+        }
+        
+    } else {
+        [self logToConsole:@"ℹ️ Not on Google - navigate to google.com to test" withColor:[DevToolsStyles secondaryTextColor]];
+    }
+    
+    // ✨ FEATURE CAPABILITY ANALYSIS
+    NSDictionary* features = detective[@"features"];
+    [self logToConsole:@""];
+    [self logToConsole:@"🚀 BROWSER CAPABILITIES REPORT:" withColor:[DevToolsStyles accentTextColor]];
+    
+    NSInteger supportedFeatures = 0;
+    NSInteger totalFeatures = [features count];
+    
+    // Count supported features
+    for (NSString* feature in features) {
+        if ([features[feature] boolValue]) {
+            supportedFeatures++;
+        }
+    }
+    
+    CGFloat percentage = (CGFloat)supportedFeatures / totalFeatures * 100;
+    NSColor* capabilityColor = percentage >= 90 ? [DevToolsStyles successTextColor] : 
+                              percentage >= 70 ? [DevToolsStyles warningTextColor] : 
+                                               [DevToolsStyles errorTextColor];
+    
+    [self logToConsole:[NSString stringWithFormat:@"   Modern Features: %ld/%ld (%.0f%%)", (long)supportedFeatures, (long)totalFeatures, percentage] withColor:capabilityColor];
+    
+    // Key features breakdown
+    NSArray* keyFeatures = @[@"webgl2", @"serviceWorker", @"webAssembly", @"intersectionObserver", @"cssGrid"];
+    for (NSString* feature in keyFeatures) {
+        BOOL supported = [features[feature] boolValue];
+        NSString* status = supported ? @"✅" : @"❌";
+        [self logToConsole:[NSString stringWithFormat:@"     %@ %@", status, feature]];
+    }
+    
+    // ✨ PERFORMANCE METRICS
+    NSDictionary* performance = detective[@"performance"];
+    if (performance) {
+        [self logToConsole:@""];
+        [self logToConsole:@"⚡ PERFORMANCE ANALYSIS:" withColor:[DevToolsStyles accentTextColor]];
+        
+        NSDictionary* memory = performance[@"memory"];
+        if (memory && ![memory isKindOfClass:[NSString class]]) {
+            [self logToConsole:[NSString stringWithFormat:@"   Memory Used: %@", memory[@"used"]]];
+            [self logToConsole:[NSString stringWithFormat:@"   Memory Total: %@", memory[@"total"]]];
+            [self logToConsole:[NSString stringWithFormat:@"   Memory Limit: %@", memory[@"limit"]]];
+        }
+        
+        NSDictionary* timing = performance[@"timing"];
+        if (timing && ![timing isKindOfClass:[NSString class]]) {
+            [self logToConsole:[NSString stringWithFormat:@"   Load Time: %@", timing[@"loadTime"]]];
+            [self logToConsole:[NSString stringWithFormat:@"   DOM Ready: %@", timing[@"domReady"]]];
+        }
+    }
+    
+    // ✨ OVERALL MACBIRD HEALTH SCORE
+    [self logToConsole:@""];
+    [self logToConsole:@"📊 MACBIRD HEALTH ASSESSMENT:" withColor:[DevToolsStyles accentTextColor]];
+    
+    NSInteger healthScore = 0;
+    NSMutableArray* healthFactors = [[NSMutableArray alloc] init];
+    
+    // Identity detection (25 points)
+    if (detected) {
+        healthScore += 25;
+        [healthFactors addObject:@"✅ Browser Identity"];
+    } else {
+        [healthFactors addObject:@"❌ Browser Identity"];
+    }
+    
+    // Modern capabilities (25 points)
+    if (percentage >= 85) {
+        healthScore += 25;
+        [healthFactors addObject:@"✅ Modern Features"];
+    } else if (percentage >= 70) {
+        healthScore += 15;
+        [healthFactors addObject:@"⚠️ Modern Features"];
+    } else {
+        [healthFactors addObject:@"❌ Modern Features"];
+    }
+    
+    // Google recognition (25 points)
+    if (onGoogle && modernLayout) {
+        healthScore += 25;
+        [healthFactors addObject:@"✅ Google Recognition"];
+    } else if (onGoogle && !modernLayout) {
+        healthScore += 10;
+        [healthFactors addObject:@"⚠️ Google Recognition"];
+    } else {
+        [healthFactors addObject:@"? Google Recognition (Not tested)"];
+    }
+    
+    // API availability (25 points)
+    BOOL hasAPI = [macbird[@"hasAPI"] boolValue];
+    if (hasAPI) {
+        healthScore += 25;
+        [healthFactors addObject:@"✅ MacBird API"];
+    } else {
+        [healthFactors addObject:@"❌ MacBird API"];
+    }
+    
+    // Health assessment
+    NSString* healthStatus;
+    NSColor* healthColor;
+    if (healthScore >= 85) {
+        healthStatus = @"🟢 EXCELLENT";
+        healthColor = [DevToolsStyles successTextColor];
+    } else if (healthScore >= 70) {
+        healthStatus = @"🟡 GOOD";
+        healthColor = [DevToolsStyles warningTextColor];
+    } else if (healthScore >= 50) {
+        healthStatus = @"🟠 FAIR";
+        healthColor = [DevToolsStyles warningTextColor];
+    } else {
+        healthStatus = @"🔴 NEEDS WORK";
+        healthColor = [DevToolsStyles errorTextColor];
+    }
+    
+    [self logToConsole:[NSString stringWithFormat:@"   Overall Score: %ld/100", (long)healthScore] withColor:healthColor];
+    [self logToConsole:[NSString stringWithFormat:@"   Status: %@", healthStatus] withColor:healthColor];
+    [self logToConsole:@"   Health Factors:"];
+    for (NSString* factor in healthFactors) {
+        [self logToConsole:[NSString stringWithFormat:@"     %@", factor]];
+    }
+    
+    // ✨ RECOMMENDATIONS
+    [self logToConsole:@""];
+    [self logToConsole:@"💡 DETECTIVE RECOMMENDATIONS:" withColor:[DevToolsStyles accentTextColor]];
+    
+    if (!detected) {
+        [self logToConsole:@"   🔧 Fix: MacBird identity injection failed" withColor:[DevToolsStyles errorTextColor]];
+    }
+    
+    if (percentage < 85) {
+        [self logToConsole:@"   🔧 Improve: Enable more modern web features" withColor:[DevToolsStyles warningTextColor]];
+    }
+    
+    if (onGoogle && !modernLayout) {
+        [self logToConsole:@"   🔧 Optimize: Adjust User-Agent for better Google compatibility" withColor:[DevToolsStyles warningTextColor]];
+    }
+    
+    if (!hasAPI) {
+        [self logToConsole:@"   🔧 Fix: MacBird JavaScript API not injected properly" withColor:[DevToolsStyles errorTextColor]];
+    }
+    
+    if (healthScore >= 85) {
+        [self logToConsole:@"   🎉 MacBird is performing excellently!" withColor:[DevToolsStyles successTextColor]];
+        [self logToConsole:@"   🚀 Ready for production use!" withColor:[DevToolsStyles successTextColor]];
+    }
+    
+    // ✨ USER AGENT ANALYSIS
+    [self logToConsole:@""];
+    [self logToConsole:@"🔍 USER-AGENT DETAILED ANALYSIS:" withColor:[DevToolsStyles accentTextColor]];
+    NSDictionary* identity = detective[@"identity"];
+    NSString* userAgent = identity[@"userAgent"];
+    
+    [self logToConsole:[NSString stringWithFormat:@"   Full UA: %@", userAgent]];
+    [self logToConsole:@"   Breakdown:"];
+    
+    // Parse User-Agent components
+    if ([userAgent containsString:@"MacBird"]) {
+        NSRange macbirdRange = [userAgent rangeOfString:@"MacBird"];
+        NSRange safariRange = [userAgent rangeOfString:@"Safari"];
+        
+        if (macbirdRange.location < safariRange.location) {
+            [self logToConsole:@"     ✅ MacBird positioned BEFORE Safari (Optimal)" withColor:[DevToolsStyles successTextColor]];
+        } else {
+            [self logToConsole:@"     ⚠️ MacBird positioned AFTER Safari" withColor:[DevToolsStyles warningTextColor]];
+        }
+    }
+    
+    if ([userAgent containsString:@"WebKit"]) {
+        [self logToConsole:@"     ✅ WebKit engine detected" withColor:[DevToolsStyles successTextColor]];
+    }
+    
+    if ([userAgent containsString:@"Safari"]) {
+        [self logToConsole:@"     ✅ Safari compatibility maintained" withColor:[DevToolsStyles successTextColor]];
+    }
+    
+    [self logToConsole:@""];
+    [self logToConsole:@"🕵️ ===== DETECTIVE ANALYSIS COMPLETE =====" withColor:[DevToolsStyles successTextColor]];
+    [self logToConsole:@""];
+    [self logToConsole:@"💡 TIP: Test on different websites to gather more data!" withColor:[DevToolsStyles secondaryTextColor]];
+    [self logToConsole:@"🔍 TIP: Try YouTube, Twitter, GitHub for comprehensive testing!" withColor:[DevToolsStyles secondaryTextColor]];
+    [self logToConsole:@""];
+}
+
+// ========== METODI LEGACY PER COMPATIBILITÀ ==========
 
 - (void)runCompleteAnalysis {
     [self logToConsole:@"🔧 Running complete analysis..."];
@@ -262,194 +735,11 @@
     [self logToConsole:@"=== ✅ DETECTION COMPLETE ===" withColor:[DevToolsStyles successTextColor]];
 }
 
-- (void)displayOptimizedResults:(NSString*)analysisJSON {
-    NSData* jsonData = [analysisJSON dataUsingEncoding:NSUTF8StringEncoding];
-    NSError* error;
-    NSDictionary* analysis = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
-    
-    if (error) {
-        [self logToConsole:@"❌ Error parsing analysis results" withColor:[DevToolsStyles errorTextColor]];
-        return;
-    }
-    
-    [self logToConsole:@""];
-    [self logToConsole:@"=== 🔍 MACBIRD BROWSER STATUS ===" withColor:[DevToolsStyles accentTextColor]];
-    
-    // ✨ MACBIRD IDENTITY CHECK
-    NSString* macBirdVersion = analysis[@"macBirdVersion"];
-    if (macBirdVersion && ![macBirdVersion isEqualToString:@"unknown"]) {
-        [self logToConsole:[NSString stringWithFormat:@"🐦 MacBird Version: %@", macBirdVersion] withColor:[DevToolsStyles successTextColor]];
-        [self logToConsole:@"✅ MacBird identity system: WORKING" withColor:[DevToolsStyles successTextColor]];
-    } else {
-        [self logToConsole:@"⚠️ MacBird version: NOT DETECTED" withColor:[DevToolsStyles warningTextColor]];
-    }
-    
-    [self logToConsole:[NSString stringWithFormat:@"🔧 WebKit: %@", analysis[@"webkitVersion"]]];
-    [self logToConsole:[NSString stringWithFormat:@"🌐 Safari: %@", analysis[@"safariVersion"]]];
-    [self logToConsole:[NSString stringWithFormat:@"🌍 Current URL: %@", analysis[@"currentURL"]]];
-    [self logToConsole:[NSString stringWithFormat:@"📄 Page Title: %@", analysis[@"pageTitle"]]];
-    
-    // ✨ FEATURE SUMMARY (SIMPLIFIED)
-    [self logToConsole:@""];
-    [self logToConsole:@"=== ✅ BROWSER CAPABILITIES ===" withColor:[DevToolsStyles accentTextColor]];
-    NSDictionary* features = analysis[@"features"];
-    NSInteger supportedCount = 0;
-    NSInteger totalCount = [features count];
-    
-    for (NSString* feature in features) {
-        if ([features[feature] boolValue]) {
-            supportedCount++;
-        }
-    }
-    
-    CGFloat percentage = (CGFloat)supportedCount / totalCount * 100;
-    NSColor* capabilityColor = percentage >= 80 ? [DevToolsStyles successTextColor] : 
-                              percentage >= 60 ? [DevToolsStyles warningTextColor] : 
-                                               [DevToolsStyles errorTextColor];
-    
-    [self logToConsole:[NSString stringWithFormat:@"📊 Modern features supported: %ld/%ld (%.0f%%)", (long)supportedCount, (long)totalCount, percentage] withColor:capabilityColor];
-    
-    // Show key features
-    NSArray* keyFeatures = @[@"cssGrid", @"cssFlexbox", @"webGL", @"fetchAPI", @"serviceWorker"];
-    for (NSString* feature in keyFeatures) {
-        BOOL supported = [features[feature] boolValue];
-        NSString* status = supported ? @"✅" : @"❌";
-        [self logToConsole:[NSString stringWithFormat:@"  %@ %@", status, feature]];
-    }
-    
-    // ✨ GOOGLE DETECTION RESULTS
-    if (analysis[@"googleAnalysis"]) {
-        [self logToConsole:@""];
-        [self logToConsole:@"=== 🔍 GOOGLE RECOGNITION TEST ===" withColor:[DevToolsStyles accentTextColor]];
-        NSDictionary* google = analysis[@"googleAnalysis"];
-        
-        BOOL isModern = [google[@"modernLayout"] boolValue];
-        NSString* modernStatus = isModern ? @"✅ MODERN LAYOUT" : @"❌ OLD LAYOUT";
-        NSColor* modernColor = isModern ? [DevToolsStyles successTextColor] : [DevToolsStyles errorTextColor];
-        
-        [self logToConsole:[NSString stringWithFormat:@"🎨 Layout detected: %@", modernStatus] withColor:modernColor];
-        [self logToConsole:[NSString stringWithFormat:@"🎯 Detection confidence: %@", google[@"confidence"]]];
-        [self logToConsole:[NSString stringWithFormat:@"📊 Modern score: %@/%@", google[@"modernScore"], google[@"maxScore"]]];
-        [self logToConsole:[NSString stringWithFormat:@"📄 Page type: %@", google[@"pageType"]]];
-        
-        // Technical details
-        if (google[@"details"]) {
-            NSDictionary* details = google[@"details"];
-            [self logToConsole:[NSString stringWithFormat:@"📐 Search box border-radius: %@", details[@"borderRadius"]]];
-            [self logToConsole:[NSString stringWithFormat:@"📏 Search box padding: %@", details[@"padding"]]];
-        }
-        
-        // Final verdict
-        [self logToConsole:@""];
-        if (isModern) {
-            [self logToConsole:@"🎉 VERDICT: Google serves MacBird MODERN layout!" withColor:[DevToolsStyles successTextColor]];
-            [self logToConsole:@"✨ MacBird browser identity: SUCCESSFUL" withColor:[DevToolsStyles successTextColor]];
-        } else {
-            [self logToConsole:@"⚠️ VERDICT: Google serves OLD layout" withColor:[DevToolsStyles warningTextColor]];
-            [self logToConsole:@"🔍 This might need further investigation" withColor:[DevToolsStyles warningTextColor]];
-        }
-    }
-    
-    // ✨ OVERALL BROWSER HEALTH
-    [self logToConsole:@""];
-    [self logToConsole:@"=== 📊 MACBIRD HEALTH STATUS ===" withColor:[DevToolsStyles accentTextColor]];
-    
-    BOOL hasIdentity = macBirdVersion && ![macBirdVersion isEqualToString:@"unknown"];
-    BOOL hasGoodFeatures = percentage >= 80;
-    BOOL hasModernGoogle = analysis[@"googleAnalysis"] && [analysis[@"googleAnalysis"][@"modernLayout"] boolValue];
-    
-    NSInteger healthScore = (hasIdentity ? 1 : 0) + (hasGoodFeatures ? 1 : 0) + (hasModernGoogle ? 1 : 0);
-    
-    NSString* healthStatus;
-    NSColor* healthColor;
-    switch (healthScore) {
-        case 3:
-            healthStatus = @"🟢 EXCELLENT";
-            healthColor = [DevToolsStyles successTextColor];
-            break;
-        case 2:
-            healthStatus = @"🟡 GOOD";
-            healthColor = [DevToolsStyles warningTextColor];
-            break;
-        default:
-            healthStatus = @"🔴 NEEDS WORK";
-            healthColor = [DevToolsStyles errorTextColor];
-            break;
-    }
-    
-    [self logToConsole:[NSString stringWithFormat:@"🏥 Browser health: %@", healthStatus] withColor:healthColor];
-    [self logToConsole:[NSString stringWithFormat:@"📈 Health score: %ld/3", (long)healthScore]];
-    
-    [self logToConsole:@""];
-    [self logToConsole:@"=== ✅ ANALYSIS COMPLETE ===" withColor:[DevToolsStyles successTextColor]];
-    [self logToConsole:@""];
-}
-
-- (void)displayAnalysisResults:(NSString*)analysisJSON {
-    NSData* jsonData = [analysisJSON dataUsingEncoding:NSUTF8StringEncoding];
-    NSError* error;
-    NSDictionary* analysis = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
-    
-    if (error) {
-        [self logToConsole:@"❌ Error parsing analysis results" withColor:[DevToolsStyles errorTextColor]];
-        return;
-    }
-    
-    [self logToConsole:@""];
-    [self logToConsole:@"=== 🔍 BROWSER ANALYSIS RESULTS ===" withColor:[DevToolsStyles accentTextColor]];
-    [self logToConsole:[NSString stringWithFormat:@"📱 User Agent: %@", analysis[@"userAgent"]]];
-    [self logToConsole:[NSString stringWithFormat:@"🖥️  Platform: %@", analysis[@"platform"]]];
-    [self logToConsole:[NSString stringWithFormat:@"🔧 WebKit Version: %@", analysis[@"webkitVersion"]]];
-    [self logToConsole:[NSString stringWithFormat:@"🌐 Safari Version: %@", analysis[@"safariVersion"]]];
-    
-    [self logToConsole:@""];
-    [self logToConsole:@"=== ✅ FEATURE SUPPORT ANALYSIS ===" withColor:[DevToolsStyles accentTextColor]];
-    NSDictionary* features = analysis[@"features"];
-    for (NSString* feature in features) {
-        BOOL supported = [features[feature] boolValue];
-        NSString* status = supported ? @"✅ SUPPORTED" : @"❌ NOT SUPPORTED";
-        NSString* paddedFeature = [feature stringByPaddingToLength:20 withString:@" " startingAtIndex:0];
-        NSColor* color = supported ? [DevToolsStyles successTextColor] : [DevToolsStyles errorTextColor];
-        [self logToConsole:[NSString stringWithFormat:@"  %@ → %@", paddedFeature, status] withColor:color];
-    }
-    
-    if (analysis[@"googleAnalysis"]) {
-        [self logToConsole:@""];
-        [self logToConsole:@"=== 🔍 GOOGLE PAGE DETECTION ===" withColor:[DevToolsStyles accentTextColor]];
-        NSDictionary* google = analysis[@"googleAnalysis"];
-        NSString* searchBoxStatus = [google[@"searchBoxFound"] boolValue] ? @"✅ FOUND" : @"❌ NOT FOUND";
-        NSString* modernStatus = [google[@"modernLayout"] boolValue] ? @"✅ MODERN LAYOUT" : @"❌ OLD LAYOUT";
-        
-        [self logToConsole:[NSString stringWithFormat:@"  🔍 Search box detected → %@", searchBoxStatus]];
-        [self logToConsole:[NSString stringWithFormat:@"  🎨 Layout type detected → %@", modernStatus]];
-        [self logToConsole:[NSString stringWithFormat:@"  📐 Border radius value → %@", google[@"searchBoxBorderRadius"]]];
-        
-        if ([google[@"modernLayout"] boolValue]) {
-            [self logToConsole:@"  🎉 Google recognizes us as MODERN browser!" withColor:[DevToolsStyles successTextColor]];
-        } else {
-            [self logToConsole:@"  ⚠️  Google serves us OLD layout - needs investigation" withColor:[DevToolsStyles warningTextColor]];
-        }
-    }
-    
-    NSDictionary* screen = analysis[@"screenInfo"];
-    [self logToConsole:@""];
-    [self logToConsole:@"=== 📱 DEVICE & DISPLAY INFO ===" withColor:[DevToolsStyles accentTextColor]];
-    [self logToConsole:[NSString stringWithFormat:@"  📺 Screen Resolution → %@x%@", screen[@"width"], screen[@"height"]]];
-    [self logToConsole:[NSString stringWithFormat:@"  🔍 Pixel Ratio → %@x", screen[@"pixelRatio"]]];
-    [self logToConsole:[NSString stringWithFormat:@"  🎨 Color Depth → %@ bits", screen[@"colorDepth"]]];
-    
-    [self logToConsole:@""];
-    [self logToConsole:@"=== ✅ ANALYSIS COMPLETE ===" withColor:[DevToolsStyles successTextColor]];
-    [self logToConsole:@"💡 TIP: Check Elements tab for page source" withColor:[DevToolsStyles secondaryTextColor]];
-    [self logToConsole:@"🔍 TIP: Go to google.com to test Google detection" withColor:[DevToolsStyles secondaryTextColor]];
-    [self logToConsole:@""];
-}
-
 - (void)clearConsole {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.consoleOutput setString:@""];
-        [self logToConsole:@"🛠️ MacBird Developer Tools - Console" withColor:[DevToolsStyles accentTextColor]];
-        [self logToConsole:@"================================================" withColor:[DevToolsStyles secondaryTextColor]];
+        [self logToConsole:@"🕵️ MacBird Detective Console - Professional Analysis" withColor:[DevToolsStyles accentTextColor]];
+        [self logToConsole:@"========================================================" withColor:[DevToolsStyles secondaryTextColor]];
         [self logToConsole:@"✅ Console cleared" withColor:[DevToolsStyles successTextColor]];
         [self logToConsole:@""];
     });

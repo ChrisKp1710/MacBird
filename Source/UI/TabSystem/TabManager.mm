@@ -1,6 +1,7 @@
 #import "TabManager.h"
 #import "Platform/macOS/BrowserWindow.h"
-#import "Core/Browser/BrowserInfo.h" 
+#import "Core/Browser/BrowserInfo.h"
+#import "DevTools/DevToolsManager.h" // Aggiungi questa riga
 #include <iostream>
 
 @implementation TabManager
@@ -23,13 +24,13 @@
         // Crea la prima tab automaticamente
         [self createNewTab];
         
-        std::cout << "📑 TabManager initialized with isolated tabs - Ready for multiple tabs!" << std::endl;
+        std::cout << "📑 TabManager initialized with Professional Identity System!" << std::endl;
     }
     return self;
 }
 
 - (void)createNewTab {
-    std::cout << "📑 Creating new isolated tab..." << std::endl;
+    std::cout << "📑 Creating new professional tab..." << std::endl;
     
     // Crea la nuova tab
     Tab* newTab = [[Tab alloc] init];
@@ -38,7 +39,7 @@
     newTab.isOnWelcomePage = YES;
     newTab.tabId = self.nextTabId++;
     
-    // Crea la WebView per questa tab
+    // Crea la WebView per questa tab CON IDENTITY SYSTEM ENHANCED
     newTab.webView = [self createWebView];
     [newTab.webView setHidden:YES]; // Nascondi inizialmente
     [self.webViewContainer addSubview:newTab.webView];
@@ -58,75 +59,174 @@
     // Aggiorna il layout delle tab
     [self updateTabLayout];
     
-    std::cout << "✅ New isolated tab created! Total tabs: " << [self.tabs count] << " (Active: Tab " << newTab.tabId << ")" << std::endl;
+    std::cout << "✅ Professional tab created! Total: " << [self.tabs count] << " (Active: Tab " << newTab.tabId << ")" << std::endl;
 }
 
 - (WKWebView*)createWebView {
-    // ✨ CONFIGURAZIONE MACBIRD IDENTITY
+    // ✨ CONFIGURAZIONE MACBIRD IDENTITY ENHANCED
     WKWebViewConfiguration* config = [[WKWebViewConfiguration alloc] init];
     
-    // ✅ CONFIGURAZIONE BASE
+    // ✅ CONFIGURAZIONE BASE OTTIMIZZATA
     if (@available(macOS 10.15, *)) {
         config.preferences.fraudulentWebsiteWarningEnabled = YES;
         config.preferences.tabFocusesLinks = YES;
-        // JavaScript è abilitato di default nelle WebView moderne
+        config.preferences.javaScriptCanOpenWindowsAutomatically = YES;
     }
 
     // ✨ CONFIGURAZIONE MODERNA JAVASCRIPT (macOS 11.0+)
     if (@available(macOS 11.0, *)) {
         config.defaultWebpagePreferences.allowsContentJavaScript = YES;
-        config.preferences.javaScriptCanOpenWindowsAutomatically = YES;
-    } else {
-        // Fallback per versioni precedenti
-        config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
     }
     
-    // ✨ SCRIPT MACBIRD IDENTITY INJECTION
+    // ✨ MACBIRD IDENTITY INJECTION SCRIPT - ENHANCED VERSION
     WKUserContentController* userContentController = [[WKUserContentController alloc] init];
     
     NSString* macBirdIdentityScript = [NSString stringWithFormat:@""
-        "// ✨ MACBIRD BROWSER IDENTITY INJECTION"
-        "// Questo script definisce MacBird come browser unico"
+        "// ✨ MACBIRD BROWSER IDENTITY INJECTION - ENHANCED V2.0"
+        "// Professional browser identity system with full compatibility"
         ""
-        "// ✨ OVERRIDE USER AGENT CON MACBIRD IDENTITY"
+        "console.log('🐦 MacBird Identity System Loading...');"
+        ""
+        "// ✨ ENHANCED USER AGENT OVERRIDE"
         "Object.defineProperty(navigator, 'userAgent', {"
-        "  get: () => '%@'"
+        "  get: () => '%@',"
+        "  configurable: false,"
+        "  enumerable: true"
         "});"
         ""
-        "// ✨ MACBIRD BROWSER IDENTIFICATION"
+        "// ✨ BROWSER VENDOR IDENTIFICATION"
         "Object.defineProperty(navigator, 'vendor', {"
-        "  get: () => 'Apple Computer, Inc.'"
+        "  get: () => 'Apple Computer, Inc.',"
+        "  configurable: false,"
+        "  enumerable: true"
         "});"
         ""
         "Object.defineProperty(navigator, 'platform', {"
-        "  get: () => '%@'"
+        "  get: () => '%@',"
+        "  configurable: false,"
+        "  enumerable: true"
         "});"
         ""
-        "// ✨ MACBIRD UNIQUE FEATURES API"
-        "window.macBird = {"
+        "// ✨ MACBIRD PROFESSIONAL API"
+        "window.macBird = Object.freeze({"
+        "  // Core Identity"
         "  name: '%@',"
         "  version: '%@',"
         "  build: '%@',"
+        "  buildNumber: '%@',"
         "  codename: '%@',"
-        "  features: %@,"
+        "  fullName: '%@',"
+        "  "
+        "  // Status Flags"
         "  isMacBird: true,"
         "  isWebKit: true,"
-        "  supportedFeatures: function() {"
+        "  isModern: true,"
+        "  isNative: true,"
+        "  "
+        "  // Platform Info"
+        "  platform: {"
+        "    name: 'macOS',"
+        "    architecture: '%@',"
+        "    hardware: '%@'"
+        "  },"
+        "  "
+        "  // Engine Info"
+        "  engine: {"
+        "    webkit: '%@',"
+        "    safari: '%@',"
+        "    compatibility: 'full'"
+        "  },"
+        "  "
+        "  // Feature Set"
+        "  features: %@,"
+        "  "
+        "  // ✨ PROFESSIONAL API METHODS"
+        "  getVersion: function() {"
+        "    return this.version;"
+        "  },"
+        "  "
+        "  getBuild: function() {"
+        "    return this.build + ' (' + this.buildNumber + ')';"
+        "  },"
+        "  "
+        "  getFullName: function() {"
+        "    return this.fullName;"
+        "  },"
+        "  "
+        "  getSupportedFeatures: function() {"
         "    return Object.keys(this.features).filter(key => this.features[key]);"
         "  },"
+        "  "
         "  hasFeature: function(feature) {"
         "    return this.features[feature] === true;"
+        "  },"
+        "  "
+        "  getCapabilities: function() {"
+        "    const supported = this.getSupportedFeatures();"
+        "    const total = Object.keys(this.features).length;"
+        "    return {"
+        "      supported: supported,"
+        "      count: supported.length,"
+        "      total: total,"
+        "      percentage: Math.round((supported.length / total) * 100)"
+        "    };"
+        "  },"
+        "  "
+        "  getUserAgent: function() {"
+        "    return navigator.userAgent;"
+        "  },"
+        "  "
+        "  getPlatformInfo: function() {"
+        "    return {"
+        "      userAgent: navigator.userAgent,"
+        "      vendor: navigator.vendor,"
+        "      platform: navigator.platform,"
+        "      language: navigator.language,"
+        "      languages: navigator.languages,"
+        "      cookieEnabled: navigator.cookieEnabled,"
+        "      onLine: navigator.onLine,"
+        "      hardwareConcurrency: navigator.hardwareConcurrency"
+        "    };"
+        "  },"
+        "  "
+        "  // ✨ DETECTION METHODS"
+        "  isRecognizedBy: function(siteName) {"
+        "    // Future implementation for site-specific detection"
+        "    return 'unknown';"
+        "  },"
+        "  "
+        "  getCompatibilityScore: function() {"
+        "    const features = this.getCapabilities();"
+        "    let score = features.percentage;"
+        "    "
+        "    // Bonus points for modern browser features"
+        "    if (this.hasFeature('webgl2')) score += 5;"
+        "    if (this.hasFeature('serviceworker')) score += 5;"
+        "    if (this.hasFeature('webassembly')) score += 5;"
+        "    if (this.hasFeature('cssgrid')) score += 5;"
+        "    "
+        "    return Math.min(100, score);"
         "  }"
-        "};"
+        "});"
         ""
-        "// ✨ POLYFILL CSS.supports SE MANCANTE"
+        "// ✨ ENHANCED CSS.supports POLYFILL"
         "if (window.CSS && !CSS.supports) {"
         "  Object.defineProperty(CSS, 'supports', {"
         "    value: function(property, value) {"
+        "      if (arguments.length === 1) {"
+        "        // CSS.supports('display: flex')"
+        "        const declaration = property.split(':');"
+        "        if (declaration.length === 2) {"
+        "          return CSS.supports(declaration[0].trim(), declaration[1].trim());"
+        "        }"
+        "        return false;"
+        "      }"
+        "      "
         "      try {"
         "        const testElement = document.createElement('div');"
         "        testElement.style.setProperty(property, value);"
-        "        return testElement.style.getPropertyValue(property) !== '';"
+        "        const computed = window.getComputedStyle(testElement);"
+        "        return computed.getPropertyValue(property) !== '';"
         "      } catch (e) {"
         "        return false;"
         "      }"
@@ -136,19 +236,70 @@
         "  });"
         "}"
         ""
-        "console.log('🐦 MacBird Browser Identity loaded - Version %@ (%@)');"
-        "console.log('✅ MacBird API available at window.macBird');"
-        "console.log('🔧 Supported features:', window.macBird.supportedFeatures());",
+        "// ✨ ENHANCED FEATURE DETECTION"
+        "window.macBird.detectFeatures = function() {"
+        "  return {"
+        "    // Graphics"
+        "    webgl: !!window.WebGLRenderingContext,"
+        "    webgl2: !!window.WebGL2RenderingContext,"
+        "    canvas: !!window.CanvasRenderingContext2D,"
+        "    "
+        "    // APIs"
+        "    serviceworker: 'serviceWorker' in navigator,"
+        "    pushapi: 'PushManager' in window,"
+        "    notifications: 'Notification' in window,"
+        "    geolocation: 'geolocation' in navigator,"
+        "    websockets: 'WebSocket' in window,"
+        "    webassembly: 'WebAssembly' in window,"
+        "    "
+        "    // Storage"
+        "    localStorage: 'localStorage' in window,"
+        "    sessionStorage: 'sessionStorage' in window,"
+        "    indexedDB: 'indexedDB' in window,"
+        "    "
+        "    // Workers"
+        "    webWorkers: 'Worker' in window,"
+        "    sharedWorkers: 'SharedWorker' in window,"
+        "    "
+        "    // Observers"
+        "    intersectionObserver: 'IntersectionObserver' in window,"
+        "    resizeObserver: 'ResizeObserver' in window,"
+        "    mutationObserver: 'MutationObserver' in window,"
+        "    performanceObserver: 'PerformanceObserver' in window,"
+        "    "
+        "    // CSS"
+        "    cssSupports: !!(window.CSS && CSS.supports),"
+        "    cssGrid: CSS.supports ? CSS.supports('display', 'grid') : false,"
+        "    flexbox: CSS.supports ? CSS.supports('display', 'flex') : false,"
+        "    customProperties: CSS.supports ? CSS.supports('--test', 'red') : false,"
+        "    backdropFilter: CSS.supports ? CSS.supports('backdrop-filter', 'blur(10px)') : false"
+        "  };"
+        "};"
+        ""
+        "// ✨ CONSOLE STARTUP MESSAGE"
+        "console.log('🐦 MacBird Browser Identity System v2.0 Loaded');"
+        "console.log('✅ Browser:', window.macBird.getFullName());"
+        "console.log('🔧 Engine:', 'WebKit ' + window.macBird.engine.webkit);"
+        "console.log('🎯 Compatibility Score:', window.macBird.getCompatibilityScore() + '/100');"
+        "console.log('📊 Features:', window.macBird.getSupportedFeatures().length + ' supported');"
+        "console.log('🌐 User-Agent:', navigator.userAgent);"
+        "console.log('💡 API available at: window.macBird');"
+        "console.log('===============================================');"
+        "",
         
-        [BrowserInfo compatibilityUserAgent],
-        [BrowserInfo platformInfo],
-        [BrowserInfo browserName],
-        [BrowserInfo browserVersion], 
-        [BrowserInfo browserBuild],
-        [BrowserInfo browserCodename],
-        [self featuresJSONString],
-        [BrowserInfo browserVersion],
-        [BrowserInfo browserCodename]
+        [BrowserInfo compatibilityUserAgent],  // User Agent
+        [BrowserInfo platformInfo],            // Platform
+        [BrowserInfo browserName],             // Name
+        [BrowserInfo browserVersion],          // Version
+        [BrowserInfo browserBuild],            // Build
+        @"20250125001",                        // Build Number (from Enhanced BrowserInfo)
+        [BrowserInfo browserCodename],         // Codename
+        [NSString stringWithFormat:@"%@ %@ (%@)", [BrowserInfo browserName], [BrowserInfo browserVersion], [BrowserInfo browserCodename]], // Full Name
+        [BrowserInfo architecture],            // Architecture
+        @"Apple Silicon",                      // Hardware (Enhanced)
+        [BrowserInfo webKitVersion],           // WebKit
+        [BrowserInfo safariVersion],           // Safari
+        [self featuresJSONString]              // Features
     ];
     
     WKUserScript* macBirdScript = [[WKUserScript alloc] initWithSource:macBirdIdentityScript 
@@ -156,13 +307,21 @@
                                                       forMainFrameOnly:NO];
     [userContentController addUserScript:macBirdScript];
     
+    // ✨ AGGIUNGI MESSAGE HANDLER PER CONSOLE LOG
+    // TODO: Implementare WKScriptMessageHandler in ConsoleTab
+    // [userContentController addScriptMessageHandler:self.browserWindow.devToolsManager.consoleTab name:@"consoleLog"];
+    
     config.userContentController = userContentController;
     
-    // ✨ CONFIGURAZIONE DATASTORE 
+    // ✨ CONFIGURAZIONE DATASTORE OTTIMIZZATA
     config.processPool = self.sharedProcessPool;
     config.websiteDataStore = [WKWebsiteDataStore nonPersistentDataStore];
     
-    // Crea la WebView con la configurazione
+    // ✨ CONFIGURAZIONI AVANZATE
+    config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
+    config.allowsAirPlayForMediaPlayback = YES;
+    
+    // Crea la WebView con configurazione ottimizzata
     NSRect webViewFrame = [self.webViewContainer bounds];
     WKWebView* webView = [[WKWebView alloc] initWithFrame:webViewFrame configuration:config];
     [webView setWantsLayer:YES];
@@ -170,14 +329,17 @@
     [webView.layer setMasksToBounds:YES];
     [webView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
-    // ✨ IMPOSTA MACBIRD USER AGENT SULLA WEBVIEW
+    // ✨ IMPOSTA USER AGENT ENHANCED - MACBIRD PROMINENTE
     [webView setCustomUserAgent:[BrowserInfo compatibilityUserAgent]];
     
-    // Imposta il BrowserWindow come delegate per tutte le WebView
+    // Imposta delegate
     [webView setNavigationDelegate:self.browserWindow];
     [webView setUIDelegate:self.browserWindow];
     
-    std::cout << "🐦 Created MacBird WebView with authentic identity!" << std::endl;
+    std::cout << "🐦 Created Professional MacBird WebView!" << std::endl;
+    std::cout << "✨ User-Agent: " << [[BrowserInfo compatibilityUserAgent] UTF8String] << std::endl;
+    std::cout << "🎯 Identity: MacBird positioned PROMINENTLY before Safari" << std::endl;
+    std::cout << "🔧 Features: Enhanced API with professional capabilities" << std::endl;
     
     return webView;
 }
@@ -227,7 +389,7 @@
     [self.tabBarContainer addSubview:tabButton];
     [self.tabBarContainer addSubview:closeButton];
     
-    std::cout << "🎨 Tab button created for Tab " << tab.tabId << " at position " << xPosition << std::endl;
+    std::cout << "🎨 Professional tab button created for Tab " << tab.tabId << " at position " << xPosition << std::endl;
 }
 
 - (void)tabButtonClicked:(NSButton*)sender {
@@ -276,7 +438,7 @@
     // Mostra la WebView della nuova tab
     [tab.webView setHidden:NO];
     
-    // Aggiorna il colore del pulsante tab attivo (viola)
+    // Aggiorna il colore del pulsante tab attivo (viola professionale)
     [tab.tabButton.layer setBackgroundColor:[NSColor colorWithRed:0.4 green:0.3 blue:0.8 alpha:1.0].CGColor];
     
     // Aggiorna la WebView nel BrowserWindow per i delegate methods
@@ -378,62 +540,156 @@
 }
 
 - (void)loadWelcomePageInTab:(Tab*)tab {
+    // ✨ ENHANCED WELCOME PAGE CON MACBIRD API INTEGRATION
     NSString* welcomeHTML = [NSString stringWithFormat:@"<!DOCTYPE html>"
-    "<html><head>"
-    "<meta charset='UTF-8'>"
-    "<meta name='viewport' content='width=device-width, initial-scale=1.0'>"
-    "<title>MacBird Browser</title>"
+    "<html lang=\"en\"><head>"
+    "<meta charset=\"UTF-8\">"
+    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"
+    "<title>MacBird Browser - Professional</title>"
     "<style>"
     "* { margin: 0; padding: 0; box-sizing: border-box; }"
-    "body { "
-    "  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;"
+    "body {"
+    "  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Helvetica, sans-serif;"
     "  background: linear-gradient(135deg, #667eea 0%%, #764ba2 100%%);"
     "  color: white; height: 100vh; display: flex; align-items: center; justify-content: center;"
-    "  text-align: center;"
+    "  text-align: center; overflow: hidden; position: relative;"
     "}"
-    ".container { max-width: 600px; }"
-    ".logo { font-size: 4rem; font-weight: 300; margin-bottom: 1rem; }"
-    ".tagline { font-size: 1.5rem; opacity: 0.9; margin-bottom: 2rem; font-weight: 300; }"
-    ".search-container { margin: 2rem 0; }"
-    ".search-box { "
-    "  width: 100%%; padding: 1rem; font-size: 1.1rem; border: none; border-radius: 50px;"
-    "  background: rgba(255,255,255,0.15); color: white; backdrop-filter: blur(10px);"
-    "  text-align: center; outline: none;"
-    "}"
-    ".search-box::placeholder { color: rgba(255,255,255,0.7); }"
-    ".quick-links { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }"
-    ".quick-link { "
-    "  padding: 0.5rem 1rem; background: rgba(255,255,255,0.2); border-radius: 25px;"
-    "  text-decoration: none; color: white; transition: all 0.3s ease;"
-    "}"
-    ".quick-link:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }"
-    ".tab-info { position: absolute; top: 20px; right: 20px; font-size: 0.9rem; opacity: 0.7; }"
+    ".particles { position: absolute; width: 100%%; height: 100%%; overflow: hidden; z-index: 0; }"
+    ".particle { position: absolute; width: 4px; height: 4px; background: rgba(255, 255, 255, 0.3);"
+    "  border-radius: 50%%; animation: float 6s ease-in-out infinite; }"
+    "@keyframes float { 0%%, 100%% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }"
+    "  50%% { transform: translateY(-20px) rotate(180deg); opacity: 0.8; } }"
+    ".container { max-width: 700px; z-index: 10; position: relative; }"
+    ".logo { font-size: 5rem; font-weight: 200; margin-bottom: 1.5rem; animation: logoGlow 3s ease-in-out infinite; }"
+    "@keyframes logoGlow { 0%%, 100%% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }"
+    "  50%% { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); } }"
+    ".tagline { font-size: 1.6rem; opacity: 0.95; margin-bottom: 1rem; font-weight: 300; letter-spacing: 0.5px; }"
+    ".version { font-size: 1rem; opacity: 0.7; margin-bottom: 3rem; font-weight: 400; }"
+    ".search-container { margin: 3rem 0; position: relative; }"
+    ".search-box { width: 100%%; padding: 1.2rem 1.5rem; font-size: 1.1rem; border: none;"
+    "  border-radius: 50px; background: rgba(255, 255, 255, 0.15); color: white;"
+    "  backdrop-filter: blur(20px); text-align: center; outline: none; transition: all 0.3s ease;"
+    "  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); }"
+    ".search-box:focus { background: rgba(255, 255, 255, 0.25); transform: scale(1.02);"
+    "  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2); }"
+    ".search-box::placeholder { color: rgba(255, 255, 255, 0.7); }"
+    ".quick-links { display: flex; gap: 1.2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }"
+    ".quick-link { padding: 0.7rem 1.5rem; background: rgba(255, 255, 255, 0.2);"
+    "  border-radius: 30px; text-decoration: none; color: white; font-weight: 500;"
+    "  transition: all 0.3s ease; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }"
+    ".quick-link:hover { background: rgba(255, 255, 255, 0.3); transform: translateY(-3px);"
+    "  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); }"
+    ".stats { display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap; }"
+    ".stat-item { text-align: center; opacity: 0.8; }"
+    ".stat-number { font-size: 1.5rem; font-weight: 600; color: #fff; }"
+    ".stat-label { font-size: 0.9rem; opacity: 0.7; margin-top: 0.2rem; }"
+    ".tab-info { position: absolute; top: 25px; right: 25px; font-size: 0.9rem; opacity: 0.6;"
+    "  background: rgba(0, 0, 0, 0.2); padding: 0.5rem 1rem; border-radius: 20px; backdrop-filter: blur(10px); }"
+    ".features-info { position: absolute; bottom: 25px; left: 25px; font-size: 0.8rem; opacity: 0.6;"
+    "  background: rgba(0, 0, 0, 0.2); padding: 0.5rem 1rem; border-radius: 15px; backdrop-filter: blur(10px); }"
+    "@media (max-width: 768px) { .logo { font-size: 3.5rem; } .tagline { font-size: 1.3rem; }"
+    "  .quick-links { gap: 0.8rem; } .stats { gap: 1rem; } }"
     "</style>"
     "</head><body>"
-    "<div class='tab-info'>Tab %ld</div>"
-    "<div class='container'>"
-    "  <div class='logo'>🐦 MacBird</div>"
-    "  <div class='tagline'>Il tuo browser nativo per macOS</div>"
-    "  <div class='search-container'>"
-    "    <input type='text' class='search-box' placeholder='Cerca con Google o inserisci un indirizzo...' id='searchBox'>"
+    "<div class=\"particles\" id=\"particles\"></div>"
+    "<div class=\"tab-info\">Tab <span id=\"tabNumber\">%ld</span></div>"
+    "<div class=\"container\">"
+    "  <div class=\"logo\">🐦 MacBird</div>"
+    "  <div class=\"tagline\">Il Browser Nativo Professionale per macOS</div>"
+    "  <div class=\"version\">Version <span id=\"version\">1.0.0</span> - Swift Eagle</div>"
+    "  <div class=\"search-container\">"
+    "    <input type=\"text\" class=\"search-box\" placeholder=\"Cerca con Google o inserisci un indirizzo...\" id=\"searchBox\">"
     "  </div>"
-    "  <div class='quick-links'>"
-    "    <a href='https://google.com' class='quick-link'>Google</a>"
-    "    <a href='https://youtube.com' class='quick-link'>YouTube</a>"
-    "    <a href='https://github.com' class='quick-link'>GitHub</a>"
-    "    <a href='https://apple.com' class='quick-link'>Apple</a>"
+    "  <div class=\"quick-links\">"
+    "    <a href=\"https://google.com\" class=\"quick-link\">Google</a>"
+    "    <a href=\"https://youtube.com\" class=\"quick-link\">YouTube</a>"
+    "    <a href=\"https://github.com\" class=\"quick-link\">GitHub</a>"
+    "    <a href=\"https://apple.com\" class=\"quick-link\">Apple</a>"
+    "    <a href=\"https://twitter.com\" class=\"quick-link\">Twitter</a>"
+    "  </div>"
+    "  <div class=\"stats\">"
+    "    <div class=\"stat-item\">"
+    "      <div class=\"stat-number\" id=\"featuresCount\">25+</div>"
+    "      <div class=\"stat-label\">Modern Features</div>"
+    "    </div>"
+    "    <div class=\"stat-item\">"
+    "      <div class=\"stat-number\">100%%</div>"
+    "      <div class=\"stat-label\">WebKit Compatible</div>"
+    "    </div>"
+    "    <div class=\"stat-item\">"
+    "      <div class=\"stat-number\" id=\"compatibilityScore\">95%%</div>"
+    "      <div class=\"stat-label\">Site Compatibility</div>"
+    "    </div>"
     "  </div>"
     "</div>"
+    "<div class=\"features-info\">"
+    "  <div>🔒 Enhanced Privacy • 🛠️ DevTools • 📑 Multi-Tab • ⚡ Native Performance</div>"
+    "</div>"
     "<script>"
-    "document.getElementById('searchBox').addEventListener('keypress', function(e) {"
-    "  if (e.key === 'Enter') {"
-    "    const query = this.value;"
-    "    if (query.includes('.') && !query.includes(' ')) {"
-    "      window.location.href = query.startsWith('http') ? query : 'https://' + query;"
-    "    } else {"
-    "      window.location.href = 'https://www.google.com/search?q=' + encodeURIComponent(query);"
-    "    }"
+    "// ✨ MACBIRD ENHANCED WELCOME PAGE SCRIPT"
+    "function createParticles() {"
+    "  const particlesContainer = document.getElementById('particles');"
+    "  for (let i = 0; i < 20; i++) {"
+    "    const particle = document.createElement('div');"
+    "    particle.className = 'particle';"
+    "    particle.style.left = Math.random() * 100 + '%%';"
+    "    particle.style.animationDelay = Math.random() * 6 + 's';"
+    "    particle.style.animationDuration = (4 + Math.random() * 4) + 's';"
+    "    particlesContainer.appendChild(particle);"
     "  }"
+    "}"
+    "function initializeMacBirdInfo() {"
+    "  if (typeof window.macBird !== 'undefined') {"
+    "    document.getElementById('version').textContent = window.macBird.version;"
+    "    const featuresCount = window.macBird.getSupportedFeatures().length;"
+    "    document.getElementById('featuresCount').textContent = featuresCount + '+';"
+    "    const compatibilityScore = window.macBird.getCompatibilityScore();"
+    "    document.getElementById('compatibilityScore').textContent = compatibilityScore + '%%';"
+    "    console.log('🐦 Welcome Page Enhanced with MacBird API');"
+    "    console.log('📊 Browser Info:', window.macBird.getFullName());"
+    "    console.log('🎯 Compatibility:', compatibilityScore + '/100');"
+    "    console.log('✨ Features:', featuresCount + ' supported');"
+    "  } else { console.warn('⚠️ MacBird API not available on welcome page'); }"
+    "}"
+    "function initializeSearch() {"
+    "  const searchBox = document.getElementById('searchBox');"
+    "  searchBox.addEventListener('keypress', function(e) {"
+    "    if (e.key === 'Enter') {"
+    "      const query = this.value.trim();"
+    "      if (!query) return;"
+    "      console.log('🔍 Search initiated:', query);"
+    "      if (isURL(query)) {"
+    "        const url = query.startsWith('http') ? query : 'https://' + query;"
+    "        console.log('🌐 Navigating to URL:', url);"
+    "        window.location.href = url;"
+    "      } else {"
+    "        const searchURL = 'https://www.google.com/search?q=' + encodeURIComponent(query);"
+    "        console.log('🔍 Google search:', searchURL);"
+    "        window.location.href = searchURL;"
+    "      }"
+    "    }"
+    "  });"
+    "  document.addEventListener('keydown', function(e) {"
+    "    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {"
+    "      searchBox.focus();"
+    "    }"
+    "  });"
+    "}"
+    "function isURL(string) {"
+    "  try {"
+    "    const domainPattern = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\\.[a-zA-Z]{2,}$/;"
+    "    const wwwPattern = /^www\\.[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\\.[a-zA-Z]{2,}$/;"
+    "    const httpPattern = /^https?:\\/\\//;"
+    "    return httpPattern.test(string) || domainPattern.test(string) || wwwPattern.test(string) ||"
+    "           (string.includes('.') && !string.includes(' '));"
+    "  } catch { return false; }"
+    "}"
+    "document.addEventListener('DOMContentLoaded', function() {"
+    "  createParticles();"
+    "  initializeSearch();"
+    "  setTimeout(initializeMacBirdInfo, 100);"
+    "  console.log('🏠 MacBird Professional Welcome Page Loaded');"
+    "  console.log('🎨 Enhanced design with MacBird API integration');"
     "});"
     "</script>"
     "</body></html>", (long)tab.tabId];
@@ -455,7 +711,7 @@
 - (void)navigateToURL:(NSString*)url {
     if (!self.activeTab) return;
     
-    std::cout << "🌐 Navigating active tab (" << self.activeTab.tabId << ") to: " << [url UTF8String] << std::endl;
+    std::cout << "🌐 Navigating professional tab (" << self.activeTab.tabId << ") to: " << [url UTF8String] << std::endl;
     
     if ([url length] == 0) {
         [self loadWelcomePage];
@@ -477,14 +733,13 @@
     if (nsUrl) {
         NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
         
-        // ✨ USA MACBIRD IDENTITY SYSTEM
+        // ✨ USA MACBIRD IDENTITY SYSTEM ENHANCED
         
-        // FASE TRANSITORIA: Compatibility User-Agent
-        // (Mantiene Safari ma aggiunge MacBird per identificazione)
+        // USER-AGENT PROMINENTE: MacBird PRIMA di Safari per massima visibilità
         NSString* userAgent = [BrowserInfo compatibilityUserAgent];
         [request setValue:userAgent forHTTPHeaderField:@"User-Agent"];
         
-        // ✨ HEADERS STANDARD DA BROWSERINFO
+        // ✨ HEADERS PROFESSIONALI DA BROWSERINFO
         NSDictionary* browserHeaders = [BrowserInfo browserHeaders];
         for (NSString* header in browserHeaders) {
             if (![header isEqualToString:@"User-Agent"]) { // Già impostato sopra
@@ -492,13 +747,13 @@
             }
         }
         
-        // ✨ SECURITY HEADERS DA BROWSERINFO  
+        // ✨ SECURITY HEADERS ENHANCED
         NSDictionary* securityHeaders = [BrowserInfo securityHeaders];
         for (NSString* header in securityHeaders) {
             [request setValue:securityHeaders[header] forHTTPHeaderField:header];
         }
         
-        // ✨ PERFORMANCE HEADERS DA BROWSERINFO
+        // ✨ PERFORMANCE HEADERS
         NSDictionary* performanceHeaders = [BrowserInfo performanceHeaders];
         for (NSString* header in performanceHeaders) {
             [request setValue:performanceHeaders[header] forHTTPHeaderField:header];
@@ -510,13 +765,13 @@
         self.activeTab.title = @"Caricamento...";
         [self.activeTab.tabButton setTitle:self.activeTab.title];
         
-        std::cout << "✅ Loading in Tab " << self.activeTab.tabId << " with MacBird Identity System..." << std::endl;
-        std::cout << "🐦 User-Agent: " << [userAgent UTF8String] << std::endl;
+        std::cout << "✅ Loading in Professional Tab " << self.activeTab.tabId << " with MacBird Enhanced Identity..." << std::endl;
+        std::cout << "🐦 User-Agent (Prominent): " << [userAgent UTF8String] << std::endl;
+        std::cout << "🎯 Identity Position: MacBird positioned BEFORE Safari for maximum recognition" << std::endl;
     }
 }
 
-
-// ✨ AGGIUNGI QUESTO NUOVO METODO HELPER ALLA FINE DEL FILE:
+// ✨ HELPER METHOD FOR FEATURES JSON
 - (NSString*)featuresJSONString {
     NSDictionary* features = [BrowserInfo supportedFeatures];
     NSError* error;
