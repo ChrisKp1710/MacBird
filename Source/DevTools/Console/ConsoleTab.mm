@@ -166,20 +166,96 @@
 }
 
 - (void)displayUltraBasicResults:(NSString*)jsonResult {
-    NSData* jsonData = [jsonResult dataUsingEncoding:NSUTF8StringEncoding];
-    NSError* error;
-    NSDictionary* analysis = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+    // ✨ MEGA-DEBUG: Log ogni singolo passo
+    [self logToConsole:@"🔍 [DEBUG] displayUltraBasicResults called" withColor:[DevToolsStyles secondaryTextColor]];
+    
+    // ✨ CONTROLLO SICUREZZA 1: Verifica che jsonResult non sia nil o vuoto
+    if (!jsonResult) {
+        [self logToConsole:@"❌ [DEBUG] jsonResult is nil!" withColor:[DevToolsStyles errorTextColor]];
+        [self runManualAnalysis];
+        return;
+    }
+    
+    if ([jsonResult length] == 0) {
+        [self logToConsole:@"❌ [DEBUG] jsonResult is empty string!" withColor:[DevToolsStyles errorTextColor]];
+        [self runManualAnalysis];
+        return;
+    }
+    
+    [self logToConsole:[NSString stringWithFormat:@"📋 [DEBUG] Raw JSON length: %lu", (unsigned long)[jsonResult length]] withColor:[DevToolsStyles secondaryTextColor]];
+    
+    // ✨ FIX WARNING: Trunca la stringa manualmente invece di usare %.100@
+    NSString* preview = [jsonResult length] > 100 ? 
+        [[jsonResult substringToIndex:100] stringByAppendingString:@"..."] : 
+        jsonResult;
+    [self logToConsole:[NSString stringWithFormat:@"📋 [DEBUG] Raw JSON preview: %@", preview] withColor:[DevToolsStyles secondaryTextColor]];
+    
+    // ✨ CONTROLLO SICUREZZA 2: Conversione a NSData
+    NSData* jsonData = nil;
+    @try {
+        jsonData = [jsonResult dataUsingEncoding:NSUTF8StringEncoding];
+        [self logToConsole:@"✅ [DEBUG] JSON string converted to data successfully" withColor:[DevToolsStyles secondaryTextColor]];
+    } @catch (NSException* e) {
+        [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] Exception in dataUsingEncoding: %@", e.reason] withColor:[DevToolsStyles errorTextColor]];
+        [self runManualAnalysis];
+        return;
+    }
+    
+    if (!jsonData) {
+        [self logToConsole:@"❌ [DEBUG] jsonData is nil after conversion!" withColor:[DevToolsStyles errorTextColor]];
+        [self runManualAnalysis];
+        return;
+    }
+    
+    [self logToConsole:[NSString stringWithFormat:@"📋 [DEBUG] JSON data length: %lu", (unsigned long)[jsonData length]] withColor:[DevToolsStyles secondaryTextColor]];
+    
+    // ✨ CONTROLLO SICUREZZA 3: JSON Parsing
+    NSError* error = nil;
+    NSDictionary* analysis = nil;
+    
+    @try {
+        analysis = [NSJSONSerialization JSONObjectWithData:jsonData options:0 error:&error];
+        [self logToConsole:@"✅ [DEBUG] JSON parsing attempted" withColor:[DevToolsStyles secondaryTextColor]];
+    } @catch (NSException* e) {
+        [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] Exception in JSON parsing: %@", e.reason] withColor:[DevToolsStyles errorTextColor]];
+        [self runManualAnalysis];
+        return;
+    }
     
     if (error) {
-        [self logToConsole:[NSString stringWithFormat:@"❌ JSON parsing failed: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
-        [self logToConsole:[NSString stringWithFormat:@"📋 Raw result: %@", jsonResult] withColor:[DevToolsStyles secondaryTextColor]];
+        [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] JSON parsing failed: %@", [error localizedDescription]] withColor:[DevToolsStyles errorTextColor]];
+        [self logToConsole:[NSString stringWithFormat:@"📋 [DEBUG] Raw result: %@", jsonResult] withColor:[DevToolsStyles secondaryTextColor]];
+        [self runManualAnalysis];
+        return;
+    }
+    
+    // ✨ CONTROLLO SICUREZZA 4: Verifica che analysis non sia nil
+    if (!analysis) {
+        [self logToConsole:@"❌ [DEBUG] analysis dictionary is nil!" withColor:[DevToolsStyles errorTextColor]];
+        [self runManualAnalysis];
+        return;
+    }
+    
+    [self logToConsole:[NSString stringWithFormat:@"✅ [DEBUG] Analysis dictionary created with %lu keys", (unsigned long)[analysis count]] withColor:[DevToolsStyles successTextColor]];
+    
+    // ✨ CONTROLLO SICUREZZA 5: Verifica se è un dictionary
+    if (![analysis isKindOfClass:[NSDictionary class]]) {
+        [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] analysis is not NSDictionary! It's %@", [analysis class]] withColor:[DevToolsStyles errorTextColor]];
         [self runManualAnalysis];
         return;
     }
     
     // Controlla se c'è un errore nel JSON
-    if (analysis[@"error"]) {
-        [self logToConsole:[NSString stringWithFormat:@"❌ JavaScript error: %@", analysis[@"error"]] withColor:[DevToolsStyles errorTextColor]];
+    @try {
+        id errorValue = [analysis objectForKey:@"error"];
+        if (errorValue && ![errorValue isEqual:[NSNull null]]) {
+            [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] JavaScript error found: %@", errorValue] withColor:[DevToolsStyles errorTextColor]];
+            [self runManualAnalysis];
+            return;
+        }
+        [self logToConsole:@"✅ [DEBUG] No error field in JSON" withColor:[DevToolsStyles secondaryTextColor]];
+    } @catch (NSException* e) {
+        [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] Exception checking error field: %@", e.reason] withColor:[DevToolsStyles errorTextColor]];
         [self runManualAnalysis];
         return;
     }
@@ -188,112 +264,108 @@
     [self logToConsole:@"🔍 ===== MACBIRD ULTRA-BASIC DETECTIVE REPORT =====" withColor:[DevToolsStyles accentTextColor]];
     [self logToConsole:@""];
     
-    // ✅ ANALISI BASE CHE FUNZIONA SEMPRE
-    NSString* userAgent = analysis[@"userAgent"];
-    NSString* platform = analysis[@"platform"];
-    NSString* vendor = analysis[@"vendor"];
-    NSString* url = analysis[@"url"];
-    NSString* title = analysis[@"title"];
-    NSString* hostname = analysis[@"hostname"];
+    // ✅ ESTRAZIONE SICURA DEI DATI CON CONTROLLI NIL ESTREMI
+    NSString* userAgent = nil;
+    NSString* platform = nil;
+    NSString* vendor = nil;
+    NSString* url = nil;
+    NSString* title = nil;
+    NSString* hostname = nil;
     
-    // MacBird Detection
-    BOOL macBirdDetected = [userAgent containsString:@"MacBird"];
+    @try {
+        id userAgentValue = [analysis objectForKey:@"userAgent"];
+        userAgent = (userAgentValue && ![userAgentValue isEqual:[NSNull null]]) ? [userAgentValue description] : @"unknown";
+        [self logToConsole:[NSString stringWithFormat:@"📊 [DEBUG] UserAgent extracted: %@", userAgent] withColor:[DevToolsStyles secondaryTextColor]];
+        
+        id platformValue = [analysis objectForKey:@"platform"];
+        platform = (platformValue && ![platformValue isEqual:[NSNull null]]) ? [platformValue description] : @"unknown";
+        [self logToConsole:[NSString stringWithFormat:@"📊 [DEBUG] Platform extracted: %@", platform] withColor:[DevToolsStyles secondaryTextColor]];
+        
+        id vendorValue = [analysis objectForKey:@"vendor"];
+        vendor = (vendorValue && ![vendorValue isEqual:[NSNull null]]) ? [vendorValue description] : @"unknown";
+        [self logToConsole:[NSString stringWithFormat:@"📊 [DEBUG] Vendor extracted: %@", vendor] withColor:[DevToolsStyles secondaryTextColor]];
+        
+        id urlValue = [analysis objectForKey:@"url"];
+        url = (urlValue && ![urlValue isEqual:[NSNull null]]) ? [urlValue description] : @"unknown";
+        [self logToConsole:[NSString stringWithFormat:@"📊 [DEBUG] URL extracted: %@", url] withColor:[DevToolsStyles secondaryTextColor]];
+        
+        id titleValue = [analysis objectForKey:@"title"];
+        title = (titleValue && ![titleValue isEqual:[NSNull null]]) ? [titleValue description] : @"unknown";
+        [self logToConsole:[NSString stringWithFormat:@"📊 [DEBUG] Title extracted: %@", title] withColor:[DevToolsStyles secondaryTextColor]];
+        
+        id hostnameValue = [analysis objectForKey:@"hostname"];
+        hostname = (hostnameValue && ![hostnameValue isEqual:[NSNull null]]) ? [hostnameValue description] : @"unknown";
+        [self logToConsole:[NSString stringWithFormat:@"📊 [DEBUG] Hostname extracted: %@", hostname] withColor:[DevToolsStyles secondaryTextColor]];
+        
+    } @catch (NSException* e) {
+        [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] Exception in data extraction: %@", e.reason] withColor:[DevToolsStyles errorTextColor]];
+        [self runManualAnalysis];
+        return;
+    }
+    
+    // MacBird Detection con controlli sicuri
+    BOOL macBirdDetected = NO;
+    @try {
+        macBirdDetected = userAgent && [userAgent containsString:@"MacBird"];
+        [self logToConsole:[NSString stringWithFormat:@"📊 [DEBUG] MacBird detection: %@", macBirdDetected ? @"YES" : @"NO"] withColor:[DevToolsStyles secondaryTextColor]];
+    } @catch (NSException* e) {
+        [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] Exception in MacBird detection: %@", e.reason] withColor:[DevToolsStyles errorTextColor]];
+        macBirdDetected = NO;
+    }
+    
     if (macBirdDetected) {
         [self logToConsole:@"🐦 MacBird Status: ✅ DETECTED!" withColor:[DevToolsStyles successTextColor]];
-        
-        // Estrai versione
-        NSRegularExpression* versionRegex = [NSRegularExpression regularExpressionWithPattern:@"MacBird/([0-9\\.]+)" options:0 error:nil];
-        NSTextCheckingResult* match = [versionRegex firstMatchInString:userAgent options:0 range:NSMakeRange(0, userAgent.length)];
-        if (match) {
-            NSString* version = [userAgent substringWithRange:[match rangeAtIndex:1]];
-            [self logToConsole:[NSString stringWithFormat:@"   Version: %@", version] withColor:[DevToolsStyles successTextColor]];
-        }
-        
-        // Posizione rispetto a Safari
-        NSRange macBirdRange = [userAgent rangeOfString:@"MacBird"];
-        NSRange safariRange = [userAgent rangeOfString:@"Safari"];
-        if (macBirdRange.location != NSNotFound && safariRange.location != NSNotFound) {
-            if (macBirdRange.location < safariRange.location) {
-                [self logToConsole:@"   Priority: ✅ BEFORE Safari (Perfect!)" withColor:[DevToolsStyles successTextColor]];
-            } else {
-                [self logToConsole:@"   Priority: ⚠️ After Safari" withColor:[DevToolsStyles warningTextColor]];
-            }
-        }
     } else {
         [self logToConsole:@"🐦 MacBird Status: ❌ NOT DETECTED" withColor:[DevToolsStyles errorTextColor]];
         [self logToConsole:@"   This means MacBird identity injection failed!" withColor:[DevToolsStyles errorTextColor]];
     }
     
-    // Engine Info
+    // Engine Info SEMPLIFICATO
     [self logToConsole:@""];
     [self logToConsole:@"🔧 Browser Engine Info:" withColor:[DevToolsStyles accentTextColor]];
-    [self logToConsole:[NSString stringWithFormat:@"   Platform: %@", platform]];
-    [self logToConsole:[NSString stringWithFormat:@"   Vendor: %@", vendor]];
+    [self logToConsole:[NSString stringWithFormat:@"   Platform: %@", platform ?: @"unknown"]];
+    [self logToConsole:[NSString stringWithFormat:@"   Vendor: %@", vendor ?: @"unknown"]];
     
-    // WebKit version extraction
-    NSRegularExpression* webkitRegex = [NSRegularExpression regularExpressionWithPattern:@"WebKit/([0-9\\.]+)" options:0 error:nil];
-    NSTextCheckingResult* webkitMatch = [webkitRegex firstMatchInString:userAgent options:0 range:NSMakeRange(0, userAgent.length)];
-    if (webkitMatch) {
-        NSString* webkitVersion = [userAgent substringWithRange:[webkitMatch rangeAtIndex:1]];
-        [self logToConsole:[NSString stringWithFormat:@"   WebKit: %@", webkitVersion] withColor:[DevToolsStyles successTextColor]];
-    }
-    
-    // Current Page
+    // Current Page SEMPLIFICATO
     [self logToConsole:@""];
     [self logToConsole:@"🌍 Current Page Info:" withColor:[DevToolsStyles accentTextColor]];
-    [self logToConsole:[NSString stringWithFormat:@"   URL: %@", url]];
-    [self logToConsole:[NSString stringWithFormat:@"   Title: %@", title]];
-    [self logToConsole:[NSString stringWithFormat:@"   Hostname: %@", hostname]];
+    [self logToConsole:[NSString stringWithFormat:@"   URL: %@", url ?: @"unknown"]];
+    [self logToConsole:[NSString stringWithFormat:@"   Title: %@", title ?: @"unknown"]];
+    [self logToConsole:[NSString stringWithFormat:@"   Hostname: %@", hostname ?: @"unknown"]];
     
-    // Google Quick Check
-    if ([hostname containsString:@"google"]) {
-        [self logToConsole:@""];
-        [self logToConsole:@"🔍 Google Quick Check:" withColor:[DevToolsStyles accentTextColor]];
-        [self logToConsole:@"   Status: ✅ You're on Google!" withColor:[DevToolsStyles successTextColor]];
-        
-        if (macBirdDetected) {
-            [self logToConsole:@"   MacBird Identity: ✅ Present on Google" withColor:[DevToolsStyles successTextColor]];
-            [self logToConsole:@"   Google should recognize MacBird as a modern browser!" withColor:[DevToolsStyles successTextColor]];
-        } else {
-            [self logToConsole:@"   MacBird Identity: ❌ Missing on Google" withColor:[DevToolsStyles errorTextColor]];
-            [self logToConsole:@"   Google might not recognize MacBird properly" withColor:[DevToolsStyles warningTextColor]];
-        }
-        
-        // Prova analisi Google avanzata se siamo su Google
-        [self tryGoogleAdvancedAnalysis];
-    }
-    
-    // Overall Assessment
+    // Overall Assessment SEMPLIFICATO
     [self logToConsole:@""];
     [self logToConsole:@"📊 Quick Assessment:" withColor:[DevToolsStyles accentTextColor]];
     
-    NSInteger score = 0;
-    if (macBirdDetected) score += 50;
-    if ([userAgent containsString:@"WebKit"]) score += 20;
-    if ([vendor isEqualToString:@"Apple Computer, Inc."]) score += 15;
-    if (![url isEqualToString:@"unknown"]) score += 15;
-    
-    NSString* status;
-    NSColor* statusColor;
-    if (score >= 85) {
-        status = @"🟢 EXCELLENT";
-        statusColor = [DevToolsStyles successTextColor];
-    } else if (score >= 60) {
-        status = @"🟡 GOOD";
-        statusColor = [DevToolsStyles warningTextColor];
-    } else {
-        status = @"🔴 NEEDS WORK";
-        statusColor = [DevToolsStyles errorTextColor];
+    @try {
+        NSInteger score = 0;
+        if (macBirdDetected) score += 50;
+        if (userAgent && [userAgent containsString:@"WebKit"]) score += 20;
+        if (vendor && [vendor isEqualToString:@"Apple Computer, Inc."]) score += 15;
+        if (url && ![url isEqualToString:@"unknown"]) score += 15;
+        
+        NSString* status;
+        NSColor* statusColor;
+        if (score >= 85) {
+            status = @"🟢 EXCELLENT";
+            statusColor = [DevToolsStyles successTextColor];
+        } else if (score >= 60) {
+            status = @"🟡 GOOD";
+            statusColor = [DevToolsStyles warningTextColor];
+        } else {
+            status = @"🔴 NEEDS WORK";
+            statusColor = [DevToolsStyles errorTextColor];
+        }
+        
+        [self logToConsole:[NSString stringWithFormat:@"   Overall Score: %ld/100", (long)score] withColor:statusColor];
+        [self logToConsole:[NSString stringWithFormat:@"   Status: %@", status] withColor:statusColor];
+    } @catch (NSException* e) {
+        [self logToConsole:[NSString stringWithFormat:@"❌ [DEBUG] Exception in assessment: %@", e.reason] withColor:[DevToolsStyles warningTextColor]];
     }
-    
-    [self logToConsole:[NSString stringWithFormat:@"   Overall Score: %ld/100", (long)score] withColor:statusColor];
-    [self logToConsole:[NSString stringWithFormat:@"   Status: %@", status] withColor:statusColor];
     
     [self logToConsole:@""];
     [self logToConsole:@"🔍 ===== ULTRA-BASIC ANALYSIS COMPLETE =====" withColor:[DevToolsStyles successTextColor]];
-    [self logToConsole:@""];
-    [self logToConsole:@"💡 TIP: This basic analysis should always work!" withColor:[DevToolsStyles secondaryTextColor]];
-    [self logToConsole:@"🚀 TIP: Try different websites to test MacBird compatibility!" withColor:[DevToolsStyles secondaryTextColor]];
+    [self logToConsole:@"✅ [DEBUG] displayUltraBasicResults completed successfully!" withColor:[DevToolsStyles successTextColor]];
     [self logToConsole:@""];
 }
 

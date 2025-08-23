@@ -56,8 +56,8 @@
     [self setupDevToolsUI];
     [self.devToolsWindow makeKeyAndOrderFront:nil];
     
-    // Auto-run detection quando si aprono i DevTools
-    [self runDetectionAnalysis];
+    // ✨ RIMOSSO: Auto-run che causava il crash
+    // [self runDetectionAnalysis];
     
     std::cout << "🛠️ MacBird DevTools opened (modular architecture)" << std::endl;
 }
