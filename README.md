@@ -1,52 +1,52 @@
-# MacBird Browser
+# MacBird Browser 🦅✨
 
-**MacBird** è un browser web open source per macOS, scritto in C++ e basato su WebKit, con un design moderno e un’esperienza utente ottimizzata per l’estetica di macOS. Ispirato a progetti come Ladybird, MacBird combina semplicità, funzionalità e un’interfaccia elegante per offrire un browser usabile e personalizzabile.
+**MacBird** è un browser web open source per macOS, scritto in C++ e basato su WebKit, che unisce un design super moderno a funzionalità pratiche. Creato da un solo dev (ChrisKp1710!) in appena** ****3 giorni**, MacBird è ispirato a Ladybird ma porta un vibe giovane e fresco, con un’estetica che si integra perfettamente con macOS. Pronto a navigare con stile? 😎
 
-## Obiettivo
+## Perché MacBird? 🚀
 
-Creare un browser open source che chiunque possa usare liberamente, con un focus su:
+Vogliamo un browser** ****open source** che chiunque possa usare liberamente, con un look accattivante e funzionalità solide. MacBird non è solo un esperimento educativo: è un progetto che punta a essere** ****usabile nella vita reale**, con un design che fa girare la testa su macOS. Ecco cosa ci guida:
 
-* **Estetica macOS**: Interfaccia fluida, moderna, con titlebar trasparente, supporto dark mode, e toolbar centrata.
-* **Funzionalità pratiche**: Multi-tab, devtools integrati, navigazione fluida, e identità browser personalizzata.
-* **Open source**: Codice pubblico su GitHub per incoraggiare contributi e personalizzazioni.
-* **Evoluzione futura**: Mantenere WebKit per un prototipo rapido, con l’obiettivo a lungo termine di sviluppare un renderer proprietario per un’esperienza più “da zero”.
+* 🎨** ****Estetica macOS al top**: Titlebar trasparente, dark mode, toolbar centrata – puro stile macOS!
+* ⚡** ****Funzionalità pratiche**: Multi-tab, devtools integrati, e un’identità unica con User-Agent personalizzato.
+* 🌍** ****Open source per tutti**: Codice pubblico su GitHub per invitare la community a contribuire.
+* 🔮** ****Futuro ambizioso**: Usiamo WebKit per partire veloci, ma sogniamo un renderer proprietario per rendere MacBird unico.
 
-MacBird non è solo un progetto educativo, ma un browser che punta a essere usato nella vita reale, con un design che si distingue e si integra perfettamente con macOS.
+MacBird è il nostro modo di dire: “Si può creare qualcosa di figo, anche da soli!” 💪
 
-## Stato Attuale
+## Stato Attuale 🎯
 
-🚧** ****In sviluppo - Fase 1**
-MacBird è un prototipo funzionante con le seguenti funzionalità:
+🚧** ****Fase 1: Work in progress!**
+MacBird è un prototipo che già spacca, con:
 
-* Interfaccia moderna con titlebar trasparente e dark mode.
-* Sistema multi-tab con isolamento dei processi (basato su** **`WKWebView`).
-* Devtools base con console, elementi, e rete.
-* Identità browser personalizzata (User-Agent, headers) tramite** **`BrowserInfo`.
-* Menu bar con azioni standard (reload, zoom, full screen, view source).
+* 🖼️ Interfaccia moderna con titlebar trasparente e dark mode.
+* 📑 Sistema multi-tab con isolamento dei processi (grazie a** **`WKWebView`).
+* 🛠️ Devtools base (console, elementi, rete) per gli smanettoni.
+* 🪪 Identità browser personalizzata tramite** **`BrowserInfo` (User-Agent, headers).
+* 🍎 Menu bar con azioni classiche (reload, zoom, full screen, view source).
 
-**Prossimi passi**:** **
+**Cosa bolle in pentola?**
 
-* Aggiungere una barra di ricerca funzionante.
-* Implementare history e bookmarks.
-* Migliorare i devtools con funzionalità avanzate.
-* Pianificare un renderer proprietario per future versioni.
+* 🔍 Barra di ricerca per navigare con un click.
+* 📜 History e bookmarks per un’esperienza completa.
+* ⚙️ Devtools più potenti per sviluppatori.
+* 🚀 Pianificazione di un renderer proprietario per un MacBird ancora più unico.
 
-## Requisiti
+## Requisiti ⚙️
 
 * **Sistema operativo**: macOS 13.0 (Ventura) o successivo
 * **Strumenti**:
   * Xcode 14 o successivo
   * CMake 3.10 o successivo
-* **Librerie**: Cocoa e WebKit (incluse in macOS)
+* **Librerie**: Cocoa e WebKit (già in macOS)
 
-## Installazione e Build
+## Come provarlo 🚀
 
-1. Clona il repository:
+1. Clona il repo e tuffati nel codice:
    ```bash
    git clone https://github.com/ChrisKp1710/MacBird.git
    cd MacBird
    ```
-2. Genera i file di build con CMake:
+2. Genera i file di build:
    ```bash
    cmake .
    ```
@@ -54,28 +54,28 @@ MacBird è un prototipo funzionante con le seguenti funzionalità:
    ```bash
    make
    ```
-4. Esegui MacBird:
+4. Lancia MacBird e naviga! 🌐
    ```bash
    ./MacBird
    ```
 
-## Struttura del Progetto
+## Struttura del Progetto 📂
 
 ```
 MacBird/
-├── CMakeLists.txt          # Configurazione build
+├── CMakeLists.txt          # Config per la build
 ├── Source/
 │   ├── Core/
 │   │   └── Browser/
-│   │       ├── BrowserInfo.h    # Identità browser (User-Agent, versione)
+│   │       ├── BrowserInfo.h    # Identità del browser (User-Agent, versione)
 │   │       └── BrowserInfo.mm
 │   ├── Platform/
 │   │   └── macOS/
 │   │       ├── AppDelegate.h    # Gestione lifecycle app
 │   │       ├── AppDelegate.mm
-│   │       ├── BrowserWindow.h  # Finestra principale e UI
+│   │       ├── BrowserWindow.h  # Finestra principale con UI 🔥
 │   │       ├── BrowserWindow.mm
-│   │       ├── MenuManager.h    # Menu bar
+│   │       ├── MenuManager.h    # Menu bar styloso
 │   │       └── MenuManager.mm
 │   ├── UI/
 │   │   └── TabSystem/
@@ -85,50 +85,51 @@ MacBird/
 │   │       └── TabManager.mm
 │   ├── DevTools/
 │   │   ├── Common/
-│   │   │   └── DevToolsStyles.mm  # Stili devtools
+│   │   │   └── DevToolsStyles.mm  # Stili per devtools
 │   │   ├── Console/
-│   │   │   └── ConsoleTab.mm     # Console devtools
+│   │   │   └── ConsoleTab.mm     # Console per debugging
 │   │   ├── Elements/
-│   │   │   └── ElementsTab.mm    # Inspector elementi
+│   │   │   └── ElementsTab.mm    # Inspector per elementi
 │   │   ├── Network/
-│   │   │   └── NetworkTab.mm     # Monitor rete
+│   │   │   └── NetworkTab.mm     # Monitor di rete
 │   │   └── DevToolsManager.mm    # Gestione devtools
-│   └── main.mm                  # Entry point
-├── Resources/                   # Risorse (es. icone)
-├── Tests/                       # Test unitari (in sviluppo)
-├── Documentation/               # Documentazione (in sviluppo)
+│   └── main.mm                  # Punto di partenza
+├── Resources/                   # Risorse (es. icone) 🎨
+├── Tests/                       # Test unitari (prossimamente!)
+├── Documentation/               # Docs in arrivo 📚
 └── README.md
 ```
 
-## Motivazione per WebKit
+## Perché WebKit? 🤔
 
-MacBird usa WebKit per il rendering e il networking per garantire un prototipo rapido, stabile e compatibile con i siti moderni. Questo permette di concentrarsi su un design innovativo e funzionalità utente (es. multi-tab, devtools) senza dover costruire un renderer da zero. In futuro, pianifichiamo di sviluppare un parser HTML/CSS proprietario in** **`Source/Core/DOM` per un’esperienza più personalizzata, mantenendo MacBird usabile durante la transizione.
+Abbiamo scelto WebKit per partire alla grande: è veloce, stabile e compatibile con i siti moderni. Questo ci permette di concentrarci su un design unico e funzionalità che fanno la differenza (multi-tab, devtools, UI macOS). Ma non ci fermiamo qui! In futuro, vogliamo costruire un** ****renderer proprietario** in** **`Source/Core/DOM` per rendere MacBird ancora più speciale, mantenendolo usabile durante la transizione. 💡
 
-## Contribuire
+## Contribuisci! 🙌
 
-MacBird è open source e accoglie contributi! Per iniziare:
+MacBird è open source e aspetta il tuo tocco! Vuoi unirti al progetto? Ecco come:
 
-1. Forka il repository.
-2. Crea un branch per le tue modifiche (`git checkout -b mia-feature`).
-3. Committa le modifiche (`git commit -m "Aggiunta mia feature"`).
-4. Pusha il branch (`git push origin mia-feature`).
-5. Apri una Pull Request.
+1. Forka il repo.
+2. Crea un branch (`git checkout -b tua-feature`).
+3. Committa le modifiche (`git commit -m "Aggiunta feature epica"`).
+4. Pusha il branch (`git push origin tua-feature`).
+5. Apri una Pull Request e fai vedere di cosa sei capace! 😎
 
-Cerchiamo aiuto per:
+**Cosa serve?**
 
-* Aggiungere search bar, history, e bookmarks.
-* Migliorare i devtools.
-* Scrivere test unitari in** **`Tests/`.
-* Progettare un renderer proprietario.
+* 🔍 Barra di ricerca e navigazione.
+* 📜 History e bookmarks.
+* 🛠️ Devtools più avanzati.
+* 🚀 Idee per un renderer proprietario.
+* 🧪 Test unitari in** **`Tests/`.
 
-## Licenza
+## Licenza 📜
 
-MacBird è rilasciato sotto la licenza MIT (in arrivo).
+MacBird è rilasciato sotto la licenza** ****MIT** (vedi file** **`LICENSE`).
 
-## Contatti
+## Contatti 📩
 
-Per domande o suggerimenti, apri una issue su GitHub o contatta** **[ChrisKp1710](https://github.com/ChrisKp1710).
+Domande? Idee? Bug? Apri una issue su GitHub o scrivimi: ChrisKp1710. Let’s make MacBird fly! 🦅
 
 ---
 
-**MacBird**: Un browser open source per macOS, semplice, elegante e fatto per gli utenti.
+**MacBird**: Il browser open source che unisce stile macOS, funzionalità moderne e un cuore giovane! 🌟 Creato da Christian Koscielniak Pinto – e questo è solo l’inizio!
