@@ -130,6 +130,4 @@ MacBird è rilasciato sotto la licenza** ****MIT** (vedi file** **`LICENSE`).
 
 Domande? Idee? Bug? Apri una issue su GitHub o scrivimi: ChrisKp1710. Let’s make MacBird fly! 🦅
 
----
-
 **MacBird**: Il browser open source che unisce stile macOS, funzionalità moderne e un cuore giovane! 🌟 Creato da Christian Koscielniak Pinto – e questo è solo l’inizio!
