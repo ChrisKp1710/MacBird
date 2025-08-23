@@ -18,18 +18,34 @@
 }
 
 - (void)toggleDevTools {
-    if (self.devToolsWindow && [self.devToolsWindow isVisible] && !self.devToolsWindow.isMiniaturized) {
-        [self closeDevTools];
+    if (self.devToolsWindow) {
+        if ([self.devToolsWindow isVisible] && ![self.devToolsWindow isMiniaturized]) {
+            // Finestra aperta e visibile → la chiudiamo
+            [self closeDevTools];
+        } else {
+            // Finestra esiste ma è chiusa/minimizzata → la riapriamo
+            [self.devToolsWindow makeKeyAndOrderFront:nil];
+            if ([self.devToolsWindow isMiniaturized]) {
+                [self.devToolsWindow deminiaturize:nil];
+            }
+            // 🔧 FORZA LA FINESTRA IN PRIMO PIANO
+            [self.devToolsWindow orderFrontRegardless];
+            [self.devToolsWindow setLevel:NSFloatingWindowLevel];
+            [self.devToolsWindow setLevel:NSNormalWindowLevel]; // Reset to normal after bringing to front
+            std::cout << "🛠️ MacBird DevTools reopened and brought to front" << std::endl;
+        }
     } else {
+        // Nessuna finestra esistente → la creiamo
         [self openDevTools];
     }
 }
 
 - (void)openDevTools {
-    // Se la finestra esiste ma è chiusa/minimizzata, riportala in primo piano
+    // ✅ LOGICA SEMPLIFICATA: Se la finestra esiste già, riutilizzala
     if (self.devToolsWindow) {
         [self.devToolsWindow makeKeyAndOrderFront:nil];
         [self.devToolsWindow deminiaturize:nil];
+        std::cout << "🛠️ MacBird DevTools brought to front" << std::endl;
         return;
     }
     
@@ -53,11 +69,11 @@
     [self.devToolsWindow setBackgroundColor:[DevToolsStyles backgroundColor]];
     [self.devToolsWindow setTitlebarAppearsTransparent:YES];
     
+    // ✅ DELEGATE PER GESTIRE LA CHIUSURA DELLA FINESTRA
+    [self.devToolsWindow setDelegate:self];
+    
     [self setupDevToolsUI];
     [self.devToolsWindow makeKeyAndOrderFront:nil];
-    
-    // ✨ RIMOSSO: Auto-run che causava il crash
-    // [self runDetectionAnalysis];
     
     std::cout << "🛠️ MacBird DevTools opened (modular architecture)" << std::endl;
 }
@@ -107,16 +123,34 @@
 }
 
 - (void)closeDevTools {
+    if (self.devToolsWindow && [self.devToolsWindow isVisible]) {
+        // ✅ CHIUSURA SOFT: Nascondi la finestra invece di distruggerla
+        [self.devToolsWindow orderOut:nil];
+        std::cout << "🛠️ MacBird DevTools hidden" << std::endl;
+    }
+}
+
+// ✅ NUOVO: Window Delegate per gestire la chiusura dall'utente
+- (void)windowWillClose:(NSNotification*)notification {
+    if (notification.object == self.devToolsWindow) {
+        // L'utente ha chiuso la finestra cliccando la X
+        // Non azzerare la finestra, così può essere riaperta
+        std::cout << "🛠️ MacBird DevTools closed by user" << std::endl;
+    }
+}
+
+// ✅ NUOVO: Metodo per cleanup completo (solo quando l'app si chiude)
+- (void)cleanupDevTools {
     if (self.devToolsWindow) {
         [self.devToolsWindow close];
         self.devToolsWindow = nil;
         
-        // Cleanup dei componenti
+        // Cleanup dei componenti solo nel cleanup finale
         self.consoleTab = nil;
         self.elementsTab = nil;
         self.networkTab = nil;
         
-        std::cout << "🛠️ MacBird DevTools closed" << std::endl;
+        std::cout << "🛠️ MacBird DevTools completely cleaned up" << std::endl;
     }
 }
 

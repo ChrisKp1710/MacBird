@@ -9,7 +9,7 @@
 @class ElementsTab;
 @class NetworkTab;
 
-@interface DevToolsManager : NSObject
+@interface DevToolsManager : NSObject <NSWindowDelegate>
 
 @property (assign, nonatomic) BrowserWindow* browserWindow;
 @property (strong, nonatomic) NSWindow* devToolsWindow;
@@ -25,6 +25,9 @@
 - (void)openDevTools;
 - (void)closeDevTools;
 - (void)setupDevToolsUI;
+
+// ✅ NUOVO: Cleanup completo per la chiusura dell'app
+- (void)cleanupDevTools;
 
 // Public methods for external access
 - (void)logToConsole:(NSString*)message;
