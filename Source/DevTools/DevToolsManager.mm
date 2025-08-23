@@ -18,24 +18,37 @@
 }
 
 - (void)toggleDevTools {
+    std::cout << "🔧 DEBUG: toggleDevTools called" << std::endl;
+    std::cout << "🔧 DEBUG: devToolsWindow exists: " << (self.devToolsWindow ? "YES" : "NO") << std::endl;
+    
     if (self.devToolsWindow) {
-        if ([self.devToolsWindow isVisible] && ![self.devToolsWindow isMiniaturized]) {
+        BOOL isVisible = [self.devToolsWindow isVisible];
+        BOOL isMiniaturized = [self.devToolsWindow isMiniaturized];
+        std::cout << "🔧 DEBUG: Window isVisible: " << (isVisible ? "YES" : "NO") << std::endl;
+        std::cout << "🔧 DEBUG: Window isMiniaturized: " << (isMiniaturized ? "YES" : "NO") << std::endl;
+        
+        if (isVisible && !isMiniaturized) {
             // Finestra aperta e visibile → la chiudiamo
+            std::cout << "🔧 DEBUG: Closing visible window" << std::endl;
             [self closeDevTools];
         } else {
-            // Finestra esiste ma è chiusa/minimizzata → la riapriamo
-            [self.devToolsWindow makeKeyAndOrderFront:nil];
-            if ([self.devToolsWindow isMiniaturized]) {
-                [self.devToolsWindow deminiaturize:nil];
-            }
-            // 🔧 FORZA LA FINESTRA IN PRIMO PIANO
-            [self.devToolsWindow orderFrontRegardless];
-            [self.devToolsWindow setLevel:NSFloatingWindowLevel];
-            [self.devToolsWindow setLevel:NSNormalWindowLevel]; // Reset to normal after bringing to front
-            std::cout << "🛠️ MacBird DevTools reopened and brought to front" << std::endl;
+            // 🔧 FIX: QUANDO LA FINESTRA È STATA CHIUSA CON X, RICREALA COMPLETAMENTE
+            std::cout << "🔧 DEBUG: Window was closed with X button - recreating completely" << std::endl;
+            
+            // Cleanup della finestra vecchia
+            [self.devToolsWindow close];
+            self.devToolsWindow = nil;
+            self.consoleTab = nil;
+            self.elementsTab = nil;
+            self.networkTab = nil;
+            self.tabView = nil;
+            
+            // Ricrea completamente
+            [self openDevTools];
         }
     } else {
         // Nessuna finestra esistente → la creiamo
+        std::cout << "🔧 DEBUG: Creating new DevTools window" << std::endl;
         [self openDevTools];
     }
 }
@@ -123,10 +136,26 @@
 }
 
 - (void)closeDevTools {
-    if (self.devToolsWindow && [self.devToolsWindow isVisible]) {
-        // ✅ CHIUSURA SOFT: Nascondi la finestra invece di distruggerla
-        [self.devToolsWindow orderOut:nil];
-        std::cout << "🛠️ MacBird DevTools hidden" << std::endl;
+    std::cout << "🔧 DEBUG: closeDevTools called" << std::endl;
+    std::cout << "🔧 DEBUG: devToolsWindow exists: " << (self.devToolsWindow ? "YES" : "NO") << std::endl;
+    
+    if (self.devToolsWindow) {
+        BOOL isVisible = [self.devToolsWindow isVisible];
+        std::cout << "🔧 DEBUG: Window isVisible before close: " << (isVisible ? "YES" : "NO") << std::endl;
+        
+        if (isVisible) {
+            // ✅ CHIUSURA SOFT: Nascondi la finestra invece di distruggerla
+            [self.devToolsWindow orderOut:nil];
+            
+            // Verifica che sia davvero nascosta
+            BOOL stillVisible = [self.devToolsWindow isVisible];
+            std::cout << "🔧 DEBUG: Window still visible after orderOut: " << (stillVisible ? "YES" : "NO") << std::endl;
+            std::cout << "🛠️ MacBird DevTools hidden" << std::endl;
+        } else {
+            std::cout << "🔧 DEBUG: Window already not visible, nothing to do" << std::endl;
+        }
+    } else {
+        std::cout << "🔧 DEBUG: No window to close" << std::endl;
     }
 }
 
@@ -134,7 +163,8 @@
 - (void)windowWillClose:(NSNotification*)notification {
     if (notification.object == self.devToolsWindow) {
         // L'utente ha chiuso la finestra cliccando la X
-        // Non azzerare la finestra, così può essere riaperta
+        std::cout << "🔧 DEBUG: windowWillClose called - user closed window with X button" << std::endl;
+        std::cout << "🔧 DEBUG: NOT setting devToolsWindow to nil to allow reopening" << std::endl;
         std::cout << "🛠️ MacBird DevTools closed by user" << std::endl;
     }
 }
